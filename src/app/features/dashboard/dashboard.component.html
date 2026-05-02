@@ -1,0 +1,391 @@
+<div class="dashboard">
+
+  <!-- ══════════ SIDEBAR ══════════ -->
+  <aside class="sidebar">
+    <div class="sidebar__header">
+      <div class="sidebar__logo">
+        <div class="sidebar__logo-mark">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+               stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+          </svg>
+        </div>
+        <span class="sidebar__logo-text">Plataforma</span>
+      </div>
+    </div>
+
+    <nav class="sidebar__nav">
+      <button
+        class="nav-item"
+        [class.nav-item--active]="currentView() === 'home'"
+        (click)="goHome()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+        <span>Inicio</span>
+      </button>
+
+      <button
+        class="nav-item"
+        [class.nav-item--active]="currentView() === 'invoices'"
+        (click)="loadInvoices()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/>
+          <polyline points="10 9 9 9 8 9"/>
+        </svg>
+        <span>Facturas</span>
+      </button>
+
+      <button
+        class="nav-item"
+        [class.nav-item--active]="currentView() === 'payment'"
+        (click)="showPaymentUpload()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
+          <line x1="1" y1="10" x2="23" y2="10"/>
+        </svg>
+        <span>Soportes Pago</span>
+      </button>
+
+      <button
+        class="nav-item"
+        [class.nav-item--active]="currentView() === 'portfolio'"
+        (click)="showPortfolioUpload()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="1" x2="12" y2="23"/>
+          <path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>
+        </svg>
+        <span>Edad Cartera</span>
+      </button>
+    </nav>
+
+    <div class="sidebar__footer">
+      <button class="sidebar__logout" (click)="logout()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/>
+          <polyline points="16 17 21 12 16 7"/>
+          <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+        Cerrar sesión
+      </button>
+    </div>
+  </aside>
+
+  <!-- ══════════ MAIN CONTENT ══════════ -->
+  <main class="main">
+
+    <!-- Header -->
+    <header class="header">
+      <div class="header__left">
+        <h1 class="header__title">
+          @if (currentView() === 'home') { Dashboard }
+          @else if (currentView() === 'invoices') { Facturas Radicadas }
+          @else if (currentView() === 'payment') { Soportes de Pago }
+          @else if (currentView() === 'portfolio') { Edad de Cartera }
+        </h1>
+      </div>
+      <div class="header__right">
+        <button
+          class="header__help-btn"
+          (click)="toggleHelp()"
+          [class.header__help-btn--active]="showHelp()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+          <span>Ayuda</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Content Area -->
+    <div class="content">
+
+      <!-- ════════════ HOME VIEW ════════════ -->
+      @if (currentView() === 'home') {
+        <div class="home">
+          <div class="welcome-card">
+            <div class="welcome-card__icon">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+              </svg>
+            </div>
+            <h2>Bienvenido al Sistema</h2>
+            <p>Selecciona una opción del menú o usa las acciones rápidas</p>
+          </div>
+
+          <div class="quick-actions">
+            <button class="action-card" (click)="loadInvoices()">
+              <div class="action-card__icon action-card__icon--blue">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                  <polyline points="14 2 14 8 20 8"/>
+                </svg>
+              </div>
+              <h3>Facturas Radicadas</h3>
+              <p>Consultar estado de facturas</p>
+            </button>
+
+            <button class="action-card" (click)="showPaymentUpload()">
+              <div class="action-card__icon action-card__icon--green">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
+                  <line x1="1" y1="10" x2="23" y2="10"/>
+                </svg>
+              </div>
+              <h3>Soportes de Pago</h3>
+              <p>Cargar documentos de pago</p>
+            </button>
+
+            <button class="action-card" (click)="showPortfolioUpload()">
+              <div class="action-card__icon action-card__icon--orange">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="1" x2="12" y2="23"/>
+                  <path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>
+                </svg>
+              </div>
+              <h3>Edad de Cartera</h3>
+              <p>Análisis de cuentas por cobrar</p>
+            </button>
+          </div>
+        </div>
+      }
+
+      <!-- ════════════ INVOICES VIEW ════════════ -->
+      @if (currentView() === 'invoices') {
+        <div class="invoices">
+
+          @if (uploadSuccess()) {
+            <div class="alert alert--success">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                <polyline points="22 4 12 14.01 9 11.01"/>
+              </svg>
+              <span>{{ uploadSuccess() }}</span>
+            </div>
+          }
+
+          @if (isLoadingInvoices()) {
+            <div class="loading-state">
+              <div class="spinner spinner--large"></div>
+              <p>Cargando facturas...</p>
+            </div>
+          } @else if (invoices().length === 0) {
+            <div class="empty-state">
+              <svg width="64" height="64" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+              </svg>
+              <h3>No hay facturas</h3>
+              <p>No se encontraron facturas radicadas</p>
+            </div>
+          } @else {
+            <div class="table-wrapper">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Número</th>
+                    <th>Fecha</th>
+                    <th>Cliente</th>
+                    <th>Monto</th>
+                    <th>Estado</th>
+                    <th>Días Mora</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (invoice of invoices(); track invoice.id) {
+                    <tr>
+                      <td><strong>{{ invoice.number }}</strong></td>
+                      <td>{{ invoice.date }}</td>
+                      <td>{{ invoice.client }}</td>
+                      <td><strong>{{ formatCurrency(invoice.amount) }}</strong></td>
+                      <td>
+                        <span class="badge" [ngClass]="getStatusBadge(invoice.status)">
+                          {{ getStatusLabel(invoice.status) }}
+                        </span>
+                      </td>
+                      <td>
+                        @if (invoice.daysOverdue) {
+                          <span class="days-overdue">{{ invoice.daysOverdue }} días</span>
+                        } @else {
+                          <span class="text-muted">—</span>
+                        }
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- ════════════ PAYMENT UPLOAD VIEW ════════════ -->
+      @if (currentView() === 'payment') {
+        <div class="upload-view">
+
+          @if (uploadSuccess()) {
+            <div class="alert alert--success">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                <polyline points="22 4 12 14.01 9 11.01"/>
+              </svg>
+              <span>{{ uploadSuccess() }}</span>
+            </div>
+          }
+
+          <div class="upload-card">
+            <div class="upload-card__header">
+              <h3>Cargar Soportes de Pago</h3>
+              <p>Sube los documentos que respaldan los pagos realizados</p>
+            </div>
+
+            <app-file-upload
+              #paymentUpload
+              accept=".pdf,.xlsx,.xls"
+              hint="PDF o Excel (máx. 10MB)"
+              (fileSelected)="onPaymentFileSelected($event)"
+            />
+
+            @if (isUploadingPayment()) {
+              <div class="upload-progress">
+                <div class="spinner"></div>
+                <span>Procesando archivo...</span>
+              </div>
+            }
+          </div>
+
+          <div class="info-box">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="12" y1="16" x2="12" y2="12"/>
+              <line x1="12" y1="8" x2="12.01" y2="8"/>
+            </svg>
+            <div>
+              <strong>Formatos aceptados:</strong>
+              <p>PDF para comprobantes escaneados, Excel para relación de pagos</p>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- ════════════ PORTFOLIO UPLOAD VIEW ════════════ -->
+      @if (currentView() === 'portfolio') {
+        <div class="upload-view">
+
+          @if (uploadSuccess()) {
+            <div class="alert alert--success">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                <polyline points="22 4 12 14.01 9 11.01"/>
+              </svg>
+              <span>{{ uploadSuccess() }}</span>
+            </div>
+          }
+
+          <div class="upload-card">
+            <div class="upload-card__header">
+              <h3>Cargar Edad de Cartera</h3>
+              <p>Sube el archivo con el análisis de antigüedad de saldos</p>
+            </div>
+
+            <app-file-upload
+              #portfolioUpload
+              accept=".xlsx,.xls,.csv"
+              hint="Excel o CSV (máx. 10MB)"
+              (fileSelected)="onPortfolioFileSelected($event)"
+            />
+
+            @if (isUploadingPortfolio()) {
+              <div class="upload-progress">
+                <div class="spinner"></div>
+                <span>Procesando archivo...</span>
+              </div>
+            }
+          </div>
+
+          <div class="info-box">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="12" y1="16" x2="12" y2="12"/>
+              <line x1="12" y1="8" x2="12.01" y2="8"/>
+            </svg>
+            <div>
+              <strong>Formato requerido:</strong>
+              <p>Archivo Excel con columnas: Cliente, Factura, Monto, Días de mora</p>
+            </div>
+          </div>
+        </div>
+      }
+
+    </div>
+  </main>
+
+  <!-- ══════════ HELP PANEL ══════════ -->
+  @if (showHelp()) {
+    <aside class="help-panel">
+      <div class="help-panel__header">
+        <h3>Panel de Ayuda</h3>
+        <button class="help-panel__close" (click)="toggleHelp()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="help-panel__content">
+        <div class="help-section">
+          <h4>Facturas Radicadas</h4>
+          <p>Consulta el estado de todas las facturas enviadas. Puedes ver montos, fechas y estado de aprobación.</p>
+        </div>
+
+        <div class="help-section">
+          <h4>Soportes de Pago</h4>
+          <p>Carga los comprobantes de pago en formato PDF o Excel. El sistema valida automáticamente el formato.</p>
+        </div>
+
+        <div class="help-section">
+          <h4>Edad de Cartera</h4>
+          <p>Importa reportes de antigüedad de saldos para análisis. Formato: Excel con columnas estándar.</p>
+        </div>
+
+        <div class="help-section">
+          <h4>¿Necesitas más ayuda?</h4>
+          <p>Contacta a soporte técnico:</p>
+          <a href="mailto:soporte@empresa.com" class="help-link">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <rect x="2" y="5" width="20" height="14" rx="2"/>
+              <path d="M2 10l10 6 10-6"/>
+            </svg>
+            soporte@empresa.com
+          </a>
+        </div>
+      </div>
+    </aside>
+  }
+
+</div>

@@ -1,0 +1,187 @@
+<div class="lp-root">
+
+  <!-- ══════════ PANEL IZQUIERDO ══════════ -->
+  <aside class="lp-left">
+    <div class="lp-left__mesh"></div>
+    <div class="lp-left__grid"></div>
+
+    <header class="lp-brand">
+      <div class="lp-brand__mark">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+             stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+        </svg>
+      </div>
+      <span class="lp-brand__name">Plataforma</span>
+    </header>
+
+    <div class="lp-left__body">
+      <div class="lp-live-badge">
+        <span class="lp-live-badge__dot"></span>
+        <span>Sistema en vivo</span>
+      </div>
+      <h1 class="lp-left__title">
+        Tu negocio,<br>
+        <span>bajo control total</span>
+      </h1>
+      <p class="lp-left__sub">
+        Dashboards, KPIs y alertas inteligentes en tiempo
+        real para tomar decisiones que importan.
+      </p>
+    </div>
+
+    <div class="lp-stats">
+      <div class="lp-stat">
+        <span class="lp-stat__n">4</span>
+        <span class="lp-stat__l">Empresas activas</span>
+      </div>
+      <div class="lp-stat">
+        <span class="lp-stat__n">99.9%</span>
+        <span class="lp-stat__l">Disponibilidad</span>
+      </div>
+      <div class="lp-stat">
+        <span class="lp-stat__n">∞</span>
+        <span class="lp-stat__l">Reportes KPI</span>
+      </div>
+      <div class="lp-stat">
+        <span class="lp-stat__n">24/7</span>
+        <span class="lp-stat__l">Monitoreo</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ══════════ PANEL DERECHO — FORMULARIO ══════════ -->
+  <main class="lp-right">
+    <div class="lp-right__glow"></div>
+
+    <div class="lp-card">
+
+      <div class="lp-card__head">
+        <div class="lp-card__avatar">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="1.8"
+               stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+        </div>
+        <h2 class="lp-card__title">Iniciar sesión</h2>
+        <p class="lp-card__sub">Ingresa tu correo para acceder a tu espacio de trabajo</p>
+      </div>
+
+      <!-- Success alert -->
+      @if (justRegistered()) {
+        <div class="lp-alert lp-alert--success">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+            <polyline points="22 4 12 14.01 9 11.01"/>
+          </svg>
+          <span>Cuenta creada exitosamente. Ya puedes ingresar.</span>
+        </div>
+      }
+
+      <!-- Error alert -->
+      @if (authError()) {
+        <div class="lp-alert lp-alert--danger">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          <span>{{ authError() }}</span>
+        </div>
+      }
+
+      <!-- Form -->
+      <form [formGroup]="form" (ngSubmit)="requestToken()" novalidate class="lp-form">
+
+        <div class="lp-field" [class.lp-field--error]="emailInvalid">
+          <label class="lp-field__label" for="login-email">Correo electrónico</label>
+          <div class="lp-field__wrap">
+            <span class="lp-field__icon">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                <rect x="2" y="5" width="20" height="14" rx="2"/>
+                <path d="M2 10l10 6 10-6"/>
+              </svg>
+            </span>
+            <input
+              id="login-email"
+              type="email"
+              class="lp-field__input"
+              formControlName="email"
+              placeholder="correo@empresa.com"
+              autocomplete="email"
+              (input)="onEmailInput()"
+            />
+          </div>
+          @if (emailInvalid) {
+            <p class="lp-field__error">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="8" x2="12" y2="12"/>
+                <line x1="12" y1="16" x2="12.01" y2="16"/>
+              </svg>
+              {{ emailError }}
+            </p>
+          }
+        </div>
+
+        <button type="submit" class="lp-btn-primary" [disabled]="isLoading()">
+          @if (isLoading()) {
+            <span class="lp-spinner"></span>
+            Enviando código...
+          } @else {
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                 stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/>
+              <polyline points="10 17 15 12 10 7"/>
+              <line x1="15" y1="12" x2="3" y2="12"/>
+            </svg>
+            Entrar a mi cuenta
+          }
+        </button>
+
+      </form>
+
+      <div class="lp-sep">
+        <span class="lp-sep__line"></span>
+        <span class="lp-sep__text">¿No tienes cuenta?</span>
+        <span class="lp-sep__line"></span>
+      </div>
+
+      <a routerLink="/auth/register" class="lp-btn-secondary">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <line x1="19" y1="8" x2="19" y2="14"/>
+          <line x1="22" y1="11" x2="16" y2="11"/>
+        </svg>
+        Crear cuenta nueva
+      </a>
+
+      <footer class="lp-foot">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M12 8v4M12 16h.01"/>
+        </svg>
+        ¿Problemas? <a href="mailto:soporte@empresa.com">Contacta soporte</a>
+      </footer>
+
+    </div>
+  </main>
+
+  <!-- ══════════ MFA MODAL ══════════ -->
+  @if (showMfaModal()) {
+    <app-mfa-modal
+      (codeSubmitted)="validateTokenEmail($event)"
+      (cancelled)="onModalCancelled()"
+    />
+  }
+
+</div>
