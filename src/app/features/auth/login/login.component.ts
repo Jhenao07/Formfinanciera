@@ -1,41 +1,39 @@
-import { Component, inject, signal, OnInit, DestroyRef, ViewChild } from '@angular/core';
+import { Component, inject, signal, OnInit, DestroyRef } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { AuthService } from '../../../core/services/auth.service';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { MfaModalComponent } from '../components/mfa-modal/mfa-modal.component';
-import { CommonModule } from '@angular/common';
+import { AuthService } from '../../../core/services/auth.service';
+import { MfaModalComponent } from '../../../shared/components/mfa-modal/mfa-modal.component';
 
 @Component({
-  selector: 'app-login',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, MfaModalComponent],
+  selector:    'app-login',
+  standalone:  true,
+  imports:     [ReactiveFormsModule, RouterLink, MfaModalComponent],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.scss',
+  styleUrl:    './login.component.scss',
 })
 export class LoginComponent implements OnInit {
-  private fb = inject(FormBuilder);
-  private auth = inject(AuthService);
-  private router = inject(Router);
+  private readonly fb         = inject(FormBuilder);
+  private readonly auth       = inject(AuthService);
+  private readonly router     = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
 
-  @ViewChild(MfaModalComponent) mfaModal!: MfaModalComponent;
-
-  // Signals
+  // ── Estado auth ──────────────────────────────────────────
   readonly isLoading = this.auth.isLoading;
   readonly authError = this.auth.error;
+
+  // ── Estado local ─────────────────────────────────────────
   readonly justRegistered = signal(false);
-  readonly submitted = signal(false);
-  readonly showMfaModal = signal(false);
+  readonly showMfaModal   = signal(false);
+  readonly pendingEmail   = signal('');
+  readonly isMfaLoading   = signal(false);
+  readonly mfaError       = signal<string | null>(null);
 
   form!: FormGroup;
-  currentEmail = '';
 
   ngOnInit(): void {
-    const nav = history.state as { fromRegister?: boolean };
-    if (nav?.fromRegister) {
+    if ((history.state as { fromRegister?: boolean })?.fromRegister) {
       this.justRegistered.set(true);
-      // Auto-hide después de 5s
       setTimeout(() => this.justRegistered.set(false), 5000);
     }
 
@@ -44,80 +42,79 @@ export class LoginComponent implements OnInit {
     });
   }
 
+  // ── Getters ──────────────────────────────────────────────
+  get emailCtrl() { return this.form.get('email')!; }
+
   get emailInvalid(): boolean {
-    return this.submitted() && !!this.form?.get('email')?.invalid;
+    return this.emailCtrl.invalid && this.emailCtrl.touched;
   }
 
   get emailError(): string {
-    const ctrl = this.form?.get('email');
-    if (!ctrl?.errors) return '';
-    if (ctrl.errors['required']) return 'El correo es obligatorio.';
-    if (ctrl.errors['email']) return 'Ingresa un correo válido.';
+    const e = this.emailCtrl.errors;
+    if (!e) return '';
+    if (e['required']) return 'El correo es obligatorio.';
+    if (e['email'])    return 'Ingresa un correo válido.';
     return '';
   }
 
+  // ── Handlers ─────────────────────────────────────────────
   onEmailInput(): void {
     this.auth.clearError();
     if (this.justRegistered()) this.justRegistered.set(false);
   }
 
-requestToken(): void {
-  this.submitted.set(true);
+  requestOtp(): void {
+    this.emailCtrl.markAsTouched();
+    if (this.form.invalid) return;
 
-  if (this.form.invalid) return;
+    const email = this.emailCtrl.value as string;
 
-  const email = this.form.get('email')?.value;
-  this.currentEmail = email;
+    this.auth.sendOtp(email)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.pendingEmail.set(email);
+          this.mfaError.set(null);
+          this.showMfaModal.set(true);
+        },
+        error: (err: { status: number }) => {
+          this.auth.setError(this.resolveOtpError(err.status));
+        },
+      });
+  }
 
-  // Llamada al servicio
-  this.auth.sendTokenEmail(email)
-    .pipe(takeUntilDestroyed(this.destroyRef))
-    .subscribe({
-      next: () => {
-        // Mostramos el modal inmediatamente
-        this.showMfaModal.set(true);
+  validateOtp(code: string): void {
+    this.isMfaLoading.set(true);
+    this.mfaError.set(null);
 
-        // Usamos requestAnimationFrame en lugar de setTimeout
-        // para esperar al siguiente ciclo de renderizado de forma eficiente
-        requestAnimationFrame(() => {
-          if (this.mfaModal) {
-            this.mfaModal.open(email);
-          }
-        });
-      },
-      error: (err) => {
-        this.auth.error.set(this.handleError(err.status));
-      },
-    });
-}
-
-// Extraer lógica de error para limpiar el flujo principal
-private handleError(status: number): string {
-  if (status === 401) return 'No tienes permiso para solicitar este código.';
-  if (status === 500) return 'Error del servidor. Contacta a soporte.';
-  return 'No se pudo enviar el código. Intenta de nuevo.';
-}
-validateTokenEmail(code: string): void {
-  this.auth.validateTokenEmail(this.currentEmail, code)
-    .pipe(takeUntilDestroyed(this.destroyRef))
-    .subscribe({
-      next: () => {
-        localStorage.setItem('auth_token', 'true');
-
-        // Cerramos el modal inmediatamente antes de navegar
-        // para dar feedback visual instantáneo
-        this.showMfaModal.set(false);
-        this.router.navigate(['/dashboard']);
-      },
-      error: () => {
-        this.mfaModal.showError();
-        this.mfaModal.isSubmitting.set(false);
-      },
-    });
-}
-
+    this.auth.validateOtp(this.pendingEmail(), code)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.showMfaModal.set(false);
+          this.router.navigate(['/dashboard']);
+        },
+        error: () => {
+          this.isMfaLoading.set(false);
+          this.mfaError.set('Código incorrecto. Verifica e intenta de nuevo.');
+        },
+      });
+  }
 
   onModalCancelled(): void {
     this.showMfaModal.set(false);
+    this.isMfaLoading.set(false);
+    this.mfaError.set(null);
+  }
+
+  // ── Mapeo de errores (responsabilidad del componente UI) ─
+  private resolveOtpError(status: number): string {
+    const map: Record<number, string> = {
+      401: 'No tienes permiso para solicitar este código.',
+      404: 'Este correo no está registrado en el sistema.',
+      429: 'Demasiados intentos. Espera unos minutos.',
+      500: 'Error del servidor. Contacta a soporte.',
+    };
+    return map[status] ?? 'No se pudo enviar el código. Intenta de nuevo.';
   }
 }

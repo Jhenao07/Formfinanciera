@@ -1,3 +1,205 @@
-<p>
-  file-upload works!
-</p>
+<!-- ══════════════════════════════════════════════════════════
+     COMPONENTE DE UPLOAD MEJORADO CON ANIMACIONES PRO
+     ══════════════════════════════════════════════════════════ -->
+
+<!-- Vista de carga de Soportes de Pago -->
+@if (currentView() === 'payment') {
+  <div class="upload-view">
+
+    <!-- Alert de éxito con animaciones celebratorias -->
+    @if (uploadSuccess()) {
+      <div class="alert alert--success">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+          <polyline points="22 4 12 14.01 9 11.01"/>
+        </svg>
+        <span>{{ uploadSuccess() }}</span>
+      </div>
+    }
+
+    <!-- Card principal con glassmorphism -->
+    <div class="upload-card">
+      <div class="upload-card__header">
+        <h3>Cargar Soportes de Pago</h3>
+        <p>Sube los documentos que respaldan los pagos realizados</p>
+      </div>
+
+      <!-- ZONA DE DRAG & DROP CON ANIMACIONES AVANZADAS -->
+      <div class="file-upload-zone"
+           [class.file-upload-zone--dragging]="isDragging()"
+           (dragover)="onDragOver($event)"
+           (dragleave)="onDragLeave($event)"
+           (drop)="onDrop($event)"
+           (click)="fileInput.click()">
+
+        <!-- Ícono con animaciones multicapa -->
+        <div class="upload-icon">
+          <div class="upload-icon__circle">
+            <svg class="upload-icon__svg"
+                 width="36" height="36"
+                 viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="2"
+                 stroke-linecap="round"
+                 stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Texto con gradiente animado -->
+        <div class="upload-text">
+          <div class="upload-text__primary">
+            Arrastra tu archivo aquí
+          </div>
+          <div class="upload-text__secondary">
+            o haz clic para seleccionar
+          </div>
+          <div class="upload-text__hint">
+            PDF o Excel (máx. 10MB)
+          </div>
+        </div>
+
+        <!-- Input oculto -->
+        <input
+          #fileInput
+          type="file"
+          accept=".pdf,.xlsx,.xls"
+          (change)="onFileSelected($event)"
+          style="display: none;">
+      </div>
+
+      <!-- Progress con animación de shimmer -->
+      @if (isUploadingPayment()) {
+        <div class="upload-progress">
+          <div class="spinner"></div>
+          <span>Procesando archivo...</span>
+        </div>
+      }
+    </div>
+
+    <!-- Info box con efectos glassmorphism -->
+    <div class="info-box">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="16" x2="12" y2="12"/>
+        <line x1="12" y1="8" x2="12.01" y2="8"/>
+      </svg>
+      <div>
+        <strong>Formatos aceptados:</strong>
+        <p>PDF para comprobantes escaneados, Excel para relación de pagos</p>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Vista de carga de Edad de Cartera -->
+@if (currentView() === 'portfolio') {
+  <div class="upload-view">
+
+    @if (uploadSuccess()) {
+      <div class="alert alert--success">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+          <polyline points="22 4 12 14.01 9 11.01"/>
+        </svg>
+        <span>{{ uploadSuccess() }}</span>
+      </div>
+    }
+
+    <div class="upload-card">
+      <div class="upload-card__header">
+        <h3>Cargar Edad de Cartera</h3>
+        <p>Sube el archivo con el análisis de antigüedad de saldos</p>
+      </div>
+
+      <!-- ZONA DE DRAG & DROP -->
+      <div class="file-upload-zone"
+           [class.file-upload-zone--dragging]="isDragging()"
+           (dragover)="onDragOver($event)"
+           (dragleave)="onDragLeave($event)"
+           (drop)="onDrop($event)"
+           (click)="portfolioFileInput.click()">
+
+        <div class="upload-icon">
+          <div class="upload-icon__circle">
+            <svg class="upload-icon__svg"
+                 width="36" height="36"
+                 viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="2"
+                 stroke-linecap="round"
+                 stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="upload-text">
+          <div class="upload-text__primary">
+            Arrastra tu archivo aquí
+          </div>
+          <div class="upload-text__secondary">
+            o haz clic para seleccionar
+          </div>
+          <div class="upload-text__hint">
+            Excel o CSV (máx. 10MB)
+          </div>
+        </div>
+
+        <input
+          #portfolioFileInput
+          type="file"
+          accept=".xlsx,.xls,.csv"
+          (change)="onPortfolioFileSelected($event)"
+          style="display: none;">
+      </div>
+
+      @if (isUploadingPortfolio()) {
+        <div class="upload-progress">
+          <div class="spinner"></div>
+          <span>Procesando archivo...</span>
+        </div>
+      }
+    </div>
+
+    <div class="info-box">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="16" x2="12" y2="12"/>
+        <line x1="12" y1="8" x2="12.01" y2="8"/>
+      </svg>
+      <div>
+        <strong>Formato requerido:</strong>
+        <p>Archivo Excel con columnas: Cliente, Factura, Monto, Días de mora</p>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- ══════════════════════════════════════════════════════════
+     ESTILOS ADICIONALES INLINE (para el hint)
+     ══════════════════════════════════════════════════════════ -->
+<style>
+.upload-text__hint {
+  font-size: 12px;
+  color: #94a3b8;
+  margin-top: 6px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.file-upload-zone:hover .upload-text__hint {
+  color: #64748b;
+}
+</style>

@@ -1,16 +1,11 @@
 import { inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { CanActivateFn, Router } from '@angular/router';
+import { AuthService } from '../services/auth.service';
 
-export const authGuard = () => {
+export const authGuard: CanActivateFn = () => {
+  const auth   = inject(AuthService);
   const router = inject(Router);
-
-  // Verifica el flag que seteamos después de validar OTP
-  const isAuthenticated = localStorage.getItem('auth_token') === 'true';
-
-  if (isAuthenticated) {
-    return true;
-  }
-
-  return router.createUrlTree(['/auth/login']);
+  return auth.isAuthenticated()
+    ? true
+    : router.createUrlTree(['/auth/login']);
 };
- 

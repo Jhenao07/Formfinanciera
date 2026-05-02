@@ -217,7 +217,7 @@
                       <td>{{ invoice.client }}</td>
                       <td><strong>{{ formatCurrency(invoice.amount) }}</strong></td>
                       <td>
-                        <span class="badge" [ngClass]="getStatusBadge(invoice.status)">
+                        <span [class]="['badge', getStatusBadge(invoice.status)].join(' ')">
                           {{ getStatusLabel(invoice.status) }}
                         </span>
                       </td>
@@ -237,7 +237,7 @@
         </div>
       }
 
-      <!-- ════════════ PAYMENT UPLOAD VIEW ════════════ -->
+      <!-- ════════════ PAYMENT UPLOAD VIEW - CON ANIMACIONES ════════════ -->
       @if (currentView() === 'payment') {
         <div class="upload-view">
 
@@ -258,13 +258,55 @@
               <p>Sube los documentos que respaldan los pagos realizados</p>
             </div>
 
-            <app-file-upload
-              #paymentUpload
-              accept=".pdf,.xlsx,.xls"
-              hint="PDF o Excel (máx. 10MB)"
-              (fileSelected)="onPaymentFileSelected($event)"
-            />
+            <!-- ZONA DE DRAG & DROP CON ANIMACIONES PREMIUM -->
+            <div class="file-upload-zone"
+                 [class.file-upload-zone--dragging]="isDragging()"
+                 (dragover)="onDragOver($event)"
+                 (dragleave)="onDragLeave($event)"
+                 (drop)="onDrop($event)"
+                 (click)="paymentFileInput.click()">
 
+              <!-- Ícono con animaciones multicapa -->
+              <div class="upload-icon">
+                <div class="upload-icon__circle">
+                  <svg class="upload-icon__svg"
+                       width="36" height="36"
+                       viewBox="0 0 24 24"
+                       fill="none"
+                       stroke="currentColor"
+                       stroke-width="2"
+                       stroke-linecap="round"
+                       stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+                    <polyline points="17 8 12 3 7 8"/>
+                    <line x1="12" y1="3" x2="12" y2="15"/>
+                  </svg>
+                </div>
+              </div>
+
+              <!-- Texto con gradiente animado -->
+              <div class="upload-text">
+                <div class="upload-text__primary">
+                  Arrastra tu archivo aquí
+                </div>
+                <div class="upload-text__secondary">
+                  o haz clic para seleccionar
+                </div>
+                <div class="upload-text__hint">
+                  PDF o Excel (máx. 10MB)
+                </div>
+              </div>
+
+              <!-- Input oculto -->
+              <input
+                #paymentFileInput
+                type="file"
+                accept=".pdf,.xlsx,.xls"
+                (change)="onPaymentFileSelected($event)"
+                style="display: none;">
+            </div>
+
+            <!-- Progress con shimmer -->
             @if (isUploadingPayment()) {
               <div class="upload-progress">
                 <div class="spinner"></div>
@@ -273,6 +315,7 @@
             }
           </div>
 
+          <!-- Info box con glassmorphism -->
           <div class="info-box">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
                  stroke="currentColor" stroke-width="2" stroke-linecap="round">
@@ -288,7 +331,7 @@
         </div>
       }
 
-      <!-- ════════════ PORTFOLIO UPLOAD VIEW ════════════ -->
+      <!-- ════════════ PORTFOLIO UPLOAD VIEW - CON ANIMACIONES ════════════ -->
       @if (currentView() === 'portfolio') {
         <div class="upload-view">
 
@@ -309,12 +352,50 @@
               <p>Sube el archivo con el análisis de antigüedad de saldos</p>
             </div>
 
-            <app-file-upload
-              #portfolioUpload
-              accept=".xlsx,.xls,.csv"
-              hint="Excel o CSV (máx. 10MB)"
-              (fileSelected)="onPortfolioFileSelected($event)"
-            />
+            <!-- ZONA DE DRAG & DROP CON ANIMACIONES PREMIUM -->
+            <div class="file-upload-zone"
+                 [class.file-upload-zone--dragging]="isDragging()"
+                 (dragover)="onDragOver($event)"
+                 (dragleave)="onDragLeave($event)"
+                 (drop)="onDrop($event)"
+                 (click)="portfolioFileInput.click()">
+
+              <div class="upload-icon">
+                <div class="upload-icon__circle">
+                  <svg class="upload-icon__svg"
+                       width="36" height="36"
+                       viewBox="0 0 24 24"
+                       fill="none"
+                       stroke="currentColor"
+                       stroke-width="2"
+                       stroke-linecap="round"
+                       stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+                    <polyline points="17 8 12 3 7 8"/>
+                    <line x1="12" y1="3" x2="12" y2="15"/>
+                  </svg>
+                </div>
+              </div>
+
+              <div class="upload-text">
+                <div class="upload-text__primary">
+                  Arrastra tu archivo aquí
+                </div>
+                <div class="upload-text__secondary">
+                  o haz clic para seleccionar
+                </div>
+                <div class="upload-text__hint">
+                  Excel o CSV (máx. 10MB)
+                </div>
+              </div>
+
+              <input
+                #portfolioFileInput
+                type="file"
+                accept=".xlsx,.xls,.csv"
+                (change)="onPortfolioFileSelected($event)"
+                style="display: none;">
+            </div>
 
             @if (isUploadingPortfolio()) {
               <div class="upload-progress">

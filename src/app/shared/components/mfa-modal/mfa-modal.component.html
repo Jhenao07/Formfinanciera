@@ -1,0 +1,114 @@
+<div
+  class="mfa-backdrop"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="mfa-title"
+  (click)="cancel()"
+>
+  <div class="mfa-modal" (click)="$event.stopPropagation()">
+
+    <div class="mfa-modal__icon" [class.mfa-modal__icon--error]="hasError()">
+      @if (hasError()) {
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2.2"
+             stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+      } @else {
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2.2"
+             stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+      }
+    </div>
+
+    <div class="mfa-modal__header">
+      <h2 id="mfa-title">Verificar identidad</h2>
+      <!-- email es @Input() — sin () -->
+      <p>Código enviado a<br><strong>{{ email }}</strong></p>
+    </div>
+
+    <div
+      class="mfa-modal__code"
+      [class.mfa-modal__code--error]="hasError()"
+      role="group"
+      aria-label="Código de verificación de 6 dígitos"
+    >
+      <!-- [disabled] usa loading (plain boolean) + isExpired() (signal que solo cambia 1 vez) -->
+      <!-- Así NO se re-evalúa cada segundo con el countdown -->
+      <input #d0 type="text" inputmode="text" maxlength="1" placeholder="·"
+        class="mfa-modal__digit" aria-label="Dígito 1 de 6"
+        [disabled]="loading || isExpired()"
+        (input)="onInput($event, 0)"
+        (keydown)="onKeyDown($event, 0)"
+        (paste)="onPaste($event)" />
+
+      <input #d1 type="text" inputmode="text" maxlength="1" placeholder="·"
+        class="mfa-modal__digit" aria-label="Dígito 2 de 6"
+        [disabled]="loading || isExpired()"
+        (input)="onInput($event, 1)"
+        (keydown)="onKeyDown($event, 1)" />
+
+      <input #d2 type="text" inputmode="text" maxlength="1" placeholder="·"
+        class="mfa-modal__digit" aria-label="Dígito 3 de 6"
+        [disabled]="loading || isExpired()"
+        (input)="onInput($event, 2)"
+        (keydown)="onKeyDown($event, 2)" />
+
+      <input #d3 type="text" inputmode="text" maxlength="1" placeholder="·"
+        class="mfa-modal__digit" aria-label="Dígito 4 de 6"
+        [disabled]="loading || isExpired()"
+        (input)="onInput($event, 3)"
+        (keydown)="onKeyDown($event, 3)" />
+
+      <input #d4 type="text" inputmode="text" maxlength="1" placeholder="·"
+        class="mfa-modal__digit" aria-label="Dígito 5 de 6"
+        [disabled]="loading || isExpired()"
+        (input)="onInput($event, 4)"
+        (keydown)="onKeyDown($event, 4)" />
+
+      <input #d5 type="text" inputmode="text" maxlength="1" placeholder="·"
+        class="mfa-modal__digit" aria-label="Dígito 6 de 6"
+        [disabled]="loading || isExpired()"
+        (input)="onInput($event, 5)"
+        (keydown)="onKeyDown($event, 5)" />
+    </div>
+
+    @if (errorMessage && hasError()) {
+      <p class="mfa-modal__feedback mfa-modal__feedback--error" role="alert">
+        {{ errorMessage }}
+      </p>
+    } @else if (isExpired()) {
+      <p class="mfa-modal__feedback mfa-modal__feedback--expired" role="alert">
+        El código ha expirado. Vuelve e inténtalo de nuevo.
+      </p>
+    } @else {
+      <p class="mfa-modal__hint">
+        <span class="mfa-modal__timer" [class.mfa-modal__timer--warning]="countdown() < 60">
+          {{ formattedTime }}
+        </span>
+        restantes
+      </p>
+    }
+
+    <div class="mfa-modal__actions">
+      <button type="button" class="mfa-btn mfa-btn--secondary"
+              (click)="cancel()" [disabled]="loading">
+        Volver
+      </button>
+      <button type="button" class="mfa-btn mfa-btn--primary"
+              (click)="submit()" [disabled]="loading || isExpired()">
+        @if (loading) {
+          <span class="mfa-spinner"></span>
+          Verificando...
+        } @else {
+          Verificar
+        }
+      </button>
+    </div>
+
+  </div>
+</div>

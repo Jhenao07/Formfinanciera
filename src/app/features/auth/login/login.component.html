@@ -95,7 +95,7 @@
       }
 
       <!-- Form -->
-      <form [formGroup]="form" (ngSubmit)="requestToken()" novalidate class="lp-form">
+      <form [formGroup]="form" (ngSubmit)="requestOtp()" novalidate class="lp-form">
 
         <div class="lp-field" [class.lp-field--error]="emailInvalid">
           <label class="lp-field__label" for="login-email">Correo electrónico</label>
@@ -178,10 +178,13 @@
 
   <!-- ══════════ MFA MODAL ══════════ -->
   @if (showMfaModal()) {
-    <app-mfa-modal
-      (codeSubmitted)="validateTokenEmail($event)"
-      (cancelled)="onModalCancelled()"
-    />
+  <app-mfa-modal
+    [email]="pendingEmail()"
+    [loading]="isMfaLoading()"
+    [errorMessage]="mfaError()"
+    (codeSubmitted)="validateOtp($event)"
+    (cancelled)="onModalCancelled()"
+  />
   }
 
 </div>
