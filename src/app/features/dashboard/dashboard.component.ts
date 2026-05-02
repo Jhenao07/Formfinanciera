@@ -23,6 +23,7 @@ export class DashboardComponent {
 
   // Datos
   invoices = signal<Invoice[]>([]);
+  router: any;
 
   // ══════════════════════════════════════════════════════════
   // MÉTODOS DE NAVEGACIÓN
@@ -54,9 +55,13 @@ export class DashboardComponent {
   }
 
   logout() {
-    console.log('Cerrando sesión...');
-    // Implementar lógica de logout
-  }
+  // Limpia el storage
+  localStorage.clear();
+  sessionStorage.clear();
+
+  // Redirige al login
+  this.router.navigate(['/auth/login']);
+}
 
   // ══════════════════════════════════════════════════════════
   // DRAG & DROP - EVENTOS CON ANIMACIONES

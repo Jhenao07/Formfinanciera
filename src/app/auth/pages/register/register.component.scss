@@ -1,0 +1,521 @@
+/* ============================================================
+   FUENTE — Inter
+   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+   ============================================================ */
+
+/* ============================================================
+   ROOT LAYOUT
+   ============================================================ */
+.lp-root {
+  display: grid;
+  grid-template-columns: 420px 1fr;
+  min-height: 100vh;
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+
+  @media (max-width: 860px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============================================================
+   PANEL IZQUIERDO
+   ============================================================ */
+.lp-left {
+  background: #080f1e;
+  padding: 48px 42px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+
+  @media (max-width: 860px) { display: none; }
+}
+
+.lp-left__mesh {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 10% 85%, rgba(37, 99, 235, .38), transparent),
+    radial-gradient(ellipse 55% 50% at 90% 10%, rgba(99, 102, 241, .28), transparent),
+    radial-gradient(ellipse 40% 40% at 50% 50%, rgba(249, 115, 22, .07), transparent);
+  pointer-events: none;
+}
+
+.lp-left__grid {
+  position: absolute;
+  inset: 0;
+  opacity: .05;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, .6) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, .6) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+}
+
+/* ---- Logo ---- */
+.lp-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+  z-index: 2;
+}
+
+.lp-brand__mark {
+  width: 40px;
+  height: 40px;
+  border-radius: 11px;
+  background: linear-gradient(135deg, #f97316, #dc2626);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 22px rgba(249, 115, 22, .5);
+  flex-shrink: 0;
+}
+
+.lp-brand__name {
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -.3px;
+}
+
+/* ---- Hero ---- */
+.lp-left__body {
+  position: relative;
+  z-index: 2;
+}
+
+.lp-live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, .07);
+  border: 1px solid rgba(255, 255, 255, .1);
+  border-radius: 999px;
+  padding: 6px 14px;
+  margin-bottom: 22px;
+
+  span:last-child {
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, .65);
+    letter-spacing: .2px;
+  }
+}
+
+.lp-live-badge__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 8px #22c55e;
+  animation: lp-pulse 2s ease-in-out infinite;
+}
+
+@keyframes lp-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: .4; }
+}
+
+.lp-left__title {
+  font-size: 34px;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.15;
+  letter-spacing: -1.2px;
+  margin: 0 0 14px;
+
+  span {
+    background: linear-gradient(90deg, #60a5fa, #a78bfa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}
+
+.lp-left__sub {
+  font-size: 13.5px;
+  color: rgba(255, 255, 255, .45);
+  line-height: 1.72;
+  max-width: 280px;
+}
+
+/* ---- Stats grid ---- */
+.lp-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  position: relative;
+  z-index: 2;
+}
+
+.lp-stat {
+  background: rgba(255, 255, 255, .05);
+  border: 1px solid rgba(255, 255, 255, .08);
+  border-radius: 14px;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  transition: background .2s;
+
+  &:hover { background: rgba(255, 255, 255, .08); }
+}
+
+.lp-stat__n {
+  font-size: 24px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -1px;
+}
+
+.lp-stat__l {
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, .38);
+  font-weight: 500;
+}
+
+/* ============================================================
+   PANEL DERECHO
+   ============================================================ */
+.lp-right {
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.lp-right__glow {
+  position: absolute;
+  top: -120px;
+  right: -120px;
+  width: 450px;
+  height: 450px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(37, 99, 235, .06), transparent 70%);
+  pointer-events: none;
+}
+
+/* ---- Card ---- */
+.lp-card {
+  width: 100%;
+  max-width: 420px;
+  position: relative;
+  z-index: 1;
+
+  @media (max-width: 480px) {
+    padding: 0 4px;
+  }
+}
+
+/* ---- Header ---- */
+.lp-card__head {
+  margin-bottom: 32px;
+}
+
+.lp-card__avatar {
+  width: 54px;
+  height: 54px;
+  border-radius: 15px;
+  background: linear-gradient(135deg, rgba(37, 99, 235, .1), rgba(99, 102, 241, .1));
+  border: 1px solid rgba(37, 99, 235, .15);
+  color: #2563eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.lp-card__title {
+  font-size: 28px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -.8px;
+  margin: 0 0 7px;
+}
+
+.lp-card__sub {
+  font-size: 13.5px;
+  color: #64748b;
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* ============================================================
+   ALERTAS
+   ============================================================ */
+.lp-alert {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 15px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 24px;
+  border: 1px solid transparent;
+  animation: lp-slide-in .2s ease;
+
+  svg { flex-shrink: 0; }
+
+  &--danger {
+    background: #fef2f2;
+    color: #dc2626;
+    border-color: #fca5a5;
+  }
+
+  &--success {
+    background: #f0fdf4;
+    color: #16a34a;
+    border-color: #86efac;
+  }
+}
+
+@keyframes lp-slide-in {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   FORMULARIO
+   ============================================================ */
+.lp-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.lp-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  &--error {
+    .lp-field__input {
+      border-color: #fca5a5;
+      background: #fff5f5;
+
+      &:focus {
+        border-color: #dc2626;
+        box-shadow: 0 0 0 4px rgba(220, 38, 38, .1);
+      }
+    }
+    .lp-field__icon { color: #dc2626; }
+  }
+}
+
+.lp-field__label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+  letter-spacing: -.1px;
+}
+
+.lp-field__wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.lp-field__icon {
+  position: absolute;
+  left: 15px;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+  transition: color .2s;
+}
+
+.lp-field__input {
+  width: 100%;
+  height: 50px;
+  padding: 0 16px 0 48px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 13px;
+  background: #f8fafc;
+  color: #0f172a;
+  font-size: 14.5px;
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  font-weight: 400;
+  letter-spacing: -.15px;
+  outline: none;
+  transition: border-color .2s, box-shadow .2s, background .2s;
+
+  &::placeholder { color: #94a3b8; }
+
+  &:hover:not(:focus) {
+    border-color: #cbd5e1;
+    background: #f1f5f9;
+  }
+
+  &:focus {
+    border-color: #2563eb;
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, .1);
+  }
+
+  &--padded-right {
+    padding-right: 48px;
+  }
+}
+
+.lp-field__wrap:focus-within .lp-field__icon {
+  color: #2563eb;
+}
+
+.lp-field__error {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #dc2626;
+  margin: 0;
+
+  svg { flex-shrink: 0; }
+}
+
+/* ---- Toggle mostrar / ocultar contraseña ---- */
+.lp-field__toggle {
+  position: absolute;
+  right: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: #94a3b8;
+  transition: color .2s;
+
+  &:hover { color: #2563eb; }
+}
+
+/* ============================================================
+   BOTONES
+   ============================================================ */
+.lp-btn-primary,
+.lp-btn-secondary {
+  width: 100%;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border-radius: 13px;
+  font-size: 15.5px;
+  font-weight: 700;
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  letter-spacing: -.3px;
+  cursor: pointer;
+  text-decoration: none;
+  border: none;
+  transition: all .2s cubic-bezier(.4, 0, .2, 1);
+
+  &:active { transform: scale(.985); }
+}
+
+.lp-btn-primary {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: #fff;
+  margin-top: 6px;
+  box-shadow:
+    0 4px 20px rgba(37, 99, 235, .42),
+    inset 0 1px 0 rgba(255, 255, 255, .15);
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow:
+      0 10px 28px rgba(37, 99, 235, .52),
+      inset 0 1px 0 rgba(255, 255, 255, .15);
+  }
+
+  &:disabled {
+    opacity: .55;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+.lp-btn-secondary {
+  background: #fff;
+  color: #334155;
+  border: 1.5px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .06);
+
+  &:hover {
+    border-color: #2563eb;
+    color: #2563eb;
+    background: #f0f6ff;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, .12);
+    transform: translateY(-1px);
+  }
+}
+
+/* ---- Spinner ---- */
+.lp-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2.5px solid rgba(255, 255, 255, .25);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: lp-spin .65s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes lp-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ============================================================
+   SEPARADOR
+   ============================================================ */
+.lp-sep {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 24px 0 20px;
+}
+
+.lp-sep__line {
+  flex: 1;
+  height: 1px;
+  background: #f1f5f9;
+}
+
+.lp-sep__text {
+  font-size: 12px;
+  font-weight: 600;
+  color: #94a3b8;
+  white-space: nowrap;
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.lp-foot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 24px;
+  font-size: 12.5px;
+  color: #94a3b8;
+
+  a {
+    color: #2563eb;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color .15s;
+
+    &:hover { color: #1d4ed8; text-decoration: underline; }
+  }
+}

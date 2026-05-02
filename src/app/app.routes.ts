@@ -11,12 +11,13 @@ export const routes: Routes = [
   {
     path:          'auth/login',
     loadComponent: () =>
-      import('./features/auth/login/login.component').then(m => m.LoginComponent),
+      import('./auth/pages/login/login.component').then(m => m.LoginComponent),
   },
   {
-    path:          'auth/register',
+    path: 'auth/register',
     loadComponent: () =>
-      import('./features/auth/register/register.component').then(m => m.Register),
+      import('./auth/pages/register/register.component')
+        .then(m => m.RegisterComponent)
   },
   {
     path:        'dashboard',
@@ -39,6 +40,7 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/dashboard/views/payments/payments.component').then(m => m.PaymentsComponent),
       },
+
       // {
       //   path:          'portfolio',
       //   loadComponent: () =>
