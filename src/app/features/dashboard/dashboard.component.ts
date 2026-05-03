@@ -1,7 +1,10 @@
 import { Component, signal } from '@angular/core';
+import { HeroComponent } from '../../hero/hero.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
+  imports: [HeroComponent],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
@@ -23,8 +26,8 @@ export class DashboardComponent {
 
   // Datos
   invoices = signal<Invoice[]>([]);
-  router: any;
 
+  constructor(private router: Router) { }
   // ══════════════════════════════════════════════════════════
   // MÉTODOS DE NAVEGACIÓN
   // ══════════════════════════════════════════════════════════
@@ -54,13 +57,22 @@ export class DashboardComponent {
     this.showHelp.update(val => !val);
   }
 
-  logout() {
-  // Limpia el storage
-  localStorage.clear();
-  sessionStorage.clear();
+logout(): void {
+  try {
+    // 1. Limpiar únicamente lo relacionado a auth (mejor práctica)
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    sessionStorage.clear();
 
-  // Redirige al login
-  this.router.navigate(['/auth/login']);
+    // 2. Opcional: limpiar estado en memoria (si usas services con BehaviorSubject)
+    // this.authStateService.clear();
+
+    // 3. Navegación forzada sin historial
+    this.router.navigateByUrl('/auth/login', { replaceUrl: true });
+
+  } catch (error) {
+    console.error('Error durante logout:', error);
+  }
 }
 
   // ══════════════════════════════════════════════════════════

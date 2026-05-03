@@ -115,16 +115,9 @@
       <!-- ════════════ HOME VIEW ════════════ -->
       @if (currentView() === 'home') {
         <div class="home">
-          <div class="welcome-card">
-            <div class="welcome-card__icon">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none"
-                   stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
-              </svg>
-            </div>
-            <h2>Bienvenido al Sistema</h2>
-            <p>Selecciona una opción del menú o usa las acciones rápidas</p>
-          </div>
+          <!-- Welcome card con efecto 3D tilt + spotlight (handlers inline = 0 cambios al .ts) -->
+           <app-hero></app-hero>
+          
 
           <div class="quick-actions">
             <button class="action-card" (click)="loadInvoices()">
@@ -237,7 +230,7 @@
         </div>
       }
 
-      <!-- ════════════ PAYMENT UPLOAD VIEW - CON ANIMACIONES ════════════ -->
+      <!-- ════════════ PAYMENT UPLOAD VIEW ════════════ -->
       @if (currentView() === 'payment') {
         <div class="upload-view">
 
@@ -258,7 +251,7 @@
               <p>Sube los documentos que respaldan los pagos realizados</p>
             </div>
 
-            <!-- ZONA DE DRAG & DROP CON ANIMACIONES PREMIUM -->
+            <!-- ZONA DE DRAG & DROP -->
             <div class="file-upload-zone"
                  [class.file-upload-zone--dragging]="isDragging()"
                  (dragover)="onDragOver($event)"
@@ -266,7 +259,6 @@
                  (drop)="onDrop($event)"
                  (click)="paymentFileInput.click()">
 
-              <!-- Ícono con animaciones multicapa -->
               <div class="upload-icon">
                 <div class="upload-icon__circle">
                   <svg class="upload-icon__svg"
@@ -284,7 +276,6 @@
                 </div>
               </div>
 
-              <!-- Texto con gradiente animado -->
               <div class="upload-text">
                 <div class="upload-text__primary">
                   Arrastra tu archivo aquí
@@ -297,7 +288,6 @@
                 </div>
               </div>
 
-              <!-- Input oculto -->
               <input
                 #paymentFileInput
                 type="file"
@@ -306,7 +296,6 @@
                 style="display: none;">
             </div>
 
-            <!-- Progress con shimmer -->
             @if (isUploadingPayment()) {
               <div class="upload-progress">
                 <div class="spinner"></div>
@@ -315,7 +304,6 @@
             }
           </div>
 
-          <!-- Info box con glassmorphism -->
           <div class="info-box">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
                  stroke="currentColor" stroke-width="2" stroke-linecap="round">
@@ -331,7 +319,7 @@
         </div>
       }
 
-      <!-- ════════════ PORTFOLIO UPLOAD VIEW - CON ANIMACIONES ════════════ -->
+      <!-- ════════════ PORTFOLIO UPLOAD VIEW ════════════ -->
       @if (currentView() === 'portfolio') {
         <div class="upload-view">
 
@@ -352,7 +340,7 @@
               <p>Sube el archivo con el análisis de antigüedad de saldos</p>
             </div>
 
-            <!-- ZONA DE DRAG & DROP CON ANIMACIONES PREMIUM -->
+            <!-- ZONA DE DRAG & DROP -->
             <div class="file-upload-zone"
                  [class.file-upload-zone--dragging]="isDragging()"
                  (dragover)="onDragOver($event)"

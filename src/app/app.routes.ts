@@ -25,21 +25,21 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/dashboard/dashboard.component').then(m => m.DashboardComponent),
     children: [
-      {
-        path:          '',
-        loadComponent: () =>
-          import('./features/dashboard/views/home/home.component').then(m => m.HomeComponent),
-      },
-      {
-        path:          'invoices',
-        loadComponent: () =>
-          import('./features/dashboard/views/invoices/invoices.component').then(m => m.InvoicesComponent),
-      },
-      {
-        path:          'payments',
-        loadComponent: () =>
-          import('./features/dashboard/views/payments/payments.component').then(m => m.PaymentsComponent),
-      },
+      // {
+      //   path:          '',
+      //   loadComponent: () =>
+      //     import('./features/dashboard/views/home/home.component').then(m => m.HomeComponent),
+      // },
+      // {
+      //   path:          'invoices',
+      //   loadComponent: () =>
+      //     import('./features/dashboard/views/invoices/invoices.component').then(m => m.InvoicesComponent),
+      // },
+      // {
+      //   path:          'payments',
+      //   loadComponent: () =>
+      //     import('./features/dashboard/views/payments/payments.component').then(m => m.PaymentsComponent),
+      // },
 
       // {
       //   path:          'portfolio',
