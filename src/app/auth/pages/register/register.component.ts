@@ -1,11 +1,28 @@
-import { Component, inject, signal, AfterViewInit, ViewChild, ElementRef, PLATFORM_ID } from '@angular/core';
+import {
+  Component,
+  inject,
+  AfterViewInit,
+  DestroyRef,
+  ViewChild,
+  ElementRef,
+  PLATFORM_ID,
+} from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
+import {
+  ReactiveFormsModule,
+  FormBuilder,
+  Validators,
+  AbstractControl,
+  ValidationErrors,
+} from '@angular/forms';
 import { RouterLink, Router } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+
+import { AuthService } from '../../../core/services/auth.service';
 
 /* ── Validador: las dos contraseñas deben coincidir ── */
 function passwordsMatch(control: AbstractControl): ValidationErrors | null {
-  const password    = control.get('password')?.value;
+  const password        = control.get('password')?.value;
   const confirmPassword = control.get('confirmPassword')?.value;
   return password === confirmPassword ? null : { passwordsMismatch: true };
 }
@@ -20,16 +37,18 @@ function passwordsMatch(control: AbstractControl): ValidationErrors | null {
 export class RegisterComponent implements AfterViewInit {
 
   /* ── Dependencias ── */
-  private fb         = inject(FormBuilder);
-  private router     = inject(Router);
-  private platformId = inject(PLATFORM_ID); // Para evitar errores de SSR
+  private readonly fb         = inject(FormBuilder);
+  private readonly auth       = inject(AuthService);
+  private readonly router     = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly platformId = inject(PLATFORM_ID); // Evita errores en SSR
 
   /* ── Elemento DOM (Logo Animado) ── */
   @ViewChild('brandNameRef') brandNameElement!: ElementRef<HTMLSpanElement>;
 
-  /* ── Signals ── */
-  isLoading = signal(false);
-  authError = signal<string | null>(null);
+  /* ── Estado auth (reactivo desde el servicio, igual que login) ── */
+  readonly isLoading = this.auth.isLoading;
+  readonly authError = this.auth.error;
 
   /* ── UI state ── */
   showPassword = false;
@@ -49,13 +68,13 @@ export class RegisterComponent implements AfterViewInit {
   /* ═══════════════════════════════════════════
      CICLO DE VIDA Y ANIMACIÓN
      ═══════════════════════════════════════════ */
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
     if (isPlatformBrowser(this.platformId)) {
       this.animateTextLetterByLetter();
     }
   }
 
-  private animateTextLetterByLetter() {
+  private animateTextLetterByLetter(): void {
     if (!this.brandNameElement) return;
 
     const brandNameNative = this.brandNameElement.nativeElement;
@@ -67,7 +86,6 @@ export class RegisterComponent implements AfterViewInit {
       const span = document.createElement('span');
       span.textContent = char;
       span.className = 'letter';
-      // Calculamos un pequeño retraso para cada letra
       span.style.animationDelay = `${0.3 + index * 0.08}s`;
       brandNameNative.appendChild(span);
     });
@@ -84,8 +102,8 @@ export class RegisterComponent implements AfterViewInit {
 
   get nameError(): string {
     const c = this.form.get('name')!;
-    if (c.hasError('required'))   return 'El nombre es obligatorio.';
-    if (c.hasError('minlength'))  return 'Mínimo 2 caracteres.';
+    if (c.hasError('required'))  return 'El nombre es obligatorio.';
+    if (c.hasError('minlength')) return 'Mínimo 2 caracteres.';
     return '';
   }
 
@@ -121,19 +139,19 @@ export class RegisterComponent implements AfterViewInit {
 
   get confirmError(): string {
     const c = this.form.get('confirmPassword')!;
-    if (c.hasError('required'))              return 'Confirma tu contraseña.';
+    if (c.hasError('required'))                  return 'Confirma tu contraseña.';
     if (this.form.hasError('passwordsMismatch')) return 'Las contraseñas no coinciden.';
     return '';
   }
 
   /* ═══════════════════════════════════════════
-     HANDLERS DE INPUT (limpia error global)
+     HANDLERS DE INPUT (limpia error global vía AuthService)
      ═══════════════════════════════════════════ */
 
-  onNameInput():    void { this.authError.set(null); }
-  onEmailInput():   void { this.authError.set(null); }
-  onPasswordInput(): void { this.authError.set(null); }
-  onConfirmInput(): void { this.authError.set(null); }
+  onNameInput():     void { this.auth.clearError(); }
+  onEmailInput():    void { this.auth.clearError(); }
+  onPasswordInput(): void { this.auth.clearError(); }
+  onConfirmInput():  void { this.auth.clearError(); }
 
   /* ═══════════════════════════════════════════
      TOGGLE MOSTRAR / OCULTAR CONTRASEÑA
@@ -143,37 +161,47 @@ export class RegisterComponent implements AfterViewInit {
   toggleConfirm():  void { this.showConfirm  = !this.showConfirm;  }
 
   /* ═══════════════════════════════════════════
-     SUBMIT
+     SUBMIT — Integración real con AuthService
      ═══════════════════════════════════════════ */
 
-  async onRegister(): Promise<void> {
+  onRegister(): void {
     this.form.markAllAsTouched();
-
     if (this.form.invalid) return;
 
-    this.isLoading.set(true);
-    this.authError.set(null);
+    const { name, email, password } = this.form.getRawValue() as {
+      name: string;
+      email: string;
+      password: string;
+    };
 
-    const { name, email, password } = this.form.getRawValue();
-
-    try {
-      // TODO: reemplaza con tu servicio de autenticación
-      // await this.authService.register({ name, email, password });
-
-      // Simula llamada async
-      await new Promise(r => setTimeout(r, 1000));
-
-      // Redirige al login con flag de registro exitoso
-      this.router.navigate(['/auth/login'], {
-        queryParams: { registered: 'true' },
+    this.auth.register({ name, email, password })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          // Redirige a login con flag `fromRegister` que el LoginComponent
+          // detecta vía history.state para mostrar la alerta de éxito.
+          this.router.navigate(['/auth/login'], {
+            state: { fromRegister: true },
+          });
+        },
+        error: (err: { status: number }) => {
+          this.auth.setError(this.resolveRegisterError(err.status));
+        },
       });
+  }
 
-    } catch (err: any) {
-      this.authError.set(
-        err?.message ?? 'Ocurrió un error al crear la cuenta. Inténtalo de nuevo.'
-      );
-    } finally {
-      this.isLoading.set(false);
-    }
+  /* ═══════════════════════════════════════════
+     MAPEO DE ERRORES HTTP A MENSAJES UX
+     ═══════════════════════════════════════════ */
+
+  private resolveRegisterError(status: number): string {
+    const map: Record<number, string> = {
+      400: 'Datos inválidos. Verifica los campos e intenta de nuevo.',
+      409: 'Este correo ya está registrado. Prueba iniciando sesión.',
+      422: 'No pudimos validar tus datos. Revísalos.',
+      429: 'Demasiados intentos. Espera unos minutos.',
+      500: 'Error del servidor. Contacta a soporte.',
+    };
+    return map[status] ?? 'No se pudo crear la cuenta. Intenta de nuevo.';
   }
 }

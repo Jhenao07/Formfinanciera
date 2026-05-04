@@ -1,10 +1,22 @@
-import { Component, inject, signal, OnInit, DestroyRef, ViewChild, ElementRef, Inject, PLATFORM_ID } from '@angular/core';
+import {
+  Component,
+  inject,
+  signal,
+  OnInit,
+  AfterViewInit,
+  DestroyRef,
+  ViewChild,
+  ElementRef,
+  Inject,
+  PLATFORM_ID,
+} from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { isPlatformBrowser } from '@angular/common';
+
 import { AuthService } from '../../../core/services/auth.service';
 import { MfaModalComponent } from '../../../shared/components/mfa-modal/mfa-modal.component';
-import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector:    'app-login',
@@ -13,13 +25,13 @@ import { isPlatformBrowser } from '@angular/common';
   templateUrl: './login.component.html',
   styleUrl:    './login.component.scss',
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, AfterViewInit {
   private readonly fb         = inject(FormBuilder);
   private readonly auth       = inject(AuthService);
   private readonly router     = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
 
-  // ── Estado auth ──────────────────────────────────────────
+  // ── Estado auth (reactivo desde el servicio) ─────────────
   readonly isLoading = this.auth.isLoading;
   readonly authError = this.auth.error;
 
@@ -29,19 +41,31 @@ export class LoginComponent implements OnInit {
   readonly pendingEmail   = signal('');
   readonly isMfaLoading   = signal(false);
   readonly mfaError       = signal<string | null>(null);
+
   @ViewChild('brandNameRef') brandNameElement!: ElementRef<HTMLSpanElement>;
   form!: FormGroup;
 
-  constructor(
-    @Inject(PLATFORM_ID) private platformId: Object
-  ) {}
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 
- ngAfterViewInit() {
+  // ── Lifecycle ────────────────────────────────────────────
+  ngOnInit(): void {
+    if ((history.state as { fromRegister?: boolean })?.fromRegister) {
+      this.justRegistered.set(true);
+      setTimeout(() => this.justRegistered.set(false), 5000);
+    }
+
+    this.form = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+    });
+  }
+
+  ngAfterViewInit(): void {
     if (isPlatformBrowser(this.platformId)) {
       this.animateTextLetterByLetter();
     }
   }
-    private animateTextLetterByLetter() {
+
+  private animateTextLetterByLetter(): void {
     if (!this.brandNameElement) return;
 
     const brandNameNative = this.brandNameElement.nativeElement;
@@ -55,18 +79,6 @@ export class LoginComponent implements OnInit {
       span.className = 'letter';
       span.style.animationDelay = `${0.3 + index * 0.08}s`;
       brandNameNative.appendChild(span);
-    });
-  
-  }
-
-  ngOnInit(): void {
-    if ((history.state as { fromRegister?: boolean })?.fromRegister) {
-      this.justRegistered.set(true);
-      setTimeout(() => this.justRegistered.set(false), 5000);
-    }
-
-    this.form = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
     });
   }
 
@@ -135,7 +147,7 @@ export class LoginComponent implements OnInit {
     this.mfaError.set(null);
   }
 
-  // ── Mapeo de errores (responsabilidad del componente UI) ─
+  // ── Mapeo de errores HTTP a mensajes UX ──────────────────
   private resolveOtpError(status: number): string {
     const map: Record<number, string> = {
       401: 'No tienes permiso para solicitar este código.',
@@ -145,5 +157,4 @@ export class LoginComponent implements OnInit {
     };
     return map[status] ?? 'No se pudo enviar el código. Intenta de nuevo.';
   }
-
 }

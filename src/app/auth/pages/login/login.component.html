@@ -1,27 +1,56 @@
 <div class="lp-root">
 
   <aside class="lp-left">
-    <div class="lp-left__aurora"></div>
-    <div class="lp-left__mesh"></div>
-    <div class="lp-left__grid"></div>
-    <div class="lp-left__noise"></div>
+    <div class="lp-left__aurora" aria-hidden="true"></div>
+    <div class="lp-left__mesh" aria-hidden="true"></div>
+    <div class="lp-left__grid" aria-hidden="true"></div>
+    <div class="lp-left__noise" aria-hidden="true"></div>
 
     <div class="nuvant-header-container">
       <header class="lp-brand">
         <div class="logo-wrapper">
-          <img src="/favicon.png" alt="Nuvant Logo" class="nuvant-animado" />
-          <div class="logo-glow-pulse"></div>
-        </div> <span class="lp-brand__name" #brandNameRef>Nuvant</span>
+
+
+          <svg
+            class="nuvant-animado"
+            viewBox="0 0 64 64"
+            xmlns="http://www.w3.org/2000/svg"
+            role="img"
+            aria-label="Nuvant"
+            focusable="false"
+          >
+            <defs>
+              <linearGradient id="nuv-logo-bg-login" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#ff8c4a" />
+                <stop offset="100%" stop-color="#e84d1a" />
+              </linearGradient>
+              <linearGradient id="nuv-logo-shine-login" x1="50%" y1="0%" x2="50%" y2="100%">
+                <stop offset="0%" stop-color="#ffffff" stop-opacity="0.32" />
+                <stop offset="55%" stop-color="#ffffff" stop-opacity="0" />
+              </linearGradient>
+            </defs>
+            <rect width="64" height="64" rx="16" fill="url(#nuv-logo-bg-login)" />
+            <rect width="64" height="64" rx="16" fill="url(#nuv-logo-shine-login)" />
+            <g fill="#ffffff">
+              <rect x="18" y="17" width="6" height="30" rx="1.2" />
+              <rect x="40" y="17" width="6" height="30" rx="1.2" />
+              <path d="M 24 17 L 30 17 L 40 47 L 34 47 Z" />
+            </g>
+            <circle cx="49" cy="18" r="2.6" fill="#ffd166" opacity="0.95" />
+          </svg>
+          <div class="logo-glow-pulse" aria-hidden="true"></div>
+        </div>
+        <span class="lp-brand__name" #brandNameRef>Nuvant</span>
       </header>
     </div>
 
     <div class="lp-left__body">
-      <div class="lp-live-badge">
-        <span class="lp-live-badge__dot"></span>
+      <div class="lp-live-badge" role="status" aria-label="Sistema en vivo">
+        <span class="lp-live-badge__dot" aria-hidden="true"></span>
         <span>Sistema en vivo</span>
       </div>
       <h1 class="lp-left__title">
-        Tu negocio,<br>
+        Tu negocio,<br />
         <span>bajo control total</span>
       </h1>
       <p class="lp-left__sub">
@@ -30,20 +59,20 @@
       </p>
     </div>
 
-    <div class="lp-stats">
-      <div class="lp-stat">
+    <div class="lp-stats" role="list" aria-label="Métricas de la plataforma">
+      <div class="lp-stat" role="listitem">
         <span class="lp-stat__n">4</span>
         <span class="lp-stat__l">Empresas activas</span>
       </div>
-      <div class="lp-stat">
+      <div class="lp-stat" role="listitem">
         <span class="lp-stat__n">99.9%</span>
         <span class="lp-stat__l">Disponibilidad</span>
       </div>
-      <div class="lp-stat">
+      <div class="lp-stat" role="listitem">
         <span class="lp-stat__n">∞</span>
         <span class="lp-stat__l">Reportes KPI</span>
       </div>
-      <div class="lp-stat">
+      <div class="lp-stat" role="listitem">
         <span class="lp-stat__n">24/7</span>
         <span class="lp-stat__l">Monitoreo</span>
       </div>
@@ -51,27 +80,29 @@
   </aside>
 
   <main class="lp-right">
-    <div class="lp-right__glow"></div>
+    <div class="lp-right__glow" aria-hidden="true"></div>
 
     <div class="lp-card">
 
       <div class="lp-card__head">
-        <div class="lp-card__avatar stagger-item delay-1">
+        <div class="lp-card__avatar stagger-item delay-1" aria-hidden="true">
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none"
                stroke="currentColor" stroke-width="1.8"
-               stroke-linecap="round" stroke-linejoin="round">
+               stroke-linecap="round" stroke-linejoin="round"
+               aria-hidden="true" focusable="false">
             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
             <circle cx="12" cy="7" r="4"/>
           </svg>
         </div>
-        <h2 class="lp-card__title stagger-item delay-2">Iniciar sesión</h2>
+        <h2 class="lp-card__title stagger-item delay-2" id="login-title">Iniciar sesión</h2>
         <p class="lp-card__sub stagger-item delay-2">Ingresa tu correo para acceder a tu espacio de trabajo</p>
       </div>
 
       @if (justRegistered()) {
-        <div class="lp-alert lp-alert--success">
+        <div class="lp-alert lp-alert--success" role="status" aria-live="polite">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-               stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+               stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+               aria-hidden="true" focusable="false">
             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
             <polyline points="22 4 12 14.01 9 11.01"/>
           </svg>
@@ -80,9 +111,10 @@
       }
 
       @if (authError()) {
-        <div class="lp-alert lp-alert--danger">
+        <div class="lp-alert lp-alert--danger" role="alert" aria-live="assertive">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-               stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+               stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+               aria-hidden="true" focusable="false">
             <circle cx="12" cy="12" r="10"/>
             <line x1="12" y1="8" x2="12" y2="12"/>
             <line x1="12" y1="16" x2="12.01" y2="16"/>
@@ -91,14 +123,22 @@
         </div>
       }
 
-      <form [formGroup]="form" (ngSubmit)="requestOtp()" novalidate class="lp-form">
+      <form
+        [formGroup]="form"
+        (ngSubmit)="requestOtp()"
+        novalidate
+        class="lp-form"
+        aria-labelledby="login-title"
+        [attr.aria-busy]="isLoading() ? 'true' : null"
+      >
 
         <div class="lp-field stagger-item delay-3" [class.lp-field--error]="emailInvalid">
           <label class="lp-field__label" for="login-email">Correo electrónico</label>
           <div class="lp-field__wrap">
-            <span class="lp-field__icon">
+            <span class="lp-field__icon" aria-hidden="true">
               <svg width="17" height="17" viewBox="0 0 24 24" fill="none"
-                   stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                   stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                   aria-hidden="true" focusable="false">
                 <rect x="2" y="5" width="20" height="14" rx="2"/>
                 <path d="M2 10l10 6 10-6"/>
               </svg>
@@ -110,13 +150,17 @@
               formControlName="email"
               placeholder="correo@empresa.com"
               autocomplete="email"
+              inputmode="email"
+              [attr.aria-invalid]="emailInvalid ? 'true' : null"
+              [attr.aria-describedby]="emailInvalid ? 'login-email-error' : null"
               (input)="onEmailInput()"
             />
           </div>
           @if (emailInvalid) {
-            <p class="lp-field__error">
+            <p class="lp-field__error" id="login-email-error" role="alert">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
-                   stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                   stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                   aria-hidden="true" focusable="false">
                 <circle cx="12" cy="12" r="10"/>
                 <line x1="12" y1="8" x2="12" y2="12"/>
                 <line x1="12" y1="16" x2="12.01" y2="16"/>
@@ -126,24 +170,31 @@
           }
         </div>
 
-        <button type="submit" class="lp-btn-primary stagger-item delay-4" [disabled]="isLoading()">
+        <button
+          type="submit"
+          class="lp-btn-primary stagger-item delay-4"
+          [disabled]="isLoading()"
+          [attr.aria-busy]="isLoading() ? 'true' : null"
+        >
           @if (isLoading()) {
-            <span class="lp-spinner"></span>
-            Enviando código...
+            <span class="lp-spinner" aria-hidden="true"></span>
+            <span>Enviando código...</span>
+            <span class="sr-only">Enviando código de verificación, por favor espera</span>
           } @else {
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
-                 stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                 stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                 aria-hidden="true" focusable="false">
               <path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/>
               <polyline points="10 17 15 12 10 7"/>
               <line x1="15" y1="12" x2="3" y2="12"/>
             </svg>
-            Entrar a mi cuenta
+            <span>Entrar a mi cuenta</span>
           }
         </button>
 
       </form>
 
-      <div class="lp-sep stagger-item delay-5">
+      <div class="lp-sep stagger-item delay-5" aria-hidden="true">
         <span class="lp-sep__line"></span>
         <span class="lp-sep__text">¿No tienes cuenta?</span>
         <span class="lp-sep__line"></span>
@@ -151,35 +202,37 @@
 
       <a routerLink="/auth/register" class="lp-btn-secondary stagger-item delay-5">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none"
-             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+             aria-hidden="true" focusable="false">
           <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
           <circle cx="9" cy="7" r="4"/>
           <line x1="19" y1="8" x2="19" y2="14"/>
           <line x1="22" y1="11" x2="16" y2="11"/>
         </svg>
-        Crear cuenta nueva
+        <span>Crear cuenta nueva</span>
       </a>
 
       <footer class="lp-foot stagger-item delay-5">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
-             stroke="currentColor" stroke-width="2" stroke-linecap="round">
+             stroke="currentColor" stroke-width="2" stroke-linecap="round"
+             aria-hidden="true" focusable="false">
           <circle cx="12" cy="12" r="10"/>
           <path d="M12 8v4M12 16h.01"/>
         </svg>
-        ¿Problemas? <a href="mailto:soporte@empresa.com">Contacta soporte</a>
+        <span>¿Problemas? <a href="mailto:soporte@empresa.com">Contacta soporte</a></span>
       </footer>
 
     </div>
   </main>
 
   @if (showMfaModal()) {
-  <app-mfa-modal
-    [email]="pendingEmail()"
-    [loading]="isMfaLoading()"
-    [errorMessage]="mfaError()"
-    (codeSubmitted)="validateOtp($event)"
-    (cancelled)="onModalCancelled()"
-  />
+    <app-mfa-modal
+      [email]="pendingEmail()"
+      [loading]="isMfaLoading()"
+      [errorMessage]="mfaError()"
+      (codeSubmitted)="validateOtp($event)"
+      (cancelled)="onModalCancelled()"
+    />
   }
 
 </div>

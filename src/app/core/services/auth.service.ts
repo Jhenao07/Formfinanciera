@@ -22,6 +22,7 @@ export class AuthService {
     return !!s && Date.now() < s.expiresAt;
   });
   readonly currentEmail    = computed(() => this._session()?.email ?? null);
+  apiUrl: any;
 
   // ── OTP ──────────────────────────────────────────────────
   sendOtp(email: string): Observable<unknown> {
@@ -42,7 +43,14 @@ export class AuthService {
         finalize(() => this._isLoading.set(false))
       );
   }
+register(payload: { name: string; email: string; password: string }): Observable<void> {
+  this._isLoading.set(true);
+  this.clearError();
 
+  return this.http.post<void>(`${this.apiUrl}/auth/register`, payload).pipe(
+    finalize(() => this._isLoading.set(false))
+  );
+}
   // ── Sesión ───────────────────────────────────────────────
   logout(): void {
     this._session.set(null);
