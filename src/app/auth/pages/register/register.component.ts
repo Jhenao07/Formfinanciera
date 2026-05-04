@@ -1,5 +1,5 @@
-import { Component, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, signal, AfterViewInit, ViewChild, ElementRef, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { RouterLink, Router } from '@angular/router';
 
@@ -17,11 +17,15 @@ function passwordsMatch(control: AbstractControl): ValidationErrors | null {
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss'],
 })
-export class RegisterComponent {
+export class RegisterComponent implements AfterViewInit {
 
   /* ── Dependencias ── */
-  private fb     = inject(FormBuilder);
-  private router = inject(Router);
+  private fb         = inject(FormBuilder);
+  private router     = inject(Router);
+  private platformId = inject(PLATFORM_ID); // Para evitar errores de SSR
+
+  /* ── Elemento DOM (Logo Animado) ── */
+  @ViewChild('brandNameRef') brandNameElement!: ElementRef<HTMLSpanElement>;
 
   /* ── Signals ── */
   isLoading = signal(false);
@@ -41,6 +45,33 @@ export class RegisterComponent {
     },
     { validators: passwordsMatch }
   );
+
+  /* ═══════════════════════════════════════════
+     CICLO DE VIDA Y ANIMACIÓN
+     ═══════════════════════════════════════════ */
+  ngAfterViewInit() {
+    if (isPlatformBrowser(this.platformId)) {
+      this.animateTextLetterByLetter();
+    }
+  }
+
+  private animateTextLetterByLetter() {
+    if (!this.brandNameElement) return;
+
+    const brandNameNative = this.brandNameElement.nativeElement;
+    const text = brandNameNative.textContent?.trim() || '';
+
+    brandNameNative.textContent = '';
+
+    text.split('').forEach((char, index) => {
+      const span = document.createElement('span');
+      span.textContent = char;
+      span.className = 'letter';
+      // Calculamos un pequeño retraso para cada letra
+      span.style.animationDelay = `${0.3 + index * 0.08}s`;
+      brandNameNative.appendChild(span);
+    });
+  }
 
   /* ═══════════════════════════════════════════
      GETTERS DE VALIDACIÓN (touched + invalid)
