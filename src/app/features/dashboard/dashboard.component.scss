@@ -206,7 +206,22 @@
     }
   }
 }
-
+.nuvant-header-container {
+  display: flex;
+  justify-content: flex-start; /* Alineado a la izquierda para cuadrar con el texto hero */
+  align-items: center;
+  padding: 0 0 2.5rem 0; /* Padding inferior para separarlo del contenido de abajo */
+  perspective: 1000px;
+  position: relative;
+  z-index: 10;
+}
+.logo-wrapper {
+  position: relative;
+  width: 50px;
+  height: 50px;
+  /* Animación de flote continuo para el icono */
+  animation: logoFloat 6s ease-in-out infinite alternate 1.5s;
+}
 .sidebar__footer {
   padding: 14px 11px 18px;
   border-top: 1px solid #f1f5f9;

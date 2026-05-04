@@ -1,21 +1,19 @@
 <div class="lp-root">
 
-  <!-- ══════════ PANEL IZQUIERDO ══════════ -->
   <aside class="lp-left">
     <div class="lp-left__aurora"></div>
     <div class="lp-left__mesh"></div>
     <div class="lp-left__grid"></div>
     <div class="lp-left__noise"></div>
 
-    <header class="lp-brand">
-      <div class="lp-brand__mark">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
-             stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
-        </svg>
-      </div>
-      <span class="lp-brand__name">Plataforma</span>
-    </header>
+    <div class="nuvant-header-container">
+      <header class="lp-brand">
+        <div class="logo-wrapper">
+          <img src="/favicon.png" alt="Nuvant Logo" class="nuvant-animado" />
+          <div class="logo-glow-pulse"></div>
+        </div> <span class="lp-brand__name" #brandNameRef>Nuvant</span>
+      </header>
+    </div>
 
     <div class="lp-left__body">
       <div class="lp-live-badge">
@@ -52,14 +50,13 @@
     </div>
   </aside>
 
-  <!-- ══════════ PANEL DERECHO — FORMULARIO ══════════ -->
   <main class="lp-right">
     <div class="lp-right__glow"></div>
 
     <div class="lp-card">
 
       <div class="lp-card__head">
-        <div class="lp-card__avatar">
+        <div class="lp-card__avatar stagger-item delay-1">
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none"
                stroke="currentColor" stroke-width="1.8"
                stroke-linecap="round" stroke-linejoin="round">
@@ -67,11 +64,10 @@
             <circle cx="12" cy="7" r="4"/>
           </svg>
         </div>
-        <h2 class="lp-card__title">Iniciar sesión</h2>
-        <p class="lp-card__sub">Ingresa tu correo para acceder a tu espacio de trabajo</p>
+        <h2 class="lp-card__title stagger-item delay-2">Iniciar sesión</h2>
+        <p class="lp-card__sub stagger-item delay-2">Ingresa tu correo para acceder a tu espacio de trabajo</p>
       </div>
 
-      <!-- Success alert -->
       @if (justRegistered()) {
         <div class="lp-alert lp-alert--success">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
@@ -83,7 +79,6 @@
         </div>
       }
 
-      <!-- Error alert -->
       @if (authError()) {
         <div class="lp-alert lp-alert--danger">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
@@ -96,10 +91,9 @@
         </div>
       }
 
-      <!-- Form -->
       <form [formGroup]="form" (ngSubmit)="requestOtp()" novalidate class="lp-form">
 
-        <div class="lp-field" [class.lp-field--error]="emailInvalid">
+        <div class="lp-field stagger-item delay-3" [class.lp-field--error]="emailInvalid">
           <label class="lp-field__label" for="login-email">Correo electrónico</label>
           <div class="lp-field__wrap">
             <span class="lp-field__icon">
@@ -132,7 +126,7 @@
           }
         </div>
 
-        <button type="submit" class="lp-btn-primary" [disabled]="isLoading()">
+        <button type="submit" class="lp-btn-primary stagger-item delay-4" [disabled]="isLoading()">
           @if (isLoading()) {
             <span class="lp-spinner"></span>
             Enviando código...
@@ -149,13 +143,13 @@
 
       </form>
 
-      <div class="lp-sep">
+      <div class="lp-sep stagger-item delay-5">
         <span class="lp-sep__line"></span>
         <span class="lp-sep__text">¿No tienes cuenta?</span>
         <span class="lp-sep__line"></span>
       </div>
 
-      <a routerLink="/auth/register" class="lp-btn-secondary">
+      <a routerLink="/auth/register" class="lp-btn-secondary stagger-item delay-5">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none"
              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
@@ -166,7 +160,7 @@
         Crear cuenta nueva
       </a>
 
-      <footer class="lp-foot">
+      <footer class="lp-foot stagger-item delay-5">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
              stroke="currentColor" stroke-width="2" stroke-linecap="round">
           <circle cx="12" cy="12" r="10"/>
@@ -178,7 +172,6 @@
     </div>
   </main>
 
-  <!-- ══════════ MFA MODAL ══════════ -->
   @if (showMfaModal()) {
   <app-mfa-modal
     [email]="pendingEmail()"

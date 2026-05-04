@@ -3,7 +3,7 @@
    Inter: https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap
    ============================================================ */
 
-:root {
+:root, :host {
   /* Color tokens */
   --blue-50:  #eff6ff;
   --blue-100: #dbeafe;
@@ -41,6 +41,15 @@
   --shadow-md: 0 8px 24px -6px rgba(15, 23, 42, .08), 0 4px 8px -4px rgba(15, 23, 42, .04);
   --shadow-lg: 0 24px 48px -12px rgba(15, 23, 42, .14), 0 8px 16px -8px rgba(15, 23, 42, .06);
   --shadow-blue: 0 8px 24px -6px rgba(37, 99, 235, .35), 0 4px 8px -4px rgba(37, 99, 235, .2);
+
+  /* Nuvant Brand Tokens */
+  --brand-color-primary: #f05a28;
+  --brand-text-color: #ffffff;
+  --brand-glow-primary: rgba(240, 90, 40, 0.4);
+  --ease-in-out-cubic: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-letter-reveal: cubic-bezier(0.16, 1, 0.3, 1);
+
+  display: block;
 }
 
 /* ============================================================
@@ -128,51 +137,81 @@
   z-index: 0;
 }
 
-/* ---- Logo ---- */
+/* ============================================================
+   NUVANT BRAND ANIMATION
+   ============================================================ */
+
+.nuvant-header-container {
+  display: flex;
+  justify-content: flex-start; /* Alineado a la izquierda para cuadrar con el texto hero */
+  align-items: center;
+  padding: 0 0 2.5rem 0; /* Padding inferior para separarlo del contenido de abajo */
+  perspective: 1000px;
+  position: relative;
+  z-index: 10;
+}
+
 .lp-brand {
   display: flex;
   align-items: center;
-  gap: 13px;
-  position: relative;
-  z-index: 2;
+  gap: 1rem;
 }
 
-.lp-brand__mark {
-  width: 42px;
-  height: 42px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #fb923c 0%, #f97316 50%, #dc2626 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow:
-    0 0 0 1px rgba(249,115,22,.35),
-    0 4px 16px rgba(249,115,22,.45),
-    0 8px 32px rgba(220,38,38,.25),
-    inset 0 1px 0 rgba(255,255,255,.25);
-  flex-shrink: 0;
+.logo-wrapper {
   position: relative;
+  width: 50px;
+  height: 50px;
+  /* Animación de flote continuo para el icono */
+  animation: logoFloat 6s ease-in-out infinite alternate 1.5s;
+}
 
-  &::after {
-    content: '';
-    position: absolute;
-    inset: -4px;
-    border-radius: 14px;
-    background: radial-gradient(circle, rgba(249,115,22,.4), transparent 60%);
-    filter: blur(8px);
-    opacity: .6;
-    z-index: -1;
-  }
+.nuvant-animado {
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  clip-path: circle(0% at center);
+  will-change: opacity, transform, clip-path;
+  animation: logoBloom 1.5s var(--ease-in-out-cubic) forwards;
+}
+
+.logo-glow-pulse {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 10px;
+  height: 10px;
+  background: radial-gradient(circle, var(--brand-glow-primary), transparent 70%);
+  filter: blur(10px);
+  opacity: 0;
+  z-index: -1;
+  animation: logoGlowPulse 2s ease-out forwards 0.2s, logoGlowBreath 4s ease-in-out infinite alternate 2.2s;
 }
 
 .lp-brand__name {
-  font-size: 16px;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 2.5rem;
+  color: var(--brand-text-color);
   font-weight: 800;
-  color: #fff;
-  letter-spacing: -.4px;
+  letter-spacing: -1px;
+  background: linear-gradient(90deg, var(--brand-text-color) 0%, rgba(255,255,255,0.6) 50%, var(--brand-text-color) 100%);
+  background-size: 200px 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: textShimmer 5s linear infinite forwards 2.5s;
 }
 
-/* ---- Hero ---- */
+::ng-deep .lp-brand__name .letter {
+  display: inline-block;
+  opacity: 0;
+  will-change: transform, opacity, filter;
+  animation: letterReveal 1s var(--ease-letter-reveal) forwards;
+}
+
+/* ============================================================
+   HERO / BODY LEFT
+   ============================================================ */
 .lp-left__body {
   position: relative;
   z-index: 2;
@@ -351,14 +390,8 @@
   max-width: 430px;
   position: relative;
   z-index: 1;
-  animation: lp-fade-in 600ms var(--ease-out) backwards;
-
+  /* El card en sí ya no entra con animación porque usamos la cascada hija */
   @media (max-width: 480px) { padding: 0 2px; }
-}
-
-@keyframes lp-fade-in {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: translateY(0); }
 }
 
 /* ---- Header ---- */
@@ -523,8 +556,6 @@
     background: #fff;
     box-shadow: 0 0 0 4px rgba(59,130,246,.12), 0 1px 2px rgba(15,23,42,.04);
   }
-
-  &--padded-right { padding-right: 50px; }
 }
 
 .lp-field__wrap:focus-within .lp-field__icon { color: var(--blue-600); }
@@ -545,27 +576,6 @@
   0%, 100% { transform: translateX(0); }
   25%      { transform: translateX(-3px); }
   75%      { transform: translateX(3px); }
-}
-
-/* Toggle mostrar/ocultar contraseña */
-.lp-field__toggle {
-  position: absolute;
-  right: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: none;
-  border: none;
-  padding: 6px;
-  cursor: pointer;
-  color: var(--slate-400);
-  border-radius: 8px;
-  transition: color 200ms var(--ease-smooth), background 200ms var(--ease-smooth);
-
-  &:hover {
-    color: var(--blue-600);
-    background: rgba(37,99,235,.08);
-  }
 }
 
 /* ============================================================
@@ -604,7 +614,6 @@
     0 4px 14px rgba(37,99,235,.4),
     0 8px 24px -4px rgba(37,99,235,.25);
 
-  /* Shimmer en hover */
   &::before {
     content: '';
     position: absolute;
@@ -653,7 +662,6 @@
   }
 }
 
-/* Spinner */
 .lp-spinner {
   width: 18px;
   height: 18px;
@@ -798,6 +806,67 @@
 ::ng-deep .swal2-icon.swal2-error {
   border-color: #ef4444 !important;
   [class^='swal2-x-mark-line'] { background-color: #ef4444 !important; }
+}
+
+/* ============================================================
+   CASCADA DE ANIMACIÓN (STAGGER) Y KEYFRAMES
+   ============================================================ */
+.stagger-item {
+  opacity: 0;
+  animation: lp-slide-up-fade 0.6s var(--ease-out) forwards;
+}
+
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.2s; }
+.delay-3 { animation-delay: 0.3s; }
+.delay-4 { animation-delay: 0.4s; }
+.delay-5 { animation-delay: 0.5s; } /* Agregado para los botones de abajo */
+
+@keyframes lp-slide-up-fade {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes logoFloat {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-8px); }
+}
+
+@keyframes logoBloom {
+  0% { clip-path: circle(0% at center); opacity: 0; transform: scale(0.7) rotate(-15deg); }
+  40% { opacity: 1; transform: scale(1.1) rotate(5deg); }
+  100% { clip-path: circle(100% at center); opacity: 1; transform: scale(1) rotate(0deg); }
+}
+
+@keyframes logoGlowPulse {
+  0% { opacity: 0; width: 10px; height: 10px; }
+  100% { opacity: 1; width: 220%; height: 220%; }
+}
+
+@keyframes logoGlowBreath {
+  0% { opacity: 0.9; }
+  100% { opacity: 0.4; }
+}
+
+@keyframes letterReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) translateX(-10px) rotateX(90deg) scale(0.8);
+    filter: drop-shadow(4px 0 0 rgba(0,0,255,0)) drop-shadow(-4px 0 0 rgba(255,0,0,0));
+  }
+  50% {
+    opacity: 1;
+    filter: drop-shadow(4px 0 0 rgba(0,0,255,0.6)) drop-shadow(-4px 0 0 rgba(255,0,0,0.6));
+  }
+  100% {
+    transform: translateY(0) translateX(0) rotateX(0deg) scale(1);
+    filter: drop-shadow(0px 0px 0px rgba(0,0,255,0)) drop-shadow(0px 0px 0px rgba(255,0,0,0));
+  }
+}
+
+@keyframes textShimmer {
+  0% { background-position: -200px; }
+  100% { background-position: calc(200px + 100%); }
 }
 
 /* ============================================================

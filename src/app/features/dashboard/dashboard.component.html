@@ -3,15 +3,14 @@
   <!-- ══════════ SIDEBAR ══════════ -->
   <aside class="sidebar">
     <div class="sidebar__header">
-      <div class="sidebar__logo">
-        <div class="sidebar__logo-mark">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
-               stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
-          </svg>
-        </div>
-        <span class="sidebar__logo-text">Plataforma</span>
-      </div>
+        <div class="nuvant-header-container">
+      <header class="lp-brand">
+        <div class="logo-wrapper">
+          <img src="/favicon.png" alt="Nuvant Logo" class="nuvant-animado" />
+          <div class="logo-glow-pulse"></div>
+        </div> <span class="lp-brand__name" #brandNameRef>Nuvant</span>
+      </header>
+    </div>
     </div>
 
     <nav class="sidebar__nav">
@@ -117,7 +116,7 @@
         <div class="home">
           <!-- Welcome card con efecto 3D tilt + spotlight (handlers inline = 0 cambios al .ts) -->
            <app-hero></app-hero>
-          
+
 
           <div class="quick-actions">
             <button class="action-card" (click)="loadInvoices()">

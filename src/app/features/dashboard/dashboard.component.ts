@@ -1,6 +1,7 @@
-import { Component, signal } from '@angular/core';
+import { Component, Inject, signal, PLATFORM_ID, ViewChild, ElementRef } from '@angular/core';
 import { HeroComponent } from '../../hero/hero.component';
 import { Router } from '@angular/router';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-dashboard',
@@ -15,6 +16,7 @@ export class DashboardComponent {
   currentView = signal<'home' | 'invoices' | 'payment' | 'portfolio'>('home');
   showHelp = signal(false);
   uploadSuccess = signal<string | null>(null);
+  @ViewChild('brandNameRef') brandNameElement!: ElementRef<HTMLSpanElement>;
 
   // Estados de carga
   isUploadingPayment = signal(false);
@@ -27,10 +29,32 @@ export class DashboardComponent {
   // Datos
   invoices = signal<Invoice[]>([]);
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, @Inject(PLATFORM_ID) private platformId: Object) { }
   // ══════════════════════════════════════════════════════════
   // MÉTODOS DE NAVEGACIÓN
-  // ══════════════════════════════════════════════════════════
+  // ══════════════════════════════════════════════════
+ ngAfterViewInit() {
+    if (isPlatformBrowser(this.platformId)) {
+      this.animateTextLetterByLetter();
+    }
+  }
+    private animateTextLetterByLetter() {
+    if (!this.brandNameElement) return;
+
+    const brandNameNative = this.brandNameElement.nativeElement;
+    const text = brandNameNative.textContent?.trim() || '';
+
+    brandNameNative.textContent = '';
+
+    text.split('').forEach((char, index) => {
+      const span = document.createElement('span');
+      span.textContent = char;
+      span.className = 'letter';
+      span.style.animationDelay = `${0.3 + index * 0.08}s`;
+      brandNameNative.appendChild(span);
+    });
+
+  }
 
   goHome() {
     this.currentView.set('home');

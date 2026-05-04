@@ -1,9 +1,10 @@
-import { Component, inject, signal, OnInit, DestroyRef } from '@angular/core';
+import { Component, inject, signal, OnInit, DestroyRef, ViewChild, ElementRef, Inject, PLATFORM_ID } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AuthService } from '../../../core/services/auth.service';
 import { MfaModalComponent } from '../../../shared/components/mfa-modal/mfa-modal.component';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector:    'app-login',
@@ -28,8 +29,35 @@ export class LoginComponent implements OnInit {
   readonly pendingEmail   = signal('');
   readonly isMfaLoading   = signal(false);
   readonly mfaError       = signal<string | null>(null);
-
+  @ViewChild('brandNameRef') brandNameElement!: ElementRef<HTMLSpanElement>;
   form!: FormGroup;
+
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {}
+
+ ngAfterViewInit() {
+    if (isPlatformBrowser(this.platformId)) {
+      this.animateTextLetterByLetter();
+    }
+  }
+    private animateTextLetterByLetter() {
+    if (!this.brandNameElement) return;
+
+    const brandNameNative = this.brandNameElement.nativeElement;
+    const text = brandNameNative.textContent?.trim() || '';
+
+    brandNameNative.textContent = '';
+
+    text.split('').forEach((char, index) => {
+      const span = document.createElement('span');
+      span.textContent = char;
+      span.className = 'letter';
+      span.style.animationDelay = `${0.3 + index * 0.08}s`;
+      brandNameNative.appendChild(span);
+    });
+  
+  }
 
   ngOnInit(): void {
     if ((history.state as { fromRegister?: boolean })?.fromRegister) {
@@ -117,4 +145,5 @@ export class LoginComponent implements OnInit {
     };
     return map[status] ?? 'No se pudo enviar el código. Intenta de nuevo.';
   }
+
 }
