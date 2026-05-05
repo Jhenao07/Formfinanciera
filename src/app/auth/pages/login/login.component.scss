@@ -44,9 +44,9 @@
   --shadow-blue: 0 8px 24px -6px rgba(37, 99, 235, .35), 0 4px 8px -4px rgba(37, 99, 235, .2);
 
   /* Nuvant Brand Tokens */
-  --brand-color-primary: #f05a28;
+  --brand-color-primary: #2563eb;
   --brand-text-color: #ffffff;
-  --brand-glow-primary: rgba(240, 90, 40, 0.4);
+  --brand-glow-primary: rgba(37, 99, 235, 0.45);
   --ease-in-out-cubic: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-letter-reveal: cubic-bezier(0.16, 1, 0.3, 1);
 
@@ -160,6 +160,13 @@
   gap: 14px;
 }
 
+.lp-brand__text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  line-height: 1;
+}
+
 .logo-wrapper {
   position: relative;
   width: 46px;
@@ -176,7 +183,7 @@
   clip-path: circle(0% at center);
   will-change: opacity, transform, clip-path;
   animation: logoBloom 1.5s var(--ease-in-out-cubic) forwards;
-  filter: drop-shadow(0 4px 12px rgba(240, 90, 40, .25));
+  filter: drop-shadow(0 4px 12px rgba(37, 99, 235, .35));
 }
 
 .logo-glow-pulse {
@@ -195,10 +202,10 @@
 
 .lp-brand__name {
   font-family: 'Inter', system-ui, sans-serif;
-  font-size: 2rem;
+  font-size: 1.7rem;
   color: var(--brand-text-color);
   font-weight: 800;
-  letter-spacing: -1.2px;
+  letter-spacing: -1px;
   line-height: 1;
   background: linear-gradient(90deg, var(--brand-text-color) 0%, rgba(255,255,255,0.55) 50%, var(--brand-text-color) 100%);
   background-size: 220px 100%;
@@ -206,6 +213,37 @@
   background-clip: text;
   color: transparent;
   animation: textShimmer 6s linear infinite forwards 2.5s;
+}
+
+.lp-brand__tagline {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, .55);
+  letter-spacing: .15px;
+  line-height: 1;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateY(4px);
+  animation: taglineReveal 0.7s var(--ease-out) forwards 1.4s;
+}
+
+.lp-brand__tagline-sep {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-weight: 700;
+  font-size: 12px;
+  color: var(--blue-400);
+  letter-spacing: -1px;
+  /* Sutil brillo del separador para que se sienta "técnico" pero alineado al sistema */
+  text-shadow: 0 0 8px rgba(96, 165, 250, .4);
+}
+
+@keyframes taglineReveal {
+  0%   { opacity: 0; transform: translateY(4px); filter: blur(2px); }
+  100% { opacity: 1; transform: translateY(0);   filter: blur(0); }
 }
 
 ::ng-deep .lp-brand__name .letter {

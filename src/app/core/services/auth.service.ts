@@ -25,19 +25,19 @@ export class AuthService {
   apiUrl: any;
 
   // ── OTP ──────────────────────────────────────────────────
-  sendOtp(email: string): Observable<unknown> {
+  sendOtp(email: string, slug: string): Observable<unknown> {
     this._isLoading.set(true);
     this._error.set(null);
     return this.http
-      .post(environment.api.sendOtp, { email }, { observe: 'response' })
+      .post(environment.api.sendOtp, { email, slug }, { observe: 'response' })
       .pipe(tap({ finalize: () => this._isLoading.set(false) }));
   }
 
-  validateOtp(email: string, otp: string): Observable<unknown> {
+  validateOtp(email: string, slug: string, otp: string): Observable<unknown> {
     this._isLoading.set(true);
     this._error.set(null);
     return this.http
-      .post(environment.api.validateOtp, { email, OTP: otp }, { observe: 'response' })
+      .post(environment.api.validateOtp, { email: email, slug: slug, OTP: otp }, { observe: 'response' })
       .pipe(
          tap({ next: () => this.createSession(email) }),
         finalize(() => this._isLoading.set(false))

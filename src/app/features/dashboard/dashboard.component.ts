@@ -1,44 +1,86 @@
-import { Component, Inject, signal, PLATFORM_ID, ViewChild, ElementRef } from '@angular/core';
-import { HeroComponent } from '../../hero/hero.component';
-import { Router } from '@angular/router';
-import { isPlatformBrowser } from '@angular/common';
+import { Component, Inject, signal, PLATFORM_ID, ViewChild, ElementRef, OnInit, AfterViewInit } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
+import { isPlatformBrowser, TitleCasePipe } from '@angular/common';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [HeroComponent],
+  standalone: true,
+  imports: [TitleCasePipe],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit, AfterViewInit {
   // ══════════════════════════════════════════════════════════
   // SIGNALS PARA ESTADO REACTIVO
   // ══════════════════════════════════════════════════════════
   currentView = signal<'home' | 'invoices' | 'payment' | 'portfolio'>('home');
   showHelp = signal(false);
-  uploadSuccess = signal<string | null>(null);
+  actionSuccess = signal<string | null>(null);
+
+  /** Empresa actual */
+  companySlug = signal<string>('');
+
   @ViewChild('brandNameRef') brandNameElement!: ElementRef<HTMLSpanElement>;
 
   // Estados de carga
-  isUploadingPayment = signal(false);
-  isUploadingPortfolio = signal(false);
+  isGeneratingInvoices = signal(false);
   isLoadingInvoices = signal(false);
-
-  // Estado de drag & drop
-  isDragging = signal(false);
+  isGeneratingPayment = signal(false);
+  isGeneratingPortfolio = signal(false);
 
   // Datos
   invoices = signal<Invoice[]>([]);
 
-  constructor(private router: Router, @Inject(PLATFORM_ID) private platformId: Object) { }
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    @Inject(PLATFORM_ID) private platformId: Object,
+  ) { }
+
   // ══════════════════════════════════════════════════════════
-  // MÉTODOS DE NAVEGACIÓN
-  // ══════════════════════════════════════════════════
- ngAfterViewInit() {
+  // LECTURA DE SLUG Y PERSISTENCIA (SOLUCIÓN AL BUG DE RECARGA)
+  // ══════════════════════════════════════════════════════════
+  ngOnInit(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      // 1. Buscamos si ya teníamos un slug guardado de antes
+      const savedSlug = sessionStorage.getItem('nuvant_slug');
+
+      this.route.queryParamMap.subscribe(params => {
+        const urlSlug = (params.get('slug') ?? '').trim().toLowerCase();
+
+        if (urlSlug) {
+          // Si el slug viene en la URL, lo usamos y lo guardamos para que sobreviva recargas
+          this.companySlug.set(urlSlug);
+          sessionStorage.setItem('nuvant_slug', urlSlug);
+        } else if (savedSlug) {
+          // Si recargamos la página y se perdió de la URL, usamos el que teníamos guardado
+          this.companySlug.set(savedSlug);
+
+          // Reescribir la URL silenciosamente para volver a poner el parámetro
+          this.router.navigate([], {
+            relativeTo: this.route,
+            queryParams: { slug: savedSlug },
+            queryParamsHandling: 'merge',
+            replaceUrl: true
+          });
+        } else {
+          // Si no hay slug en URL ni guardado, ahí sí lo mandamos al login
+          this.router.navigateByUrl('/auth/login', { replaceUrl: true });
+        }
+      });
+    }
+  }
+
+  // ══════════════════════════════════════════════════════════
+  // ANIMACIONES
+  // ══════════════════════════════════════════════════════════
+  ngAfterViewInit() {
     if (isPlatformBrowser(this.platformId)) {
       this.animateTextLetterByLetter();
     }
   }
-    private animateTextLetterByLetter() {
+
+  private animateTextLetterByLetter() {
     if (!this.brandNameElement) return;
 
     const brandNameNative = this.brandNameElement.nativeElement;
@@ -53,267 +95,104 @@ export class DashboardComponent {
       span.style.animationDelay = `${0.3 + index * 0.08}s`;
       brandNameNative.appendChild(span);
     });
-
   }
 
+  // ══════════════════════════════════════════════════════════
+  // MÉTODOS DE NAVEGACIÓN
+  // ══════════════════════════════════════════════════════════
   goHome() {
     this.currentView.set('home');
-    this.clearUploadSuccess();
+    this.clearActionSuccess();
   }
-
+  showInvoicesGenerator() {
+    this.currentView.set('invoices');
+    this.clearActionSuccess();
+  }
   loadInvoices() {
     this.currentView.set('invoices');
-    this.clearUploadSuccess();
-    this.fetchInvoices();
+    this.clearActionSuccess();
   }
 
-  showPaymentUpload() {
+  showPaymentGenerator() {
     this.currentView.set('payment');
-    this.clearUploadSuccess();
+    this.clearActionSuccess();
   }
 
-  showPortfolioUpload() {
+  showPortfolioGenerator() {
     this.currentView.set('portfolio');
-    this.clearUploadSuccess();
+    this.clearActionSuccess();
   }
 
   toggleHelp() {
     this.showHelp.update(val => !val);
   }
 
-logout(): void {
-  try {
-    // 1. Limpiar únicamente lo relacionado a auth (mejor práctica)
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    sessionStorage.clear();
-
-    // 2. Opcional: limpiar estado en memoria (si usas services con BehaviorSubject)
-    // this.authStateService.clear();
-
-    // 3. Navegación forzada sin historial
-    this.router.navigateByUrl('/auth/login', { replaceUrl: true });
-
-  } catch (error) {
-    console.error('Error durante logout:', error);
-  }
-}
-
-  // ══════════════════════════════════════════════════════════
-  // DRAG & DROP - EVENTOS CON ANIMACIONES
-  // ══════════════════════════════════════════════════════════
-
-  onDragOver(event: DragEvent) {
-    event.preventDefault();
-    event.stopPropagation();
-    this.isDragging.set(true);
-
-    if (event.dataTransfer) {
-      event.dataTransfer.dropEffect = 'copy';
-    }
-  }
-
-  onDragLeave(event: DragEvent) {
-    event.preventDefault();
-    event.stopPropagation();
-
-    // Solo desactivar si realmente salimos del contenedor
-    const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
-    const x = event.clientX;
-    const y = event.clientY;
-
-    if (x < rect.left || x >= rect.right || y < rect.top || y >= rect.bottom) {
-      this.isDragging.set(false);
-    }
-  }
-
-  onDrop(event: DragEvent) {
-    event.preventDefault();
-    event.stopPropagation();
-    this.isDragging.set(false);
-
-    const files = event.dataTransfer?.files;
-    if (files && files.length > 0) {
-      this.handleFile(files[0]);
+  logout(): void {
+    try {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      sessionStorage.clear(); // Esto borrará también el nuvant_slug guardado
+      this.router.navigateByUrl('/auth/login', { replaceUrl: true });
+    } catch (error) {
+      console.error('Error durante logout:', error);
     }
   }
 
   // ══════════════════════════════════════════════════════════
-  // MANEJO DE ARCHIVOS
+  // GENERACIÓN DE REPORTES (Reemplazo de Drag & Drop)
   // ══════════════════════════════════════════════════════════
 
-  onPaymentFileSelected(event: Event) {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
-      this.handlePaymentFile(input.files[0]);
-    }
+  generateInvoicesReport() {
+    this.isGeneratingInvoices.set(true);
+    this.clearActionSuccess();
+
+    // Simular llamada al backend
+    setTimeout(() => {
+      this.isGeneratingInvoices.set(false);
+      this.showSuccess('✨ Reporte de facturas generado exitosamente');
+    }, 2000);
   }
 
-  onPortfolioFileSelected(event: Event) {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
-      this.handlePortfolioFile(input.files[0]);
-    }
+  generatePaymentReport() {
+    this.isGeneratingPayment.set(true);
+    this.clearActionSuccess();
+
+    // Simular llamada al backend
+    setTimeout(() => {
+      this.isGeneratingPayment.set(false);
+      this.showSuccess('✨ Reporte de pagos generado exitosamente');
+    }, 2000);
   }
 
-  private handleFile(file: File) {
-    // Validación de tipo de archivo
-    const validTypes = [
-      'application/pdf',
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      'application/vnd.ms-excel',
-      'text/csv'
-    ];
+  generatePortfolioReport() {
+    this.isGeneratingPortfolio.set(true);
+    this.clearActionSuccess();
 
-    if (!validTypes.includes(file.type)) {
-      this.showError('Formato de archivo no válido');
-      return;
-    }
-
-    // Validación de tamaño (10MB)
-    const maxSize = 10 * 1024 * 1024;
-    if (file.size > maxSize) {
-      this.showError('El archivo excede el tamaño máximo de 10MB');
-      return;
-    }
-
-    // Determinar qué tipo de carga es según la vista actual
-    if (this.currentView() === 'payment') {
-      this.handlePaymentFile(file);
-    } else if (this.currentView() === 'portfolio') {
-      this.handlePortfolioFile(file);
-    }
+    // Simular llamada al backend
+    setTimeout(() => {
+      this.isGeneratingPortfolio.set(false);
+      this.showSuccess('✨ Análisis de cartera generado exitosamente');
+    }, 2000);
   }
-
-  private handlePaymentFile(file: File) {
-    this.isUploadingPayment.set(true);
-
-    // Simular upload con animación
-    this.uploadFile(file).then(() => {
-      this.isUploadingPayment.set(false);
-      this.showSuccess(`✨ Archivo "${file.name}" cargado exitosamente`);
-    }).catch(error => {
-      this.isUploadingPayment.set(false);
-      this.showError('Error al cargar el archivo');
-    });
-  }
-
-  private handlePortfolioFile(file: File) {
-    this.isUploadingPortfolio.set(true);
-
-    // Simular upload con animación
-    this.uploadFile(file).then(() => {
-      this.isUploadingPortfolio.set(false);
-      this.showSuccess(`✨ Archivo "${file.name}" cargado exitosamente`);
-    }).catch(error => {
-      this.isUploadingPortfolio.set(false);
-      this.showError('Error al cargar el archivo');
-    });
-  }
-
-  private uploadFile(file: File): Promise<void> {
-    return new Promise((resolve, reject) => {
-      // Simular tiempo de carga basado en tamaño del archivo
-      const uploadTime = Math.min(2000 + (file.size / 1024 / 1024) * 500, 5000);
-
-      setTimeout(() => {
-        // Simular éxito (90% de probabilidad)
-        if (Math.random() > 0.1) {
-          resolve();
-        } else {
-          reject(new Error('Upload failed'));
-        }
-      }, uploadTime);
-    });
-  }
-
-  // ══════════════════════════════════════════════════════════
-  // MENSAJES DE FEEDBACK CON ANIMACIONES
-  // ══════════════════════════════════════════════════════════
 
   private showSuccess(message: string) {
-    this.uploadSuccess.set(message);
-
-    // Auto-ocultar después de 5 segundos con animación suave
+    this.actionSuccess.set(message);
     setTimeout(() => {
-      this.clearUploadSuccess();
+      this.clearActionSuccess();
     }, 5000);
   }
 
-  private showError(message: string) {
-    console.error(message);
-    alert(message); // TODO: Reemplazar con sistema de notificaciones toast
-  }
-
-  private clearUploadSuccess() {
-    this.uploadSuccess.set(null);
+  private clearActionSuccess() {
+    this.actionSuccess.set(null);
   }
 
   // ══════════════════════════════════════════════════════════
   // CARGA DE FACTURAS
   // ══════════════════════════════════════════════════════════
 
-  private fetchInvoices() {
-    this.isLoadingInvoices.set(true);
-
-    // Simular carga de datos
-    setTimeout(() => {
-      this.invoices.set([
-        {
-          id: 1,
-          number: 'FAC-2024-001',
-          date: '2024-01-15',
-          client: 'Empresa ABC S.A.',
-          amount: 5500000,
-          status: 'approved',
-          daysOverdue: null
-        },
-        {
-          id: 2,
-          number: 'FAC-2024-002',
-          date: '2024-01-18',
-          client: 'Corporación XYZ Ltda.',
-          amount: 3200000,
-          status: 'pending',
-          daysOverdue: null
-        },
-        {
-          id: 3,
-          number: 'FAC-2024-003',
-          date: '2023-12-20',
-          client: 'Distribuidora DEF',
-          amount: 8900000,
-          status: 'overdue',
-          daysOverdue: 42
-        },
-        {
-          id: 4,
-          number: 'FAC-2024-004',
-          date: '2024-01-22',
-          client: 'Comercial GHI S.A.S.',
-          amount: 4750000,
-          status: 'approved',
-          daysOverdue: null
-        },
-        {
-          id: 5,
-          number: 'FAC-2024-005',
-          date: '2023-12-28',
-          client: 'Inversiones JKL',
-          amount: 6300000,
-          status: 'overdue',
-          daysOverdue: 34
-        }
-      ]);
-
-      this.isLoadingInvoices.set(false);
-    }, 1200);
-  }
-
   // ══════════════════════════════════════════════════════════
   // UTILIDADES DE FORMATO
   // ══════════════════════════════════════════════════════════
-
   formatCurrency(amount: number): string {
     return new Intl.NumberFormat('es-CO', {
       style: 'currency',
@@ -344,7 +223,6 @@ logout(): void {
 // ══════════════════════════════════════════════════════════
 // INTERFACES
 // ══════════════════════════════════════════════════════════
-
 interface Invoice {
   id: number;
   number: string;

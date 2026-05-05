@@ -56,6 +56,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
     this.form = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
+      slug: ['', [Validators.required]],
     });
   }
 
@@ -84,7 +85,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   // ── Getters ──────────────────────────────────────────────
   get emailCtrl() { return this.form.get('email')!; }
-
+  get slugCtrl()  { return this.form.get('slug')!;  }
   get emailInvalid(): boolean {
     return this.emailCtrl.invalid && this.emailCtrl.touched;
   }
@@ -102,14 +103,20 @@ export class LoginComponent implements OnInit, AfterViewInit {
     this.auth.clearError();
     if (this.justRegistered()) this.justRegistered.set(false);
   }
+  setSlug(slug: string): void {
+    this.slugCtrl.setValue(slug);
+    this.requestOtp();
+  }
+
 
   requestOtp(): void {
     this.emailCtrl.markAsTouched();
     if (this.form.invalid) return;
 
     const email = this.emailCtrl.value as string;
+    const slug = this.slugCtrl.value as string;
 
-    this.auth.sendOtp(email)
+    this.auth.sendOtp(email, slug)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
@@ -127,12 +134,25 @@ export class LoginComponent implements OnInit, AfterViewInit {
     this.isMfaLoading.set(true);
     this.mfaError.set(null);
 
-    this.auth.validateOtp(this.pendingEmail(), code)
+    // 1. Limpiamos espacios extra por si copiaste y pegaste mal
+    const cleanCode = code.replace(/\s+/g, '').trim();
+    const currentEmail = this.pendingEmail();
+
+    // 2. Obtenemos el slug actual que el usuario digitó en el formulario
+    const currentSlug = (this.slugCtrl.value as string).trim().toLowerCase();
+
+    // 3. Enviamos los 3 datos al servicio 👇
+    this.auth.validateOtp(currentEmail, currentSlug, cleanCode)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
+          const target = currentSlug
+            ? `/dashboard?slug=${encodeURIComponent(currentSlug)}`
+            : '/dashboard';
+
+          this.isMfaLoading.set(false);
           this.showMfaModal.set(false);
-          this.router.navigate(['/dashboard']);
+          this.router.navigateByUrl(target);
         },
         error: () => {
           this.isMfaLoading.set(false);

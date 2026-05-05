@@ -10,41 +10,60 @@
       <header class="lp-brand">
         <div class="logo-wrapper">
           <!--
-            Logo SVG inline · escalable y nítido en cualquier densidad de pantalla.
-            Reemplaza este bloque con tu SVG real exportado de tu manual de marca
-            si tienes un diseño diferente; conserva la clase `nuvant-animado` para
-            preservar la animación logoBloomAggressive.
+            Logo Nuvantech — cohete de Heroicons (rocket-launch) sobre la
+            cápsula azul. Mantiene la animación logoBloomAggressive y el
+            glow pulsante. El cohete se dibuja con stroke blanco para
+            contrastar sobre el gradiente azul.
           -->
           <svg
             class="nuvant-animado"
             viewBox="0 0 64 64"
             xmlns="http://www.w3.org/2000/svg"
             role="img"
-            aria-label="Nuvant"
+            aria-label="Nuvantech"
             focusable="false"
           >
             <defs>
               <linearGradient id="nuv-logo-bg-reg" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#ff8c4a" />
-                <stop offset="100%" stop-color="#e84d1a" />
+                <stop offset="0%"   stop-color="#3b82f6" />
+                <stop offset="55%"  stop-color="#2563eb" />
+                <stop offset="100%" stop-color="#1d4ed8" />
               </linearGradient>
               <linearGradient id="nuv-logo-shine-reg" x1="50%" y1="0%" x2="50%" y2="100%">
-                <stop offset="0%" stop-color="#ffffff" stop-opacity="0.32" />
+                <stop offset="0%"  stop-color="#ffffff" stop-opacity="0.32" />
                 <stop offset="55%" stop-color="#ffffff" stop-opacity="0" />
               </linearGradient>
             </defs>
+
+            <!-- Cápsula base con gradiente azul -->
             <rect width="64" height="64" rx="16" fill="url(#nuv-logo-bg-reg)" />
+            <!-- Brillo superior sutil -->
             <rect width="64" height="64" rx="16" fill="url(#nuv-logo-shine-reg)" />
-            <g fill="#ffffff">
-              <rect x="18" y="17" width="6" height="30" rx="1.2" />
-              <rect x="40" y="17" width="6" height="30" rx="1.2" />
-              <path d="M 24 17 L 30 17 L 40 47 L 34 47 Z" />
+
+            <!--
+              Cohete (Heroicons rocket-launch) re-escalado a 64x64.
+              El path original es 24x24; lo escalamos x1.6 y centramos
+              con translate(12.8, 12.8) para que respire dentro de la cápsula.
+            -->
+            <g
+              transform="translate(12.8, 12.8) scale(1.6)"
+              fill="none"
+              stroke="#ffffff"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M15.59 14.37a6 6 0 0 1-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 0 0 6.16-12.12A14.98 14.98 0 0 0 9.631 8.41m5.96 5.96a14.926 14.926 0 0 1-5.841 2.58m-.119-8.54a6 6 0 0 0-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 0 0-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 0 1-2.448-2.448 14.9 14.9 0 0 1 .06-.312m-2.24 2.39a4.493 4.493 0 0 0-1.757 4.306 4.493 4.493 0 0 0 4.306-1.758M16.5 9a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"/>
             </g>
-            <circle cx="49" cy="18" r="2.6" fill="#ffd166" opacity="0.95" />
           </svg>
           <div class="logo-glow-pulse" aria-hidden="true"></div>
         </div>
-        <span class="lp-brand__name" #brandNameRef>Nuvant</span>
+        <div class="lp-brand__text">
+          <span class="lp-brand__name" #brandNameRef>Nuvantech</span>
+          <span class="lp-brand__tagline">
+            <span class="lp-brand__tagline-sep" aria-hidden="true">::</span>
+          </span>
+        </div>
       </header>
     </div>
 
@@ -164,6 +183,171 @@
           }
         </div>
 
+        <!-- NIT + Dígito de verificación (DV) -->
+        <div class="lp-field-row stagger-item delay-3">
+
+          <!-- NIT -->
+          <div class="lp-field lp-field--grow" [class.lp-field--error]="nitInvalid">
+            <label class="lp-field__label" for="reg-nit">NIT</label>
+            <div class="lp-field__wrap">
+              <span class="lp-field__icon" aria-hidden="true">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
+                     aria-hidden="true" focusable="false">
+                  <rect x="3" y="4" width="18" height="16" rx="2"/>
+                  <line x1="3" y1="10" x2="21" y2="10"/>
+                  <line x1="8" y1="15" x2="13" y2="15"/>
+                </svg>
+              </span>
+              <input
+                id="reg-nit"
+                type="text"
+                class="lp-field__input"
+                formControlName="nit"
+                placeholder="900123456"
+                autocomplete="off"
+                inputmode="numeric"
+                maxlength="15"
+                [attr.aria-invalid]="nitInvalid ? 'true' : null"
+                [attr.aria-describedby]="nitInvalid ? 'reg-nit-error' : null"
+                (input)="onNitInput()"
+              />
+            </div>
+          </div>
+
+          <!-- Separador visual "guion" estilo NIT colombiano -->
+          <span class="lp-field-row__dash" aria-hidden="true">—</span>
+
+          <!-- DV (dígito de verificación) -->
+          <div class="lp-field lp-field--dv" [class.lp-field--error]="dvInvalid">
+            <label class="lp-field__label" for="reg-dv">DV</label>
+            <div class="lp-field__wrap">
+              <input
+                id="reg-dv"
+                type="text"
+                class="lp-field__input lp-field__input--centered"
+                formControlName="dv"
+                placeholder="0"
+                autocomplete="off"
+                inputmode="numeric"
+                maxlength="1"
+                [attr.aria-invalid]="dvInvalid ? 'true' : null"
+                [attr.aria-describedby]="dvInvalid ? 'reg-dv-error' : null"
+                (input)="onDvInput()"
+              />
+            </div>
+          </div>
+        </div>
+        @if (nitInvalid || dvInvalid) {
+          <p class="lp-field__error lp-field__error--row" role="alert">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2.5" stroke-linecap="round"
+                 aria-hidden="true" focusable="false">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="12" y1="8" x2="12" y2="12"/>
+              <line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+            {{ nitInvalid ? nitError : dvError }}
+          </p>
+        }
+
+        <!-- Empresa (auto-detectada desde el NIT) -->
+        <div
+          class="lp-field stagger-item delay-3"
+          [class.lp-field--error]="companyInvalid"
+          [class.lp-field--locked]="true"
+          [class.lp-field--filled]="companyFound()"
+          [class.lp-field--loading]="companyLoading()"
+        >
+          <label class="lp-field__label" for="reg-company">
+            Empresa
+            <span class="lp-field__label-aux">· detectada automáticamente</span>
+          </label>
+
+          <div class="lp-field__wrap">
+            <span class="lp-field__icon" aria-hidden="true">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
+                   aria-hidden="true" focusable="false">
+                <path d="M3 21h18"/>
+                <path d="M5 21V7l7-4 7 4v14"/>
+                <path d="M9 9h.01M9 13h.01M9 17h.01M15 9h.01M15 13h.01M15 17h.01"/>
+              </svg>
+            </span>
+
+            <input
+              id="reg-company"
+              type="text"
+              class="lp-field__input lp-field__input--readonly"
+              [value]="companyDisplay()"
+              [placeholder]="companyPlaceholder()"
+              readonly
+              tabindex="-1"
+              aria-readonly="true"
+              [attr.aria-invalid]="companyInvalid ? 'true' : null"
+              [attr.aria-describedby]="companyHintId"
+              [attr.aria-busy]="companyLoading() ? 'true' : null"
+            />
+
+            <!-- Indicador de estado a la derecha -->
+            <span class="lp-field__status" aria-hidden="true">
+              @if (companyLoading()) {
+                <span class="lp-spinner lp-spinner--mini"></span>
+              } @else if (companyFound()) {
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2.6"
+                     stroke-linecap="round" stroke-linejoin="round" focusable="false">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              } @else if (companyNotFound()) {
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2.6"
+                     stroke-linecap="round" stroke-linejoin="round" focusable="false">
+                  <line x1="18" y1="6" x2="6" y2="18"/>
+                  <line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+              } @else {
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round" focusable="false">
+                  <rect x="5" y="11" width="14" height="10" rx="2"/>
+                  <path d="M8 11V8a4 4 0 0 1 8 0v3"/>
+                </svg>
+              }
+            </span>
+          </div>
+
+          @if (companyInvalid) {
+            <p class="lp-field__error" id="reg-company-error" role="alert">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                   stroke-width="2.5" stroke-linecap="round"
+                   aria-hidden="true" focusable="false">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="8" x2="12" y2="12"/>
+                <line x1="12" y1="16" x2="12.01" y2="16"/>
+              </svg>
+              {{ companyError }}
+            </p>
+          } @else if (companyFound()) {
+            <p class="lp-field__hint lp-field__hint--success" id="reg-company-hint">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                   stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                   aria-hidden="true" focusable="false">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+              Empresa encontrada · <strong>{{ companySlug() }}</strong>
+            </p>
+          } @else if (companyLoading()) {
+            <p class="lp-field__hint" id="reg-company-hint">
+              Consultando empresa…
+            </p>
+          } @else {
+            <p class="lp-field__hint" id="reg-company-hint">
+              Completa el NIT y el DV para detectar tu empresa automáticamente.
+            </p>
+          }
+        </div>
+
         <!-- Email -->
         <div class="lp-field stagger-item delay-3" [class.lp-field--error]="emailInvalid">
           <label class="lp-field__label" for="reg-email">Correo electrónico</label>
@@ -203,57 +387,35 @@
           }
         </div>
 
-        <!-- Password -->
-        <div class="lp-field stagger-item delay-4" [class.lp-field--error]="passwordInvalid">
-          <label class="lp-field__label" for="reg-password">Contraseña</label>
+        <!-- Confirmar Email -->
+        <div class="lp-field stagger-item delay-3" [class.lp-field--error]="confirmEmailInvalid">
+          <label class="lp-field__label" for="reg-confirm-email">Confirmar correo electrónico</label>
           <div class="lp-field__wrap">
             <span class="lp-field__icon" aria-hidden="true">
               <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                    stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
                    aria-hidden="true" focusable="false">
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                <rect x="2" y="5" width="20" height="14" rx="2"/>
+                <path d="M2 10l10 6 10-6"/>
+                <path d="M16 17l2 2 4-4"/>
               </svg>
             </span>
             <input
-              id="reg-password"
-              [type]="showPassword ? 'text' : 'password'"
-              class="lp-field__input lp-field__input--padded-right"
-              formControlName="password"
-              placeholder="Mínimo 8 caracteres"
-              autocomplete="new-password"
-              [attr.aria-invalid]="passwordInvalid ? 'true' : null"
-              [attr.aria-describedby]="passwordInvalid ? 'reg-password-error' : null"
-              (input)="onPasswordInput()"
+              id="reg-confirm-email"
+              type="email"
+              class="lp-field__input"
+              formControlName="confirmEmail"
+              placeholder="Repite tu correo"
+              autocomplete="email"
+              inputmode="email"
+              [attr.aria-invalid]="confirmEmailInvalid ? 'true' : null"
+              [attr.aria-describedby]="confirmEmailInvalid ? 'reg-confirm-email-error' : null"
+              (input)="onConfirmEmailInput()"
+              (paste)="$event.preventDefault()"
             />
-            <button
-              type="button"
-              class="lp-field__toggle"
-              (click)="togglePassword()"
-              [attr.aria-label]="showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'"
-              [attr.aria-pressed]="showPassword"
-              aria-controls="reg-password"
-            >
-              @if (showPassword) {
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                     stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
-                     aria-hidden="true" focusable="false">
-                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
-                  <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
-                  <line x1="1" y1="1" x2="23" y2="23"/>
-                </svg>
-              } @else {
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                     stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
-                     aria-hidden="true" focusable="false">
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                  <circle cx="12" cy="12" r="3"/>
-                </svg>
-              }
-            </button>
           </div>
-          @if (passwordInvalid) {
-            <p class="lp-field__error" id="reg-password-error" role="alert">
+          @if (confirmEmailInvalid) {
+            <p class="lp-field__error" id="reg-confirm-email-error" role="alert">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                    stroke-width="2.5" stroke-linecap="round"
                    aria-hidden="true" focusable="false">
@@ -261,70 +423,7 @@
                 <line x1="12" y1="8" x2="12" y2="12"/>
                 <line x1="12" y1="16" x2="12.01" y2="16"/>
               </svg>
-              {{ passwordError }}
-            </p>
-          }
-        </div>
-
-        <!-- Confirm password -->
-        <div class="lp-field stagger-item delay-4" [class.lp-field--error]="confirmInvalid">
-          <label class="lp-field__label" for="reg-confirm">Confirmar contraseña</label>
-          <div class="lp-field__wrap">
-            <span class="lp-field__icon" aria-hidden="true">
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                   stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
-                   aria-hidden="true" focusable="false">
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                <polyline points="22 4 12 14.01 9 11.01"/>
-              </svg>
-            </span>
-            <input
-              id="reg-confirm"
-              [type]="showConfirm ? 'text' : 'password'"
-              class="lp-field__input lp-field__input--padded-right"
-              formControlName="confirmPassword"
-              placeholder="Repite tu contraseña"
-              autocomplete="new-password"
-              [attr.aria-invalid]="confirmInvalid ? 'true' : null"
-              [attr.aria-describedby]="confirmInvalid ? 'reg-confirm-error' : null"
-              (input)="onConfirmInput()"
-            />
-            <button
-              type="button"
-              class="lp-field__toggle"
-              (click)="toggleConfirm()"
-              [attr.aria-label]="showConfirm ? 'Ocultar contraseña' : 'Mostrar contraseña'"
-              [attr.aria-pressed]="showConfirm"
-              aria-controls="reg-confirm"
-            >
-              @if (showConfirm) {
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                     stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
-                     aria-hidden="true" focusable="false">
-                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
-                  <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
-                  <line x1="1" y1="1" x2="23" y2="23"/>
-                </svg>
-              } @else {
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                     stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
-                     aria-hidden="true" focusable="false">
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                  <circle cx="12" cy="12" r="3"/>
-                </svg>
-              }
-            </button>
-          </div>
-          @if (confirmInvalid) {
-            <p class="lp-field__error" id="reg-confirm-error" role="alert">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                   stroke-width="2.5" stroke-linecap="round"
-                   aria-hidden="true" focusable="false">
-                <circle cx="12" cy="12" r="10"/>
-                <line x1="12" y1="8" x2="12" y2="12"/>
-                <line x1="12" y1="16" x2="12.01" y2="16"/>
-              </svg>
-              {{ confirmError }}
+              {{ confirmEmailError }}
             </p>
           }
         </div>
