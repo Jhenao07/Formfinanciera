@@ -55,7 +55,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
     }
 
     this.form = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
+      supplierEmail: ['', [Validators.required, Validators.email]],
       slug: ['', [Validators.required]],
     });
   }
@@ -84,14 +84,14 @@ export class LoginComponent implements OnInit, AfterViewInit {
   }
 
   // ── Getters ──────────────────────────────────────────────
-  get emailCtrl() { return this.form.get('email')!; }
+  get supplierEmailCtrl() { return this.form.get('supplierEmail')!; }
   get slugCtrl()  { return this.form.get('slug')!;  }
-  get emailInvalid(): boolean {
-    return this.emailCtrl.invalid && this.emailCtrl.touched;
+  get supplierEmailInvalid(): boolean {
+    return this.supplierEmailCtrl.invalid && this.supplierEmailCtrl.touched;
   }
 
-  get emailError(): string {
-    const e = this.emailCtrl.errors;
+  get supplierEmailError(): string {
+    const e = this.supplierEmailCtrl.errors;
     if (!e) return '';
     if (e['required']) return 'El correo es obligatorio.';
     if (e['email'])    return 'Ingresa un correo válido.';
@@ -99,7 +99,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
   }
 
   // ── Handlers ─────────────────────────────────────────────
-  onEmailInput(): void {
+  onSupplierEmailInput(): void {
     this.auth.clearError();
     if (this.justRegistered()) this.justRegistered.set(false);
   }
@@ -110,17 +110,17 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
 
   requestOtp(): void {
-    this.emailCtrl.markAsTouched();
+    this.supplierEmailCtrl.markAsTouched();
     if (this.form.invalid) return;
 
-    const email = this.emailCtrl.value as string;
+    const supplierEmail = this.supplierEmailCtrl.value as string;
     const slug = this.slugCtrl.value as string;
 
-    this.auth.sendOtp(email, slug)
+    this.auth.sendOtp(supplierEmail, slug)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
-          this.pendingEmail.set(email);
+          this.pendingEmail.set(supplierEmail);
           this.mfaError.set(null);
           this.showMfaModal.set(true);
         },

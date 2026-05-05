@@ -1,5 +1,6 @@
 <div class="lp-root">
 
+  <!-- Lado Izquierdo (Mismo del Login) -->
   <aside class="lp-left">
     <div class="lp-left__aurora" aria-hidden="true"></div>
     <div class="lp-left__mesh" aria-hidden="true"></div>
@@ -9,50 +10,21 @@
     <div class="nuvant-header-container">
       <header class="lp-brand">
         <div class="logo-wrapper">
-          <!--
-            Logo Nuvantech — cohete de Heroicons (rocket-launch) sobre la
-            cápsula azul. Mantiene la animación logoBloomAggressive y el
-            glow pulsante. El cohete se dibuja con stroke blanco para
-            contrastar sobre el gradiente azul.
-          -->
-          <svg
-            class="nuvant-animado"
-            viewBox="0 0 64 64"
-            xmlns="http://www.w3.org/2000/svg"
-            role="img"
-            aria-label="Nuvantech"
-            focusable="false"
-          >
+          <svg class="nuvant-animado" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Nuvantech" focusable="false">
             <defs>
-              <linearGradient id="nuv-logo-bg-reg" x1="0%" y1="0%" x2="100%" y2="100%">
+              <linearGradient id="nuv-logo-bg-register" x1="0%" y1="0%" x2="100%" y2="100%">
                 <stop offset="0%"   stop-color="#3b82f6" />
                 <stop offset="55%"  stop-color="#2563eb" />
                 <stop offset="100%" stop-color="#1d4ed8" />
               </linearGradient>
-              <linearGradient id="nuv-logo-shine-reg" x1="50%" y1="0%" x2="50%" y2="100%">
+              <linearGradient id="nuv-logo-shine-register" x1="50%" y1="0%" x2="50%" y2="100%">
                 <stop offset="0%"  stop-color="#ffffff" stop-opacity="0.32" />
                 <stop offset="55%" stop-color="#ffffff" stop-opacity="0" />
               </linearGradient>
             </defs>
-
-            <!-- Cápsula base con gradiente azul -->
-            <rect width="64" height="64" rx="16" fill="url(#nuv-logo-bg-reg)" />
-            <!-- Brillo superior sutil -->
-            <rect width="64" height="64" rx="16" fill="url(#nuv-logo-shine-reg)" />
-
-            <!--
-              Cohete (Heroicons rocket-launch) re-escalado a 64x64.
-              El path original es 24x24; lo escalamos x1.6 y centramos
-              con translate(12.8, 12.8) para que respire dentro de la cápsula.
-            -->
-            <g
-              transform="translate(12.8, 12.8) scale(1.6)"
-              fill="none"
-              stroke="#ffffff"
-              stroke-width="1.6"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
+            <rect width="64" height="64" rx="16" fill="url(#nuv-logo-bg-register)" />
+            <rect width="64" height="64" rx="16" fill="url(#nuv-logo-shine-register)" />
+            <g transform="translate(12.8, 12.8) scale(1.6)" fill="none" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
               <path d="M15.59 14.37a6 6 0 0 1-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 0 0 6.16-12.12A14.98 14.98 0 0 0 9.631 8.41m5.96 5.96a14.926 14.926 0 0 1-5.841 2.58m-.119-8.54a6 6 0 0 0-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 0 0-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 0 1-2.448-2.448 14.9 14.9 0 0 1 .06-.312m-2.24 2.39a4.493 4.493 0 0 0-1.757 4.306 4.493 4.493 0 0 0 4.306-1.758M16.5 9a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"/>
             </g>
           </svg>
@@ -62,6 +34,7 @@
           <span class="lp-brand__name" #brandNameRef>Nuvantech</span>
           <span class="lp-brand__tagline">
             <span class="lp-brand__tagline-sep" aria-hidden="true">::</span>
+            Procesos sin fricciones
           </span>
         </div>
       </header>
@@ -70,64 +43,50 @@
     <div class="lp-left__body">
       <div class="lp-live-badge" role="status" aria-label="Sistema en vivo">
         <span class="lp-live-badge__dot" aria-hidden="true"></span>
-        <span>Sistema en vivo</span>
+        <span>Red de Proveedores</span>
       </div>
       <h1 class="lp-left__title">
-        Empieza hoy,<br />
-        <span>sin complicaciones</span>
+        Únete a la red,<br />
+        <span>crece con nosotros</span>
       </h1>
       <p class="lp-left__sub">
-        Crea tu cuenta en segundos y accede a dashboards,
-        KPIs y alertas inteligentes en tiempo real.
+        Gestiona tus facturas, reportes y cartera en tiempo real y sin complicaciones.
       </p>
     </div>
 
-    <div class="lp-stats" role="list" aria-label="Métricas de la plataforma">
+    <div class="lp-stats" role="list">
       <div class="lp-stat" role="listitem">
-        <span class="lp-stat__n">4</span>
-        <span class="lp-stat__l">Empresas activas</span>
+        <span class="lp-stat__n">0%</span>
+        <span class="lp-stat__l">Costos de uso</span>
       </div>
       <div class="lp-stat" role="listitem">
-        <span class="lp-stat__n">99.9%</span>
-        <span class="lp-stat__l">Disponibilidad</span>
-      </div>
-      <div class="lp-stat" role="listitem">
-        <span class="lp-stat__n">∞</span>
-        <span class="lp-stat__l">Reportes KPI</span>
-      </div>
-      <div class="lp-stat" role="listitem">
-        <span class="lp-stat__n">24/7</span>
-        <span class="lp-stat__l">Monitoreo</span>
+        <span class="lp-stat__n">100%</span>
+        <span class="lp-stat__l">Transparencia</span>
       </div>
     </div>
   </aside>
 
+  <!-- Lado Derecho (Formulario) -->
   <main class="lp-right">
     <div class="lp-right__glow" aria-hidden="true"></div>
 
     <div class="lp-card">
-
       <div class="lp-card__head">
         <div class="lp-card__avatar stagger-item delay-1" aria-hidden="true">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none"
-               stroke="currentColor" stroke-width="1.8"
-               stroke-linecap="round" stroke-linejoin="round"
-               aria-hidden="true" focusable="false">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
             <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
             <circle cx="9" cy="7" r="4"/>
             <line x1="19" y1="8" x2="19" y2="14"/>
             <line x1="22" y1="11" x2="16" y2="11"/>
           </svg>
         </div>
-        <h2 class="lp-card__title stagger-item delay-2" id="register-title">Crear cuenta</h2>
-        <p class="lp-card__sub stagger-item delay-2">Completa tus datos para registrarte en la plataforma</p>
+        <h2 class="lp-card__title stagger-item delay-2" id="register-title">Crear Cuenta</h2>
+        <p class="lp-card__sub stagger-item delay-2">Completa tus datos corporativos para comenzar</p>
       </div>
 
       @if (authError()) {
-        <div class="lp-alert lp-alert--danger stagger-item delay-2" role="alert" aria-live="assertive">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-               stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
-               aria-hidden="true" focusable="false">
+        <div class="lp-alert lp-alert--danger" role="alert" aria-live="assertive">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="10"/>
             <line x1="12" y1="8" x2="12" y2="12"/>
             <line x1="12" y1="16" x2="12.01" y2="16"/>
@@ -136,316 +95,68 @@
         </div>
       }
 
-      <form
-        [formGroup]="form"
-        (ngSubmit)="onRegister()"
-        novalidate
-        class="lp-form"
-        aria-labelledby="register-title"
-        [attr.aria-busy]="isLoading() ? 'true' : null"
-      >
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate class="lp-form" aria-labelledby="register-title" [attr.aria-busy]="isLoading() ? 'true' : null">
 
-        <!-- Nombre -->
-        <div class="lp-field stagger-item delay-3" [class.lp-field--error]="nameInvalid">
-          <label class="lp-field__label" for="reg-name">Nombre completo</label>
+        <!-- SUPPLIER NAME -->
+        <div class="lp-field stagger-item delay-3" [class.lp-field--error]="isInvalid('supplierName')">
+          <label class="lp-field__label" for="reg-name">Razón Social o Nombre</label>
           <div class="lp-field__wrap">
             <span class="lp-field__icon" aria-hidden="true">
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none"
-                   stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
-                   aria-hidden="true" focusable="false">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                <circle cx="12" cy="7" r="4"/>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
               </svg>
             </span>
-            <input
-              id="reg-name"
-              type="text"
-              class="lp-field__input"
-              formControlName="name"
-              placeholder="Juan Pérez"
-              autocomplete="name"
-              [attr.aria-invalid]="nameInvalid ? 'true' : null"
-              [attr.aria-describedby]="nameInvalid ? 'reg-name-error' : null"
-              (input)="onNameInput()"
-            />
-          </div>
-          @if (nameInvalid) {
-            <p class="lp-field__error" id="reg-name-error" role="alert">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                   stroke-width="2.5" stroke-linecap="round"
-                   aria-hidden="true" focusable="false">
-                <circle cx="12" cy="12" r="10"/>
-                <line x1="12" y1="8" x2="12" y2="12"/>
-                <line x1="12" y1="16" x2="12.01" y2="16"/>
-              </svg>
-              {{ nameError }}
-            </p>
-          }
-        </div>
-
-        <!-- NIT + Dígito de verificación (DV) -->
-        <div class="lp-field-row stagger-item delay-3">
-
-          <!-- NIT -->
-          <div class="lp-field lp-field--grow" [class.lp-field--error]="nitInvalid">
-            <label class="lp-field__label" for="reg-nit">NIT</label>
-            <div class="lp-field__wrap">
-              <span class="lp-field__icon" aria-hidden="true">
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none"
-                     stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
-                     aria-hidden="true" focusable="false">
-                  <rect x="3" y="4" width="18" height="16" rx="2"/>
-                  <line x1="3" y1="10" x2="21" y2="10"/>
-                  <line x1="8" y1="15" x2="13" y2="15"/>
-                </svg>
-              </span>
-              <input
-                id="reg-nit"
-                type="text"
-                class="lp-field__input"
-                formControlName="nit"
-                placeholder="900123456"
-                autocomplete="off"
-                inputmode="numeric"
-                maxlength="15"
-                [attr.aria-invalid]="nitInvalid ? 'true' : null"
-                [attr.aria-describedby]="nitInvalid ? 'reg-nit-error' : null"
-                (input)="onNitInput()"
-              />
-            </div>
-          </div>
-
-          <!-- Separador visual "guion" estilo NIT colombiano -->
-          <span class="lp-field-row__dash" aria-hidden="true">—</span>
-
-          <!-- DV (dígito de verificación) -->
-          <div class="lp-field lp-field--dv" [class.lp-field--error]="dvInvalid">
-            <label class="lp-field__label" for="reg-dv">DV</label>
-            <div class="lp-field__wrap">
-              <input
-                id="reg-dv"
-                type="text"
-                class="lp-field__input lp-field__input--centered"
-                formControlName="dv"
-                placeholder="0"
-                autocomplete="off"
-                inputmode="numeric"
-                maxlength="1"
-                [attr.aria-invalid]="dvInvalid ? 'true' : null"
-                [attr.aria-describedby]="dvInvalid ? 'reg-dv-error' : null"
-                (input)="onDvInput()"
-              />
-            </div>
+            <input id="reg-name" type="text" class="lp-field__input" formControlName="supplierName" placeholder="Empresa S.A.S." (input)="onInput()"/>
           </div>
         </div>
-        @if (nitInvalid || dvInvalid) {
-          <p class="lp-field__error lp-field__error--row" role="alert">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                 stroke-width="2.5" stroke-linecap="round"
-                 aria-hidden="true" focusable="false">
-              <circle cx="12" cy="12" r="10"/>
-              <line x1="12" y1="8" x2="12" y2="12"/>
-              <line x1="12" y1="16" x2="12.01" y2="16"/>
-            </svg>
-            {{ nitInvalid ? nitError : dvError }}
-          </p>
-        }
 
-        <!-- Empresa (auto-detectada desde el NIT) -->
-        <div
-          class="lp-field stagger-item delay-3"
-          [class.lp-field--error]="companyInvalid"
-          [class.lp-field--locked]="true"
-          [class.lp-field--filled]="companyFound()"
-          [class.lp-field--loading]="companyLoading()"
-        >
-          <label class="lp-field__label" for="reg-company">
-            Empresa
-            <span class="lp-field__label-aux">· detectada automáticamente</span>
-          </label>
-
+        <!-- SUPPLIER ID (NIT) -->
+        <div class="lp-field stagger-item delay-3" [class.lp-field--error]="isInvalid('supplierId')">
+          <label class="lp-field__label" for="reg-id">NIT / Documento</label>
           <div class="lp-field__wrap">
             <span class="lp-field__icon" aria-hidden="true">
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none"
-                   stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
-                   aria-hidden="true" focusable="false">
-                <path d="M3 21h18"/>
-                <path d="M5 21V7l7-4 7 4v14"/>
-                <path d="M9 9h.01M9 13h.01M9 17h.01M15 9h.01M15 13h.01M15 17h.01"/>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
               </svg>
             </span>
-
-            <input
-              id="reg-company"
-              type="text"
-              class="lp-field__input lp-field__input--readonly"
-              [value]="companyDisplay()"
-              [placeholder]="companyPlaceholder()"
-              readonly
-              tabindex="-1"
-              aria-readonly="true"
-              [attr.aria-invalid]="companyInvalid ? 'true' : null"
-              [attr.aria-describedby]="companyHintId"
-              [attr.aria-busy]="companyLoading() ? 'true' : null"
-            />
-
-            <!-- Indicador de estado a la derecha -->
-            <span class="lp-field__status" aria-hidden="true">
-              @if (companyLoading()) {
-                <span class="lp-spinner lp-spinner--mini"></span>
-              } @else if (companyFound()) {
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                     stroke="currentColor" stroke-width="2.6"
-                     stroke-linecap="round" stroke-linejoin="round" focusable="false">
-                  <polyline points="20 6 9 17 4 12"/>
-                </svg>
-              } @else if (companyNotFound()) {
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                     stroke="currentColor" stroke-width="2.6"
-                     stroke-linecap="round" stroke-linejoin="round" focusable="false">
-                  <line x1="18" y1="6" x2="6" y2="18"/>
-                  <line x1="6" y1="6" x2="18" y2="18"/>
-                </svg>
-              } @else {
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
-                     stroke="currentColor" stroke-width="2"
-                     stroke-linecap="round" stroke-linejoin="round" focusable="false">
-                  <rect x="5" y="11" width="14" height="10" rx="2"/>
-                  <path d="M8 11V8a4 4 0 0 1 8 0v3"/>
-                </svg>
-              }
-            </span>
+            <input id="reg-id" type="text" class="lp-field__input" formControlName="supplierId" placeholder="900.123.456-7" (input)="onInput()"/>
           </div>
-
-          @if (companyInvalid) {
-            <p class="lp-field__error" id="reg-company-error" role="alert">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                   stroke-width="2.5" stroke-linecap="round"
-                   aria-hidden="true" focusable="false">
-                <circle cx="12" cy="12" r="10"/>
-                <line x1="12" y1="8" x2="12" y2="12"/>
-                <line x1="12" y1="16" x2="12.01" y2="16"/>
-              </svg>
-              {{ companyError }}
-            </p>
-          } @else if (companyFound()) {
-            <p class="lp-field__hint lp-field__hint--success" id="reg-company-hint">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                   stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
-                   aria-hidden="true" focusable="false">
-                <polyline points="20 6 9 17 4 12"/>
-              </svg>
-              Empresa encontrada · <strong>{{ companySlug() }}</strong>
-            </p>
-          } @else if (companyLoading()) {
-            <p class="lp-field__hint" id="reg-company-hint">
-              Consultando empresa…
-            </p>
-          } @else {
-            <p class="lp-field__hint" id="reg-company-hint">
-              Completa el NIT y el DV para detectar tu empresa automáticamente.
-            </p>
-          }
         </div>
 
-        <!-- Email -->
-        <div class="lp-field stagger-item delay-3" [class.lp-field--error]="emailInvalid">
-          <label class="lp-field__label" for="reg-email">Correo electrónico</label>
+        <!-- SUPPLIER EMAIL -->
+        <div class="lp-field stagger-item delay-4" [class.lp-field--error]="isInvalid('supplierEmail')">
+          <label class="lp-field__label" for="reg-email">Correo Electrónico</label>
           <div class="lp-field__wrap">
             <span class="lp-field__icon" aria-hidden="true">
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                   stroke-width="1.8" stroke-linecap="round"
-                   aria-hidden="true" focusable="false">
-                <rect x="2" y="5" width="20" height="14" rx="2"/>
-                <path d="M2 10l10 6 10-6"/>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                <rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10l10 6 10-6"/>
               </svg>
             </span>
-            <input
-              id="reg-email"
-              type="email"
-              class="lp-field__input"
-              formControlName="email"
-              placeholder="correo@empresa.com"
-              autocomplete="email"
-              inputmode="email"
-              [attr.aria-invalid]="emailInvalid ? 'true' : null"
-              [attr.aria-describedby]="emailInvalid ? 'reg-email-error' : null"
-              (input)="onEmailInput()"
-            />
+            <input id="reg-email" type="email" class="lp-field__input" formControlName="supplierEmail" placeholder="correo@empresa.com" (input)="onInput()"/>
           </div>
-          @if (emailInvalid) {
-            <p class="lp-field__error" id="reg-email-error" role="alert">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                   stroke-width="2.5" stroke-linecap="round"
-                   aria-hidden="true" focusable="false">
-                <circle cx="12" cy="12" r="10"/>
-                <line x1="12" y1="8" x2="12" y2="12"/>
-                <line x1="12" y1="16" x2="12.01" y2="16"/>
-              </svg>
-              {{ emailError }}
-            </p>
-          }
         </div>
 
-        <!-- Confirmar Email -->
-        <div class="lp-field stagger-item delay-3" [class.lp-field--error]="confirmEmailInvalid">
-          <label class="lp-field__label" for="reg-confirm-email">Confirmar correo electrónico</label>
+        <!-- SLUG -->
+        <div class="lp-field stagger-item delay-4" [class.lp-field--error]="isInvalid('slug')">
+          <label class="lp-field__label" for="reg-slug">Workspace (Slug)</label>
           <div class="lp-field__wrap">
             <span class="lp-field__icon" aria-hidden="true">
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                   stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
-                   aria-hidden="true" focusable="false">
-                <rect x="2" y="5" width="20" height="14" rx="2"/>
-                <path d="M2 10l10 6 10-6"/>
-                <path d="M16 17l2 2 4-4"/>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
               </svg>
             </span>
-            <input
-              id="reg-confirm-email"
-              type="email"
-              class="lp-field__input"
-              formControlName="confirmEmail"
-              placeholder="Repite tu correo"
-              autocomplete="email"
-              inputmode="email"
-              [attr.aria-invalid]="confirmEmailInvalid ? 'true' : null"
-              [attr.aria-describedby]="confirmEmailInvalid ? 'reg-confirm-email-error' : null"
-              (input)="onConfirmEmailInput()"
-              (paste)="$event.preventDefault()"
-            />
+            <input id="reg-slug" type="text" class="lp-field__input" formControlName="slug" placeholder="nombre-de-empresa" (input)="onInput()"/>
           </div>
-          @if (confirmEmailInvalid) {
-            <p class="lp-field__error" id="reg-confirm-email-error" role="alert">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                   stroke-width="2.5" stroke-linecap="round"
-                   aria-hidden="true" focusable="false">
-                <circle cx="12" cy="12" r="10"/>
-                <line x1="12" y1="8" x2="12" y2="12"/>
-                <line x1="12" y1="16" x2="12.01" y2="16"/>
-              </svg>
-              {{ confirmEmailError }}
-            </p>
-          }
         </div>
 
-        <button
-          type="submit"
-          class="lp-btn-primary stagger-item delay-5"
-          [disabled]="isLoading()"
-          [attr.aria-busy]="isLoading() ? 'true' : null"
-        >
+        <!-- SUBMIT -->
+        <button type="submit" class="lp-btn-primary stagger-item delay-5" [disabled]="isLoading()">
           @if (isLoading()) {
             <span class="lp-spinner" aria-hidden="true"></span>
-            <span>Creando cuenta...</span>
-            <span class="sr-only">Creando tu cuenta, por favor espera</span>
+            <span>Registrando...</span>
           } @else {
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
-                 stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
-                 aria-hidden="true" focusable="false">
-              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-              <circle cx="9" cy="7" r="4"/>
-              <line x1="19" y1="8" x2="19" y2="14"/>
-              <line x1="22" y1="11" x2="16" y2="11"/>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
             </svg>
             <span>Crear mi cuenta</span>
           }
@@ -455,32 +166,17 @@
 
       <div class="lp-sep stagger-item delay-5" aria-hidden="true">
         <span class="lp-sep__line"></span>
-        <span class="lp-sep__text">¿Ya tienes cuenta?</span>
+        <span class="lp-sep__text">¿Ya estás registrado?</span>
         <span class="lp-sep__line"></span>
       </div>
 
       <a routerLink="/auth/login" class="lp-btn-secondary stagger-item delay-5">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"
-             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-             aria-hidden="true" focusable="false">
-          <path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/>
-          <polyline points="10 17 15 12 10 7"/>
-          <line x1="15" y1="12" x2="3" y2="12"/>
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/>
         </svg>
-        <span>Iniciar sesión</span>
+        <span>Volver a Iniciar Sesión</span>
       </a>
-
-      <footer class="lp-foot stagger-item delay-5">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
-             stroke="currentColor" stroke-width="2" stroke-linecap="round"
-             aria-hidden="true" focusable="false">
-          <circle cx="12" cy="12" r="10"/>
-          <path d="M12 8v4M12 16h.01"/>
-        </svg>
-        <span>¿Problemas? <a href="mailto:soporte@empresa.com">Contacta soporte</a></span>
-      </footer>
 
     </div>
   </main>
-
 </div>

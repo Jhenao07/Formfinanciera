@@ -22,44 +22,49 @@ export class AuthService {
     return !!s && Date.now() < s.expiresAt;
   });
   readonly currentEmail    = computed(() => this._session()?.email ?? null);
-  apiUrl: any;
+
+  // ── REGISTRO (N8N WEBHOOK) ───────────────────────────────
+  registerSupplier(data: { slug: string; supplierEmail: string; supplierId: string; supplierName: string }): Observable<unknown> {
+    this._isLoading.set(true);
+    this._error.set(null);
+
+    const webhookUrl = 'https://n8n-prd-hooks.ops-nvt.com/webhook/6cab4783-0b86-434f-94ef-702a30e4369a';
+
+    // observe: 'response' nos permite leer el status HTTP (200) de n8n
+    return this.http.post(webhookUrl, data, { observe: 'response' }).pipe(
+      finalize(() => this._isLoading.set(false))
+    );
+  }
 
   // ── OTP ──────────────────────────────────────────────────
-  sendOtp(email: string, slug: string): Observable<unknown> {
+  sendOtp(supplierEmail: string, slug: string): Observable<unknown> {
     this._isLoading.set(true);
     this._error.set(null);
     return this.http
-      .post(environment.api.sendOtp, { email, slug }, { observe: 'response' })
+      .post(environment.api.sendOtp, { supplierEmail, slug,  }, { observe: 'response' })
       .pipe(tap({ finalize: () => this._isLoading.set(false) }));
   }
 
-  validateOtp(email: string, slug: string, otp: string): Observable<unknown> {
+  validateOtp(supplierEmail: string, slug: string, otp: string): Observable<unknown> {
     this._isLoading.set(true);
     this._error.set(null);
     return this.http
-      .post(environment.api.validateOtp, { email: email, slug: slug, OTP: otp }, { observe: 'response' })
+      .post(environment.api.validateOtp, { supplierEmail, slug, OTP: otp }, { observe: 'response' })
       .pipe(
-         tap({ next: () => this.createSession(email) }),
+         tap({ next: () => this.createSession(supplierEmail) }),
         finalize(() => this._isLoading.set(false))
       );
   }
-register(payload: { name: string; email: string; password: string }): Observable<void> {
-  this._isLoading.set(true);
-  this.clearError();
 
-  return this.http.post<void>(`${this.apiUrl}/auth/register`, payload).pipe(
-    finalize(() => this._isLoading.set(false))
-  );
-}
   // ── Sesión ───────────────────────────────────────────────
   logout(): void {
     this._session.set(null);
     this._error.set(null);
-    sessionStorage.removeItem(SESSION_KEY);
+    sessionStorage.clear();
   }
 
   setError(message: string): void { this._error.set(message); }
-  clearError(): void               { this._error.set(null);    }
+  clearError(): void              { this._error.set(null);    }
 
   // ── Privados ─────────────────────────────────────────────
   private createSession(email: string): void {
