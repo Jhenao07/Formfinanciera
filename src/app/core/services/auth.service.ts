@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { finalize, Observable, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
@@ -35,6 +35,31 @@ export class AuthService {
     );
   }
 
+  // ── Validación de ID ───────────────────────────────────
+ validateId(slug: string, supplierId: string): Observable<unknown> {
+  this._isLoading.set(true);
+  this._error.set(null);
+
+  const timestamp = Date.now().toString();
+
+  console.log('[validateId] Enviando:', { slug, supplierId, url: environment.api.validateId });
+
+  return this.http
+    .get(environment.api.validateId, {
+      params: { slug, supplierId, _t: timestamp },
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      },
+      observe: 'response'
+    })
+    .pipe(
+      tap(res => console.log('[validateId] Respuesta:', res)),
+      finalize(() => this._isLoading.set(false))
+    );
+}
+
   // ── OTP ──────────────────────────────────────────────────
   sendOtp(supplierEmail: string, slug: string, supplierId: string, app: string): Observable<unknown> {
     this._isLoading.set(true);
@@ -48,13 +73,30 @@ export class AuthService {
     this._isLoading.set(true);
     this._error.set(null);
     return this.http
-        .post(environment.api.validateOtp, { slug: slug,
-        app: app,
-        supplierEmail: supplierEmail,
-        supplierId: supplierId,
-        codeOTP: codeOTP }, { observe: 'response' })
-        .pipe(
-         tap({ next: () => this.createSession(supplierEmail) }),
+        .post(environment.api.validateOtp, {
+          slug: slug,
+          app: app,
+          supplierEmail: supplierEmail,
+          supplierId: supplierId,
+          codeOTP: codeOTP
+        }, {
+          observe: 'response',
+          responseType: 'text'
+      })
+      .pipe(
+         tap({
+           next: (response: any) => {
+             let body = response.body;
+             if (typeof body === 'string') {
+               try { body = JSON.parse(body); } catch(e) {}
+             }
+             const token = body?.jwt || response.headers.get('jwt') || response.headers.get('Authorization')?.replace('Bearer ', '');
+             if (token) {
+               localStorage.setItem('access_token', token);
+             }
+             this.createSession(supplierEmail);
+           }
+         }),
         finalize(() => this._isLoading.set(false))
       );
   }

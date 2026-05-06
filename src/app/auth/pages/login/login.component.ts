@@ -152,16 +152,13 @@ export class LoginComponent implements OnInit, AfterViewInit {
     this.isMfaLoading.set(true);
     this.mfaError.set(null);
 
-    // 1. Limpiamos espacios extra por si copiaste y pegaste mal
     const cleanCode = code.replace(/\s+/g, '').trim();
     const supplierEmail = this.pendingEmail();
 
-    // 2. Obtenemos el slug actual que el usuario digitó en el formulario
     const slug = (this.slugCtrl.value as string).trim().toLowerCase();
     const supplierId = (this.supplierIdCtrl.value as string).trim();
     const app = "PORTAL-PROVEEDORES";
 
-    // 3. Enviamos los 3 datos al servicio 👇
     this.auth.validateOtp(slug, app, supplierEmail, supplierId, cleanCode)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
@@ -190,11 +187,11 @@ export class LoginComponent implements OnInit, AfterViewInit {
   // ── Mapeo de errores HTTP a mensajes UX ──────────────────
   private resolveOtpError(status: number): string {
     const map: Record<number, string> = {
-      401: 'No tienes permiso para solicitar este código.',
+      401: 'Correo electrónico o slug incorrectos.',
       404: 'Este correo no está registrado en el sistema.',
-      429: 'Demasiados intentos. Espera unos minutos.',
-      500: 'Error del servidor. Contacta a soporte.',
-    };
+      429: 'Demasiados intentos. Por favor, espera unos minutos.',
+      500: 'Error del servidor. Contacta a soporte técnico.',
+    }
     return map[status] ?? 'No se pudo enviar el código. Intenta de nuevo.';
   }
 }

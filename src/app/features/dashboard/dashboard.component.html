@@ -1,6 +1,5 @@
 <div class="dashboard">
 
-  <!-- ══════════ SIDEBAR ══════════ -->
   <aside class="sidebar">
     <div class="sidebar__header">
       <div class="nuvant-header-container">
@@ -54,7 +53,7 @@
           <line x1="16" y1="17" x2="8" y2="17"/>
           <polyline points="10 9 9 9 8 9"/>
         </svg>
-        <span>Generar Facturas</span>
+        <span>Facturas radicadas</span>
       </button>
 
       <button class="nav-item" [class.nav-item--active]="currentView() === 'payment'" (click)="showPaymentGenerator()">
@@ -62,7 +61,7 @@
           <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
           <line x1="1" y1="10" x2="23" y2="10"/>
         </svg>
-        <span>Generar Pagos</span>
+        <span>Comprobantes de pago</span>
       </button>
 
       <button class="nav-item" [class.nav-item--active]="currentView() === 'portfolio'" (click)="showPortfolioGenerator()">
@@ -70,7 +69,7 @@
           <line x1="12" y1="1" x2="12" y2="23"/>
           <path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>
         </svg>
-        <span>Generar Cartera</span>
+        <span>Edad Cartera</span>
       </button>
     </nav>
 
@@ -86,15 +85,13 @@
     </div>
   </aside>
 
-  <!-- ══════════ MAIN CONTENT ══════════ -->
   <main class="main">
 
-    <!-- Header -->
     <header class="header">
       <div class="header__left">
         <h1 class="header__title">
           @if (currentView() === 'home') { Dashboard }
-          @else if (currentView() === 'invoices') { Reporte de Facturas }
+          @else if (currentView() === 'invoices') { Facturas Radicadas }
           @else if (currentView() === 'payment') { Reporte de Pagos }
           @else if (currentView() === 'portfolio') { Edad de Cartera }
         </h1>
@@ -133,14 +130,10 @@
       </div>
     </header>
 
-    <!-- Content Area -->
     <div class="content">
 
-      <!-- ════════════ HOME VIEW ════════════ -->
       @if (currentView() === 'home') {
         <div class="home">
-
-          <!-- Welcome Card con Spotlight y 3D Tilt -->
           <div class="welcome-card welcome-card--tilt"
                (mousemove)="welcomeCard.style.setProperty('--flow-gx', $event.offsetX + 'px'); welcomeCard.style.setProperty('--flow-gy', $event.offsetY + 'px'); welcomeCard.style.setProperty('--flow-rx', (0.5 - $event.offsetY / welcomeCard.offsetHeight) * 10 + 'deg'); welcomeCard.style.setProperty('--flow-ry', ($event.offsetX / welcomeCard.offsetWidth - 0.5) * 10 + 'deg');"
                (mouseleave)="welcomeCard.style.setProperty('--flow-rx', '0deg'); welcomeCard.style.setProperty('--flow-ry', '0deg');"
@@ -158,7 +151,6 @@
             <p>Monitorea y gestiona todos los procesos operativos de <strong>{{ companySlug() || 'tu empresa' | titlecase }}</strong> desde un solo lugar.</p>
           </div>
 
-          <!-- Quick Actions -->
           <div class="quick-actions">
             <button class="action-card" (click)="showInvoicesGenerator()">
               <div class="action-card__icon action-card__icon--blue">
@@ -170,8 +162,8 @@
                   <polyline points="10 9 9 9 8 9"/>
                 </svg>
               </div>
-              <h3>Generar Facturas</h3>
-              <p>Crear reporte consolidado</p>
+              <h3>Facturas radicadas</h3>
+              <p>Ver historial de Oracle</p>
             </button>
 
             <button class="action-card" (click)="showPaymentGenerator()">
@@ -181,8 +173,8 @@
                   <line x1="1" y1="10" x2="23" y2="10"/>
                 </svg>
               </div>
-              <h3>Generar Pagos</h3>
-              <p>Crear reporte actual</p>
+              <h3>Comprobantes de pago</h3>
+              <p>Generar reporte</p>
             </button>
 
             <button class="action-card" (click)="showPortfolioGenerator()">
@@ -192,60 +184,126 @@
                   <path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>
                 </svg>
               </div>
-              <h3>Generar Cartera</h3>
-              <p>Análisis de saldos en PDF</p>
+              <h3>Edad Cartera</h3>
+              <p>Generar reporte</p>
             </button>
           </div>
         </div>
       }
 
-      <!-- ════════════ INVOICES GENERATE VIEW ════════════ -->
       @if (currentView() === 'invoices') {
-        <div class="generate-view">
-          @if (actionSuccess()) {
-            <div class="alert alert--success">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                <polyline points="22 4 12 14.01 9 11.01"/>
-              </svg>
-              <span>{{ actionSuccess() }}</span>
-            </div>
-          }
+        <div class="table-view">
 
-          <div class="generate-card">
-            <div class="generate-card__icon generate-card__icon--blue">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
-                <polyline points="14 2 14 8 20 8"/>
-                <line x1="16" y1="13" x2="8" y2="13"/>
-                <line x1="16" y1="17" x2="8" y2="17"/>
-                <polyline points="10 9 9 9 8 9"/>
-              </svg>
+          <div class="table-view__header">
+            <div>
+              <h2 class="table-view__title">Facturas Radicadas</h2>
+              <p class="table-view__sub">Historial procesado en Oracle (Máx. 25 resultados, rango máx. 31 días).</p>
             </div>
 
-            <div class="generate-card__content">
-              <h3>Reporte de Facturas</h3>
-              <p>Obtén un informe detallado con el estado de aprobación, fechas y montos de todas las facturas radicadas.</p>
-            </div>
+            <div class="table-controls">
+              <div class="date-picker-group">
+                <div class="date-field">
+                  <label for="startDate">Desde</label>
+                  <input
+                    type="date"
+                    id="startDate"
+                    [value]="startDate()"
+                    (change)="updateStartDate($event)"
+                    [max]="todayDate()"
+                    class="lp-field__input"
+                  >
+                </div>
 
-            <button class="btn-generate" (click)="generateInvoicesReport()" [disabled]="isGeneratingInvoices()">
-              @if (isGeneratingInvoices()) {
-                <div class="spinner spinner--small"></div>
-                Procesando...
-              } @else {
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                  <polyline points="7 10 12 15 17 10"/>
-                  <line x1="12" y1="15" x2="12" y2="3"/>
+                <div class="date-field">
+                  <label for="endDate">Hasta</label>
+                  <input
+                    type="date"
+                    id="endDate"
+                    [value]="endDate()"
+                    (change)="updateEndDate($event)"
+                    [min]="startDate()"
+                    [max]="maxEndDate()"
+                    class="lp-field__input"
+                  >
+                </div>
+
+                @if (dateError()) {
+                  <span class="date-error" role="alert">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                    </svg>
+                    {{ dateError() }}
+                  </span>
+                }
+              </div>
+
+              <button class="btn-refresh" (click)="loadOracleInvoices()" [disabled]="isLoadingInvoices() || !!dateError()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" [class.spin]="isLoadingInvoices()">
+                  <polyline points="23 4 23 10 17 10"></polyline>
+                  <polyline points="1 20 1 14 7 14"></polyline>
+                  <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
                 </svg>
-                Generar Reporte
-              }
-            </button>
+                <span>Consultar</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="table-wrapper">
+            <table class="nuv-table">
+              <thead>
+                <tr>
+                  <th>N° Factura</th>
+                  <th>Fecha Creación</th>
+                  <th>Monto</th>
+                  <th>Moneda</th>
+                  <th>Estado Pago</th>
+                  <th>Contabilidad</th>
+                </tr>
+              </thead>
+              <tbody>
+                @if (isLoadingInvoices()) {
+                  @for (i of [1,2,3,4,5,6]; track i) {
+                    <tr>
+                      <td><div class="skeleton-box w-20"></div></td>
+                      <td><div class="skeleton-box w-32"></div></td>
+                      <td><div class="skeleton-box w-24"></div></td>
+                      <td><div class="skeleton-box w-12"></div></td>
+                      <td><div class="skeleton-box w-24"></div></td>
+                      <td><div class="skeleton-box w-24"></div></td>
+                    </tr>
+                  }
+                } @else if (!hasSearched()) {
+                  <tr>
+                    <td colspan="6" class="empty-state">
+                      Selecciona un rango de fechas y presiona <strong>Consultar</strong> para ver tus facturas.
+                    </td>
+                  </tr>
+                } @else if (invoices().length === 0) {
+                  <tr>
+                    <td colspan="6" class="empty-state">No se encontraron facturas registradas en este periodo.</td>
+                  </tr>
+                } @else {
+                  @for (inv of invoices(); track inv.id) {
+                    <tr>
+                      <td class="font-bold">{{ inv.number }}</td>
+                      <td class="text-slate">{{ inv.date }}</td>
+                      <td class="font-bold text-dark">{{ formatCurrency(inv.amount, inv.currency) }}</td>
+                      <td class="text-slate">{{ inv.currency }}</td>
+                      <td>
+                        <span class="badge" [class]="getStatusBadge(inv.status)">
+                          {{ getStatusLabel(inv.status) }}
+                        </span>
+                      </td>
+                      <td><span class="text-slate">{{ inv.accountingStatus }}</span></td>
+                    </tr>
+                  }
+                }
+              </tbody>
+            </table>
           </div>
         </div>
       }
 
-      <!-- ════════════ PAYMENT GENERATE VIEW ════════════ -->
       @if (currentView() === 'payment') {
         <div class="generate-view">
           @if (actionSuccess()) {
@@ -267,8 +325,8 @@
             </div>
 
             <div class="generate-card__content">
-              <h3>Reporte de Pagos</h3>
-              <p>Genera un documento actualizado con el estado de todos los pagos registrados en el sistema.</p>
+              <h3>Comprobantes de Pago</h3>
+              <p>Obtén un informe actualizado con el detalle y soportes de todos los pagos procesados.</p>
             </div>
 
             <button class="btn-generate" (click)="generatePaymentReport()" [disabled]="isGeneratingPayment()">
@@ -288,7 +346,6 @@
         </div>
       }
 
-      <!-- ════════════ PORTFOLIO GENERATE VIEW ════════════ -->
       @if (currentView() === 'portfolio') {
         <div class="generate-view">
           @if (actionSuccess()) {
@@ -311,7 +368,7 @@
 
             <div class="generate-card__content">
               <h3>Edad de Cartera</h3>
-              <p>Obtén un análisis detallado de la antigüedad de saldos y cuentas por cobrar de tus clientes.</p>
+              <p>Analiza el estado de tus cuentas por cobrar segmentado por antigüedad y vencimientos.</p>
             </div>
 
             <button class="btn-generate btn-generate--orange" (click)="generatePortfolioReport()" [disabled]="isGeneratingPortfolio()">
@@ -334,11 +391,10 @@
     </div>
   </main>
 
-  <!-- ══════════ HELP PANEL ══════════ -->
   @if (showHelp()) {
     <aside class="help-panel">
       <div class="help-panel__header">
-        <h3>Panel de Ayuda</h3>
+        <h3>Centro de Ayuda</h3>
         <button class="help-panel__close" (click)="toggleHelp()">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
             <line x1="18" y1="6" x2="6" y2="18"/>
@@ -349,29 +405,29 @@
 
       <div class="help-panel__content">
         <div class="help-section">
-          <h4>Generar Facturas</h4>
-          <p>Obtén un informe completo de todas las facturas enviadas con sus montos y estado de aprobación.</p>
+          <h4>Facturas Radicadas</h4>
+          <p>Muestra las facturas extraídas directamente de Oracle ERP con su estado de pago real.</p>
         </div>
 
         <div class="help-section">
-          <h4>Generar Pagos</h4>
-          <p>Extrae un reporte actualizado de todos los soportes y transacciones procesadas.</p>
+          <h4>Comprobantes de Pago</h4>
+          <p>Genera reportes sobre los desembolsos realizados y sus soportes bancarios.</p>
         </div>
 
         <div class="help-section">
-          <h4>Generar Cartera</h4>
-          <p>Extrae un documento detallado con la antigüedad de cuentas por cobrar para análisis profundo.</p>
+          <h4>Edad de Cartera</h4>
+          <p>Visualiza el tiempo transcurrido desde la radicación hasta el vencimiento.</p>
         </div>
 
         <div class="help-section">
-          <h4>¿Necesitas más ayuda?</h4>
-          <p>Contacta a soporte técnico:</p>
-          <a href="mailto:soporte@empresa.com" class="help-link">
+          <h4>Soporte Técnico</h4>
+          <p>Si encuentras alguna discrepancia, contacta a soporte:</p>
+          <a href="mailto:soporte@nuvantech.com" class="help-link">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
               <rect x="2" y="5" width="20" height="14" rx="2"/>
               <path d="M2 10l10 6 10-6"/>
             </svg>
-            soporte@empresa.com
+            soporte@nuvantech.com
           </a>
         </div>
       </div>

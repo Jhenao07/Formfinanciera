@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { isPlatformBrowser } from '@angular/common';
 import { AuthService } from '../../../core/services/auth.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-register',
@@ -43,6 +44,8 @@ export class RegisterComponent implements OnInit, AfterViewInit {
     }
   }
 
+
+
   private animateTextLetterByLetter(): void {
     if (!this.brandNameElement) return;
     const brandNameNative = this.brandNameElement.nativeElement;
@@ -70,6 +73,81 @@ export class RegisterComponent implements OnInit, AfterViewInit {
     this.auth.clearError();
   }
 
+  validateId(): void {
+    const slug = (this.form.value.slug as string)?.trim().toLowerCase();
+    const supplierId = (this.form.value.supplierId as string)?.trim();
+
+    if (!slug || !supplierId) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Faltan datos',
+        text: 'Por favor llena el Workspace (Slug) y el NIT antes de validar.',
+        customClass: { popup: 'swal-modern' },
+        confirmButtonText: 'Entendido'
+      });
+      return;
+    }
+
+    this.auth.validateId(slug, supplierId)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (response: any) => {
+          const data = response.body;
+
+          if (data && data.supplierName) {
+            this.form.patchValue({
+              supplierName: data.supplierName
+            });
+            this.auth.clearError();
+
+            if (data.exists === true) {
+              Swal.fire({
+                icon: 'info',
+                title: 'Empresa ya registrada',
+                text: `La empresa ${data.supplierName} ya tiene una cuenta activa. Por favor, inicia sesión.`,
+                customClass: { popup: 'swal-modern' },
+                confirmButtonText: 'Ir al Login',
+                showCancelButton: true,
+                cancelButtonText: 'Cerrar'
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  this.router.navigate(['/auth/login']);
+                }
+              });
+            } else {
+              Swal.fire({
+                icon: 'success',
+                title: '¡Empresa encontrada!',
+                text: `Se ha completado la razón social automáticamente.`,
+                customClass: { popup: 'swal-modern' },
+                timer: 2500,
+                showConfirmButton: false
+              });
+            }
+
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Datos incompletos',
+              text: 'El NIT fue consultado, pero no se encontró un nombre asociado.',
+              customClass: { popup: 'swal-modern' },
+              confirmButtonText: 'Revisar'
+            });
+          }
+        },
+        error: (err) => {
+          console.error('Error validating ID:', err);
+          Swal.fire({
+            icon: 'error',
+            title: 'NIT no encontrado',
+            text: 'El NIT no está registrado o el Workspace es incorrecto. Verifica los datos.',
+            customClass: { popup: 'swal-modern' },
+            confirmButtonText: 'Intentar de nuevo'
+          });
+        }
+      });
+  }
+
   onSubmit(): void {
     this.form.markAllAsTouched();
     if (this.form.invalid) return;
@@ -86,7 +164,7 @@ export class RegisterComponent implements OnInit, AfterViewInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (response: any) => {
-          
+
           if (response.status === 200) {
             this.router.navigate(['/auth/login'], { state: { fromRegister: true } });
           } else {

@@ -598,3 +598,60 @@
   0%   { opacity: 0.9; }
   100% { opacity: 0.4; }
 }
+
+/* ============================================================
+   BOTÓN INTERNO PARA VALIDACIÓN DE ID
+   ============================================================ */
+.lp-field__input--with-btn {
+  /* Espacio extra a la derecha para que el texto no se monte sobre el botón */
+  padding-right: 110px !important;
+}
+
+.lp-field__btn {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 40px;
+  padding: 0 14px;
+  background: var(--blue-50);
+  color: var(--blue-600);
+  border: 1px solid var(--blue-200);
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 240ms var(--ease-smooth);
+  z-index: 2;
+
+  svg {
+    transition: transform 240ms var(--ease-smooth);
+  }
+
+  &:hover:not(:disabled) {
+    background: var(--blue-100);
+    color: var(--blue-700);
+    border-color: var(--blue-300);
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.15);
+
+    svg {
+      transform: scale(1.1);
+    }
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(-50%) scale(0.96);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background: var(--slate-100);
+    color: var(--slate-400);
+    border-color: var(--slate-200);
+  }
+}
