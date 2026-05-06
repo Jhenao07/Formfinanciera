@@ -172,7 +172,7 @@
   width: 46px;
   height: 46px;
   flex-shrink: 0;
- 
+
   animation: logoFloat 6s ease-in-out infinite alternate 1.5s;
 }
 
@@ -214,7 +214,22 @@
   color: transparent;
   animation: textShimmer 6s linear infinite forwards 2.5s;
 }
+.lp-field__input--readonly {
+  background: var(--slate-100) !important;
+  color: var(--blue-600) !important;
+  font-weight: 800 !important;
+  font-size: 16px !important;
+  height: 58px !important; /* Ligeramente más grande que los demás (que miden 54px) */
+  cursor: not-allowed;
+  border-color: var(--slate-300) !important;
+  user-select: none;
+  box-shadow: inset 0 2px 4px rgba(15, 23, 42, .03);
 
+  &:focus {
+    box-shadow: none !important;
+    border-color: var(--slate-300) !important;
+  }
+}
 .lp-brand__tagline {
   display: inline-flex;
   align-items: center;

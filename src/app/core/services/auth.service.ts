@@ -23,7 +23,6 @@ export class AuthService {
   });
   readonly currentEmail    = computed(() => this._session()?.email ?? null);
 
-  // ── REGISTRO (N8N WEBHOOK) ───────────────────────────────
   registerSupplier(data: { slug: string; supplierEmail: string; supplierId: string; supplierName: string }): Observable<unknown> {
     this._isLoading.set(true);
     this._error.set(null);
@@ -37,20 +36,24 @@ export class AuthService {
   }
 
   // ── OTP ──────────────────────────────────────────────────
-  sendOtp(supplierEmail: string, slug: string): Observable<unknown> {
+  sendOtp(supplierEmail: string, slug: string, supplierId: string, app: string): Observable<unknown> {
     this._isLoading.set(true);
     this._error.set(null);
     return this.http
-      .post(environment.api.sendOtp, { supplierEmail, slug,  }, { observe: 'response' })
+      .post(environment.api.sendOtp, { slug, app, supplierEmail, supplierId }, { observe: 'response' })
       .pipe(tap({ finalize: () => this._isLoading.set(false) }));
   }
 
-  validateOtp(supplierEmail: string, slug: string, otp: string): Observable<unknown> {
+  validateOtp(slug: string, app: string, supplierEmail: string, supplierId: string, codeOTP: string): Observable<unknown> {
     this._isLoading.set(true);
     this._error.set(null);
     return this.http
-      .post(environment.api.validateOtp, { supplierEmail, slug, OTP: otp }, { observe: 'response' })
-      .pipe(
+        .post(environment.api.validateOtp, { slug: slug,
+        app: app,
+        supplierEmail: supplierEmail,
+        supplierId: supplierId,
+        codeOTP: codeOTP }, { observe: 'response' })
+        .pipe(
          tap({ next: () => this.createSession(supplierEmail) }),
         finalize(() => this._isLoading.set(false))
       );

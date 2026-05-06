@@ -86,8 +86,7 @@ export class RegisterComponent implements OnInit, AfterViewInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (response: any) => {
-          // Si n8n responde 200, redirigimos al login con el estado de "recién registrado"
-          // Esto activará el banner verde en el login automáticamente.
+          
           if (response.status === 200) {
             this.router.navigate(['/auth/login'], { state: { fromRegister: true } });
           } else {

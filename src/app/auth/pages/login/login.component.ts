@@ -57,7 +57,16 @@ export class LoginComponent implements OnInit, AfterViewInit {
     this.form = this.fb.group({
       supplierEmail: ['', [Validators.required, Validators.email]],
       slug: ['', [Validators.required]],
+      supplierId: ['', [Validators.required]],
     });
+  }
+   onInput(): void {
+    this.auth.clearError();
+  }
+
+  isInvalid(controlName: string): boolean {
+    const control = this.form.get(controlName);
+    return !!(control && control.invalid && control.touched);
   }
 
   ngAfterViewInit(): void {
@@ -85,6 +94,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   // ── Getters ──────────────────────────────────────────────
   get supplierEmailCtrl() { return this.form.get('supplierEmail')!; }
+  get supplierIdCtrl()    { return this.form.get('supplierId')!;    }
   get slugCtrl()  { return this.form.get('slug')!;  }
   get supplierEmailInvalid(): boolean {
     return this.supplierEmailCtrl.invalid && this.supplierEmailCtrl.touched;
@@ -103,6 +113,12 @@ export class LoginComponent implements OnInit, AfterViewInit {
     this.auth.clearError();
     if (this.justRegistered()) this.justRegistered.set(false);
   }
+
+  suplierIdInput(): void {
+    this.auth.clearError();
+    if (this.justRegistered()) this.justRegistered.set(false);
+  }
+
   setSlug(slug: string): void {
     this.slugCtrl.setValue(slug);
     this.requestOtp();
@@ -115,8 +131,10 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
     const supplierEmail = this.supplierEmailCtrl.value as string;
     const slug = this.slugCtrl.value as string;
+    const supplierId = this.supplierIdCtrl.value as string;
+    const app = "PORTAL-PROVEEDORES"; // Reemplaza con el nombre real de tu aplicación
 
-    this.auth.sendOtp(supplierEmail, slug)
+    this.auth.sendOtp(supplierEmail, slug, supplierId, app)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
@@ -136,18 +154,20 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
     // 1. Limpiamos espacios extra por si copiaste y pegaste mal
     const cleanCode = code.replace(/\s+/g, '').trim();
-    const currentEmail = this.pendingEmail();
+    const supplierEmail = this.pendingEmail();
 
     // 2. Obtenemos el slug actual que el usuario digitó en el formulario
-    const currentSlug = (this.slugCtrl.value as string).trim().toLowerCase();
+    const slug = (this.slugCtrl.value as string).trim().toLowerCase();
+    const supplierId = (this.supplierIdCtrl.value as string).trim();
+    const app = "PORTAL-PROVEEDORES";
 
     // 3. Enviamos los 3 datos al servicio 👇
-    this.auth.validateOtp(currentEmail, currentSlug, cleanCode)
+    this.auth.validateOtp(slug, app, supplierEmail, supplierId, cleanCode)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
-          const target = currentSlug
-            ? `/dashboard?slug=${encodeURIComponent(currentSlug)}`
+          const target = slug
+            ? `/dashboard?slug=${encodeURIComponent(slug)}`
             : '/dashboard';
 
           this.isMfaLoading.set(false);

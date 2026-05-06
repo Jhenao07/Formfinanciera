@@ -142,6 +142,29 @@
         aria-labelledby="login-title"
         [attr.aria-busy]="isLoading() ? 'true' : null"
       >
+
+       <!-- Portal provedores -->
+       <div class="lp-field stagger-item delay-3">
+          <label class="lp-field__label" for="login-app">Aplicación</label>
+          <div class="lp-field__wrap">
+            <span class="lp-field__icon" aria-hidden="true">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                <line x1="8" y1="21" x2="16" y2="21"/>
+                <line x1="12" y1="17" x2="12" y2="21"/>
+              </svg>
+            </span>
+            <input
+              id="login-app"
+              type="text"
+              class="lp-field__input lp-field__input--readonly"
+              value="PORTAL-PROVEEDORES"
+              readonly
+              tabindex="-1"
+              title="Este valor es fijo y requerido por el sistema"
+            />
+          </div>
+        </div>
          <div class="lp-field stagger-item delay-3">
           <label class="lp-field__label" for="login-slug">SLUG</label>
           <div class="lp-field__wrap">
@@ -164,6 +187,20 @@
             />
           </div>
        </div>
+
+        <!-- SUPPLIER ID (NIT) -->
+        <div class="lp-field stagger-item delay-3" [class.lp-field--error]="isInvalid('supplierId')">
+          <label class="lp-field__label" for="reg-id">NIT / Documento</label>
+          <div class="lp-field__wrap">
+            <span class="lp-field__icon" aria-hidden="true">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+              </svg>
+            </span>
+            <input id="reg-id" type="text" class="lp-field__input" formControlName="supplierId" placeholder="900.123.456-7" (input)="suplierIdInput()"/>
+          </div>
+        </div>
+
         <div class="lp-field stagger-item delay-3" [class.lp-field--error]="supplierEmailInvalid">
           <label class="lp-field__label" for="login-email">Correo electrónico</label>
           <div class="lp-field__wrap">
@@ -179,10 +216,10 @@
               id="login-email"
               type="email"
               class="lp-field__input"
-              formControlName="email"
+              formControlName="supplierEmail"
               placeholder="correo@empresa.com"
-              autocomplete="email"
-              inputmode="email"
+              autocomplete="supplierEmail"
+              inputmode="supplierEmail"
               [attr.aria-invalid]="supplierEmailInvalid ? 'true' : null"
               [attr.aria-describedby]="supplierEmailInvalid ? 'login-supplierEmail-error' : null"
               (input)="onSupplierEmailInput()"
