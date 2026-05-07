@@ -1,131 +1,168 @@
 <div class="lp-root">
 
-  <!-- Lado Izquierdo (Mismo del Login) -->
   <aside class="lp-left">
-    <div class="lp-left__aurora" aria-hidden="true"></div>
-    <div class="lp-left__mesh" aria-hidden="true"></div>
-    <div class="lp-left__grid" aria-hidden="true"></div>
-    <div class="lp-left__noise" aria-hidden="true"></div>
 
-    <div class="nuvant-header-container">
+    <div class="lp-left__ambient" aria-hidden="true">
+      <div class="ambient-glow"></div>
+      <div class="ambient-mesh"></div>
+      <div class="ambient-noise"></div>
+    </div>
+
+    <div class="lp-left__top">
       <header class="lp-brand">
-        <div class="logo-wrapper">
-          <svg class="nuvant-animado" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Nuvantech" focusable="false">
-            <defs>
-              <linearGradient id="nuv-logo-bg-register" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%"   stop-color="#3b82f6" />
-                <stop offset="55%"  stop-color="#2563eb" />
-                <stop offset="100%" stop-color="#1d4ed8" />
-              </linearGradient>
-              <linearGradient id="nuv-logo-shine-register" x1="50%" y1="0%" x2="50%" y2="100%">
-                <stop offset="0%"  stop-color="#ffffff" stop-opacity="0.32" />
-                <stop offset="55%" stop-color="#ffffff" stop-opacity="0" />
-              </linearGradient>
-            </defs>
-            <rect width="64" height="64" rx="16" fill="url(#nuv-logo-bg-register)" />
-            <rect width="64" height="64" rx="16" fill="url(#nuv-logo-shine-register)" />
-            <g transform="translate(12.8, 12.8) scale(1.6)" fill="none" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M15.59 14.37a6 6 0 0 1-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 0 0 6.16-12.12A14.98 14.98 0 0 0 9.631 8.41m5.96 5.96a14.926 14.926 0 0 1-5.841 2.58m-.119-8.54a6 6 0 0 0-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 0 0-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 0 1-2.448-2.448 14.9 14.9 0 0 1 .06-.312m-2.24 2.39a4.493 4.493 0 0 0-1.757 4.306 4.493 4.493 0 0 0 4.306-1.758M16.5 9a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"/>
-            </g>
+        <div class="lp-brand__icon">
+          <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M16 2L2 10V22L16 30L30 22V10L16 2Z" stroke="#ea580c" stroke-width="2.5" stroke-linejoin="round"/>
+            <path d="M16 10L8 15V22M16 10L24 15V22M16 10V30" stroke="#ea580c" stroke-width="2.5" stroke-linejoin="round"/>
+            <circle cx="16" cy="16" r="3" fill="#ffffff"/>
           </svg>
-          <div class="logo-glow-pulse" aria-hidden="true"></div>
         </div>
         <div class="lp-brand__text">
-          <span class="lp-brand__name" #brandNameRef>Nuvantech</span>
-          <span class="lp-brand__tagline">
-            <span class="lp-brand__tagline-sep" aria-hidden="true">::</span>
-            Procesos sin fricciones
-          </span>
+          <span class="lp-brand__name" #brandNameRef>nuvantech</span>
+          <span class="lp-brand__sub">PVC COATED FABRICS</span>
         </div>
       </header>
+
+      <div class="lp-hero">
+        <div class="lp-hero__badge">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle>
+          </svg>
+          <span>RED DE PROVEEDORES</span>
+        </div>
+
+        <h1 class="lp-hero__title">
+          Únete a la red,<br>
+          <span>crece con nosotros.</span>
+        </h1>
+
+        <p class="lp-hero__desc">
+          Gestiona tus facturas, reportes y cartera en<br>
+          tiempo real y sin complicaciones.
+        </p>
+      </div>
     </div>
 
-    <div class="lp-left__body">
-      <div class="lp-live-badge" role="status" aria-label="Sistema en vivo">
-        <span class="lp-live-badge__dot" aria-hidden="true"></span>
-        <span>Red de Proveedores</span>
-      </div>
-      <h1 class="lp-left__title">
-        Únete a la red,<br />
-        <span>crece con nosotros</span>
-      </h1>
-      <p class="lp-left__sub">
-        Gestiona tus facturas, reportes y cartera en tiempo real y sin complicaciones.
-      </p>
+    <div class="lp-left__graphic" aria-hidden="true">
+      <svg viewBox="0 0 1000 300" preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <linearGradient id="wave-orange" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#ea580c" stop-opacity="0" />
+            <stop offset="30%" stop-color="#ea580c" stop-opacity="0.8" />
+            <stop offset="70%" stop-color="#f97316" stop-opacity="0.8" />
+            <stop offset="100%" stop-color="#ea580c" stop-opacity="0" />
+          </linearGradient>
+          <linearGradient id="wave-blue" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#3b82f6" stop-opacity="0" />
+            <stop offset="50%" stop-color="#60a5fa" stop-opacity="0.7" />
+            <stop offset="100%" stop-color="#3b82f6" stop-opacity="0" />
+          </linearGradient>
+          <filter id="glow-light">
+            <feGaussianBlur stdDeviation="3" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+
+        <path d="M-50,150 C 200,280 350,20 600,180 C 800,280 900,100 1050,150" stroke="url(#wave-orange)" stroke-width="1.5" fill="none" class="wave-anim-1"/>
+        <path d="M-50,200 C 250,50 400,280 650,100 C 850,0 950,250 1050,200" stroke="url(#wave-blue)" stroke-width="1.5" fill="none" class="wave-anim-2"/>
+        <path d="M-50,120 C 150,200 450,80 700,220 C 900,300 950,50 1050,120" stroke="rgba(255,255,255,0.08)" stroke-width="1" fill="none"/>
+
+        <g transform="translate(120, 160)" class="node node--blue">
+          <circle cx="0" cy="0" r="4" fill="#60a5fa" filter="url(#glow-light)"/>
+          <circle cx="0" cy="0" r="20" fill="rgba(15, 23, 42, 0.7)" stroke="#3b82f6" stroke-width="1.5" class="node__ring"/>
+          <path d="M-6,-1 A 4,4 0 1,1 2,-1 M-8,6 A 8,8 0 0,1 4,6 M4,2 A 3,3 0 1,1 8,2 M6,7 A 5,5 0 0,1 12,7" stroke="#fff" fill="none" stroke-width="1.5" stroke-linecap="round"/>
+          <text x="32" y="4" fill="#fff" font-size="11" font-weight="700" letter-spacing="0.5">PROVEEDORES</text>
+        </g>
+
+        <g transform="translate(350, 90)" class="node node--blue">
+          <circle cx="0" cy="0" r="4" fill="#60a5fa" filter="url(#glow-light)"/>
+          <circle cx="0" cy="0" r="20" fill="rgba(15, 23, 42, 0.7)" stroke="#3b82f6" stroke-width="1.5" class="node__ring"/>
+          <path d="M-9,-4 V5 L-4,0 V5 L1,-0 V5 L6,-0 V6" stroke="#fff" fill="none" stroke-width="1.5" stroke-linejoin="round"/>
+          <path d="M-10,6 H10 M-6,6 V8 M6,6 V8" stroke="#fff" fill="none" stroke-width="1.5" stroke-linecap="round"/>
+          <text x="32" y="4" fill="#fff" font-size="11" font-weight="700" letter-spacing="0.5">PRODUCCIÓN</text>
+        </g>
+
+        <g transform="translate(480, 210)" class="node node--blue">
+          <circle cx="0" cy="0" r="4" fill="#60a5fa" filter="url(#glow-light)"/>
+          <circle cx="0" cy="0" r="20" fill="rgba(15, 23, 42, 0.7)" stroke="#3b82f6" stroke-width="1.5" class="node__ring"/>
+          <rect x="-8" y="-6" width="16" height="12" rx="2" stroke="#fff" fill="none" stroke-width="1.5"/>
+          <path d="M-3,-2 H3 M-8,6 L8,6" stroke="#fff" fill="none" stroke-width="1.5" stroke-linecap="round"/>
+          <text x="32" y="4" fill="#fff" font-size="11" font-weight="700" letter-spacing="0.5">PAGOS</text>
+        </g>
+
+        <g transform="translate(680, 110)" class="node node--blue">
+          <circle cx="0" cy="0" r="4" fill="#60a5fa" filter="url(#glow-light)"/>
+          <circle cx="0" cy="0" r="20" fill="rgba(15, 23, 42, 0.7)" stroke="#3b82f6" stroke-width="1.5" class="node__ring"/>
+          <path d="M-8,6 H8 M-6,6 V-4 H2 L6,2 V6 M2,-4 V2" stroke="#fff" fill="none" stroke-width="1.5" stroke-linejoin="round"/>
+          <circle cx="-3" cy="6" r="2" fill="#040f25" stroke="#fff" stroke-width="1.5"/>
+          <circle cx="5" cy="6" r="2" fill="#040f25" stroke="#fff" stroke-width="1.5"/>
+          <text x="32" y="4" fill="#fff" font-size="11" font-weight="700" letter-spacing="0.5">LOGÍSTICA</text>
+        </g>
+
+        <g transform="translate(820, 230)" class="node node--orange">
+          <circle cx="0" cy="0" r="5" fill="#f97316" filter="url(#glow-light)"/>
+          <circle cx="0" cy="0" r="22" fill="rgba(15, 23, 42, 0.85)" stroke="#f97316" stroke-width="2" class="node__ring"/>
+          <path d="M-8,-4 L0,-8 L8,-4 V4 L0,8 L-8,4 Z" stroke="#ea580c" fill="none" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M-8,-4 L0,0 L8,-4 M0,0 V8" stroke="#ea580c" fill="none" stroke-width="2" stroke-linejoin="round"/>
+          <text x="36" y="4" fill="#fff" font-size="11" font-weight="800" letter-spacing="0.5">ABASTECIMIENTO</text>
+        </g>
+      </svg>
     </div>
 
-    <div class="lp-stats" role="list">
-      <div class="lp-stat" role="listitem">
-        <span class="lp-stat__n">0%</span>
-        <span class="lp-stat__l">Costos de uso</span>
-      </div>
-      <div class="lp-stat" role="listitem">
-        <span class="lp-stat__n">100%</span>
-        <span class="lp-stat__l">Transparencia</span>
-      </div>
-    </div>
+    <footer class="lp-left__bottom lp-footer-msg">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ea580c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+      </svg>
+      <span>Juntos construimos una cadena<br>más fuerte y eficiente.</span>
+    </footer>
+
   </aside>
 
-  <!-- Lado Derecho (Formulario) -->
   <main class="lp-right">
-    <div class="lp-right__glow" aria-hidden="true"></div>
-
     <div class="lp-card">
-      <div class="lp-card__head">
-        <div class="lp-card__avatar stagger-item delay-1" aria-hidden="true">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+
+      <div class="lp-card__header stagger-1">
+        <div class="lp-card__avatar">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
             <circle cx="9" cy="7" r="4"/>
             <line x1="19" y1="8" x2="19" y2="14"/>
             <line x1="22" y1="11" x2="16" y2="11"/>
           </svg>
         </div>
-        <h2 class="lp-card__title stagger-item delay-2" id="register-title">Crear Cuenta</h2>
-        <p class="lp-card__sub stagger-item delay-2">Completa tus datos corporativos para comenzar</p>
+        <h2 class="lp-card__title">Crear Cuenta</h2>
+        <p class="lp-card__sub">Completa tus datos corporativos para comenzar.</p>
       </div>
 
       @if (authError()) {
-        <div class="lp-alert lp-alert--danger" role="alert" aria-live="assertive">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"/>
-            <line x1="12" y1="8" x2="12" y2="12"/>
-            <line x1="12" y1="16" x2="12.01" y2="16"/>
+        <div class="lp-alert lp-alert--error stagger-2" role="alert">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
           </svg>
           <span>{{ authError() }}</span>
         </div>
       }
 
-      <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate class="lp-form" aria-labelledby="register-title" [attr.aria-busy]="isLoading() ? 'true' : null">
-                <!-- SLUG -->
-        <div class="lp-field stagger-item delay-4" [class.lp-field--error]="isInvalid('slug')">
-          <label class="lp-field__label" for="reg-slug">Workspace (Slug)</label>
-          <div class="lp-field__wrap">
-            <span class="lp-field__icon" aria-hidden="true">
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
-              </svg>
-            </span>
-            <input id="reg-slug" type="text" class="lp-field__input" formControlName="slug" placeholder="nombre-de-empresa" (input)="onInput()"/>
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="lp-form stagger-3" [attr.aria-busy]="isLoading() ? 'true' : null">
+
+        <div class="lp-field">
+          <label class="lp-field__label" for="reg-slug">Workspace de la Empresa (Slug)</label>
+          <div class="lp-field__input-group" [class.has-error]="isInvalid('slug')">
+            <svg class="lp-field__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+            </svg>
+            <input id="reg-slug" type="text" formControlName="slug" class="lp-field__control" placeholder="Ej: nuvant" (input)="onInput()" />
           </div>
         </div>
 
-       <!-- SUPPLIER ID (NIT) -->
-<div class="lp-field stagger-item delay-3" [class.lp-field--error]="isInvalid('supplierId')">
-          <label class="lp-field__label" for="reg-id">NIT / Documento</label>
-          <div class="lp-field__wrap">
-            <span class="lp-field__icon" aria-hidden="true">
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
-              </svg>
-            </span>
-            <input
-              id="reg-id"
-              type="text"
-              class="lp-field__input lp-field__input--with-btn"
-              formControlName="supplierId"
-              placeholder="8903026090"
-              (input)="onInput()"
-            />
+        <div class="lp-field">
+          <label class="lp-field__label" for="reg-id">NIT o Documento</label>
+          <div class="lp-field__input-group" [class.has-error]="isInvalid('supplierId')">
+            <svg class="lp-field__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+            <input id="reg-id" type="text" formControlName="supplierId" class="lp-field__control lp-field__control--with-btn" placeholder="Ej: 8903026090" (input)="onInput()" />
+
             <button type="button" class="lp-field__btn" (click)="validateId()" [disabled]="isLoading()">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="20 6 9 17 4 12"></polyline>
@@ -135,61 +172,50 @@
           </div>
         </div>
 
-        <!-- SUPPLIER NAME -->
-        <div class="lp-field stagger-item delay-3" [class.lp-field--error]="isInvalid('supplierName')">
+        <div class="lp-field">
           <label class="lp-field__label" for="reg-name">Razón Social o Nombre</label>
-          <div class="lp-field__wrap">
-            <span class="lp-field__icon" aria-hidden="true">
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
-              </svg>
-            </span>
-            <input id="reg-name" type="text" class="lp-field__input" formControlName="supplierName" placeholder="Empresa S.A.S." (input)="onInput()"/>
+          <div class="lp-field__input-group" [class.has-error]="isInvalid('supplierName')">
+            <svg class="lp-field__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+            </svg>
+            <input id="reg-name" type="text" formControlName="supplierName" class="lp-field__control" placeholder="Ej: Empresa S.A.S." (input)="onInput()" />
           </div>
         </div>
 
-        <!-- SUPPLIER EMAIL -->
-        <div class="lp-field stagger-item delay-4" [class.lp-field--error]="isInvalid('supplierEmail')">
-          <label class="lp-field__label" for="reg-email">Correo Electrónico</label>
-          <div class="lp-field__wrap">
-            <span class="lp-field__icon" aria-hidden="true">
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
-                <rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10l10 6 10-6"/>
-              </svg>
-            </span>
-            <input id="reg-email" type="email" class="lp-field__input" formControlName="supplierEmail" placeholder="correo@empresa.com" (input)="onInput()"/>
+        <div class="lp-field">
+          <label class="lp-field__label" for="reg-email">Correo electrónico</label>
+          <div class="lp-field__input-group" [class.has-error]="isInvalid('supplierEmail')">
+            <svg class="lp-field__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
+            </svg>
+            <input id="reg-email" type="email" formControlName="supplierEmail" class="lp-field__control" placeholder="ejemplo@empresa.com" (input)="onInput()" />
           </div>
         </div>
 
-
-        <!-- SUBMIT -->
-        <button type="submit" class="lp-btn-primary stagger-item delay-5" [disabled]="isLoading() || form.invalid">
+        <button type="submit" class="lp-btn lp-btn--primary" [disabled]="isLoading() || form.invalid">
           @if (isLoading()) {
-            <span class="lp-spinner" aria-hidden="true"></span>
-            <span>Registrando...</span>
+            <span class="lp-spinner"></span> Registrando...
           } @else {
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            Crear mi cuenta
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
               <path d="M5 12h14M12 5l7 7-7 7"/>
             </svg>
-            <span>Crear mi cuenta</span>
           }
         </button>
-
       </form>
 
-      <div class="lp-sep stagger-item delay-5" aria-hidden="true">
-        <span class="lp-sep__line"></span>
-        <span class="lp-sep__text">¿Ya estás registrado?</span>
-        <span class="lp-sep__line"></span>
+      <div class="lp-divider stagger-4">
+        <span>¿Ya estás registrado?</span>
       </div>
 
-      <a routerLink="/auth/login" class="lp-btn-secondary stagger-item delay-5">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <a routerLink="/auth/login" class="lp-btn lp-btn--outline stagger-4">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/>
         </svg>
-        <span>Volver a Iniciar Sesión</span>
+        Volver a Iniciar Sesión
       </a>
 
     </div>
   </main>
+
 </div>
