@@ -132,6 +132,9 @@
 
     <div class="content">
 
+      <!-- ════════════════════════════════════════════════════════════
+           HOME
+           ════════════════════════════════════════════════════════════ -->
       @if (currentView() === 'home') {
         <div class="home">
           <div class="welcome-card welcome-card--tilt"
@@ -191,11 +194,14 @@
         </div>
       }
 
+      <!-- ════════════════════════════════════════════════════════════
+           FACTURAS RADICADAS
+           ════════════════════════════════════════════════════════════ -->
       @if (currentView() === 'invoices') {
         <div class="table-view">
 
           <div class="table-view__header">
-            <div>
+            <div class="table-view__heading">
               <h2 class="table-view__title">Facturas Radicadas</h2>
               <p class="table-view__sub">Historial procesado en Oracle (Máx. 25 resultados, rango máx. 31 días).</p>
             </div>
@@ -203,7 +209,15 @@
             <div class="table-controls">
               <div class="date-picker-group">
                 <div class="date-field">
-                  <label for="startDate">Desde</label>
+                  <label for="startDate">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                      <line x1="16" y1="2" x2="16" y2="6"/>
+                      <line x1="8" y1="2" x2="8" y2="6"/>
+                      <line x1="3" y1="10" x2="21" y2="10"/>
+                    </svg>
+                    Desde
+                  </label>
                   <input
                     type="date"
                     id="startDate"
@@ -215,7 +229,15 @@
                 </div>
 
                 <div class="date-field">
-                  <label for="endDate">Hasta</label>
+                  <label for="endDate">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                      <line x1="16" y1="2" x2="16" y2="6"/>
+                      <line x1="8" y1="2" x2="8" y2="6"/>
+                      <line x1="3" y1="10" x2="21" y2="10"/>
+                    </svg>
+                    Hasta
+                  </label>
                   <input
                     type="date"
                     id="endDate"
@@ -226,26 +248,38 @@
                     class="lp-field__input"
                   >
                 </div>
-
-                @if (dateError()) {
-                  <span class="date-error" role="alert">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-                    </svg>
-                    {{ dateError() }}
-                  </span>
-                }
               </div>
 
-              <button class="btn-refresh" (click)="loadOracleInvoices()" [disabled]="isLoadingInvoices() || !!dateError()">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" [class.spin]="isLoadingInvoices()">
-                  <polyline points="23 4 23 10 17 10"></polyline>
-                  <polyline points="1 20 1 14 7 14"></polyline>
-                  <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
-                </svg>
-                <span>Consultar</span>
-              </button>
+              <div class="table-actions">
+                <button class="btn-clear" (click)="clearInvoices()" [disabled]="isLoadingInvoices()" type="button">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"></path>
+                    <line x1="10" y1="11" x2="10" y2="17"></line>
+                    <line x1="14" y1="11" x2="14" y2="17"></line>
+                  </svg>
+                  <span>Limpiar</span>
+                </button>
+
+                <button class="btn-refresh" (click)="loadOracleInvoices()" [disabled]="isLoadingInvoices() || !!dateError()" type="button">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" [class.spin]="isLoadingInvoices()">
+                    <polyline points="23 4 23 10 17 10"></polyline>
+                    <polyline points="1 20 1 14 7 14"></polyline>
+                    <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                  </svg>
+                  <span>Consultar</span>
+                </button>
+              </div>
             </div>
+
+            @if (dateError()) {
+              <div class="date-error" role="alert">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+                {{ dateError() }}
+              </div>
+            }
           </div>
 
           <div class="table-wrapper">
@@ -304,89 +338,454 @@
         </div>
       }
 
+      <!-- ════════════════════════════════════════════════════════════
+           COMPROBANTES DE PAGO
+           ════════════════════════════════════════════════════════════ -->
       @if (currentView() === 'payment') {
-        <div class="generate-view">
-          @if (actionSuccess()) {
-            <div class="alert alert--success">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                <polyline points="22 4 12 14.01 9 11.01"/>
-              </svg>
-              <span>{{ actionSuccess() }}</span>
-            </div>
-          }
+        <div class="report-view">
 
-          <div class="generate-card">
-            <div class="generate-card__icon generate-card__icon--green">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
-                <line x1="1" y1="10" x2="23" y2="10"/>
-              </svg>
+          <div class="report-view__header">
+            <div class="report-view__heading">
+              <h2 class="report-view__title">Comprobantes de Pago</h2>
+              <p class="report-view__sub">
+                Genera el reporte de comprobantes en formato PDF (rango máx. 31 días).
+              </p>
             </div>
 
-            <div class="generate-card__content">
-              <h3>Comprobantes de Pago</h3>
-              <p>Obtén un informe actualizado con el detalle y soportes de todos los pagos procesados.</p>
+            <div class="table-controls">
+              <div class="date-picker-group">
+                <div class="date-field">
+                  <label for="paymentStartDate">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                      <line x1="16" y1="2" x2="16" y2="6"/>
+                      <line x1="8" y1="2" x2="8" y2="6"/>
+                      <line x1="3" y1="10" x2="21" y2="10"/>
+                    </svg>
+                    Desde
+                  </label>
+                  <input
+                    type="date"
+                    id="paymentStartDate"
+                    [value]="paymentStartDate()"
+                    (change)="updatePaymentStartDate($event)"
+                    [max]="todayDate()"
+                    class="lp-field__input"
+                  >
+                </div>
+
+                <div class="date-field">
+                  <label for="paymentEndDate">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                      <line x1="16" y1="2" x2="16" y2="6"/>
+                      <line x1="8" y1="2" x2="8" y2="6"/>
+                      <line x1="3" y1="10" x2="21" y2="10"/>
+                    </svg>
+                    Hasta
+                  </label>
+                  <input
+                    type="date"
+                    id="paymentEndDate"
+                    [value]="paymentEndDate()"
+                    (change)="updatePaymentEndDate($event)"
+                    [min]="paymentStartDate()"
+                    [max]="maxPaymentEndDate()"
+                    class="lp-field__input"
+                  >
+                </div>
+              </div>
+
+              <div class="table-actions">
+                <button class="btn-clear" (click)="clearPayment()" [disabled]="isGeneratingPayment()" type="button">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"></path>
+                    <line x1="10" y1="11" x2="10" y2="17"></line>
+                    <line x1="14" y1="11" x2="14" y2="17"></line>
+                  </svg>
+                  <span>Limpiar</span>
+                </button>
+
+                <button class="btn-refresh" (click)="generatePaymentReport()" [disabled]="isGeneratingPayment() || !!paymentDateError()" type="button">
+                  @if (isGeneratingPayment()) {
+                    <span class="spinner spinner--small"></span>
+                    <span>Generando...</span>
+                  } @else {
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                      <polyline points="14 2 14 8 20 8"/>
+                      <line x1="16" y1="13" x2="8" y2="13"/>
+                      <line x1="16" y1="17" x2="8" y2="17"/>
+                    </svg>
+                    <span>Generar PDF</span>
+                  }
+                </button>
+              </div>
             </div>
 
-            <button class="btn-generate" (click)="generatePaymentReport()" [disabled]="isGeneratingPayment()">
-              @if (isGeneratingPayment()) {
-                <div class="spinner spinner--small"></div>
-                Procesando...
-              } @else {
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            @if (paymentDateError()) {
+              <div class="date-error" role="alert">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+                {{ paymentDateError() }}
+              </div>
+            }
+
+            @if (actionSuccess() && currentView() === 'payment') {
+              <div class="alert alert--success">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                  <polyline points="22 4 12 14.01 9 11.01"/>
+                </svg>
+                <span>{{ actionSuccess() }}</span>
+              </div>
+            }
+          </div>
+
+          <div class="pdf-area">
+
+            @if (isGeneratingPayment()) {
+              <div class="pdf-loading">
+                <div class="pdf-loading__spinner"></div>
+                <h3>Generando comprobante</h3>
+                <p>Estamos preparando tu PDF, esto puede tardar unos segundos...</p>
+              </div>
+            } @else if (paymentError()) {
+              <div class="pdf-empty pdf-empty--error">
+                <div class="pdf-empty__icon">⚠️</div>
+                <h3>No se pudo generar el reporte</h3>
+                <p>{{ paymentError() }}</p>
+              </div>
+            } @else if (!hasPaymentSearched()) {
+              <div class="pdf-empty">
+                <div class="pdf-empty__icon">📄</div>
+                <h3>Listo para generar</h3>
+                <p>Selecciona el rango de fechas y presiona <strong>Generar PDF</strong> para crear tu comprobante.</p>
+              </div>
+            }@else if (paymentPdfUrl()) {
+            <div class="pdf-toolbar">
+              <div class="pdf-toolbar__info">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                  <polyline points="14 2 14 8 20 8"/>
+                </svg>
+                <span class="pdf-toolbar__name">{{ paymentFileName() }}</span>
+              </div>
+
+              <!-- Controles de paginación -->
+              <div class="pdf-controls">
+                <button class="pdf-ctrl-btn" (click)="prevPage()" [disabled]="pdfCurrentPage() <= 1" title="Página anterior" type="button">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="15 18 9 12 15 6"/>
+                  </svg>
+                </button>
+
+                <div class="pdf-page-input">
+                  <input type="number" min="1" [max]="pdfTotalPages()" [value]="pdfCurrentPage()" (change)="goToPage($event)" />
+                  <span>/ {{ pdfTotalPages() }}</span>
+                </div>
+
+                <button class="pdf-ctrl-btn" (click)="nextPage()" [disabled]="pdfCurrentPage() >= pdfTotalPages()" title="Página siguiente" type="button">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="9 18 15 12 9 6"/>
+                  </svg>
+                </button>
+
+                <span class="pdf-divider"></span>
+
+                <!-- Controles de zoom -->
+                <button class="pdf-ctrl-btn" (click)="zoomOut()" [disabled]="pdfZoom() <= 0.5" title="Alejar" type="button">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/>
+                  </svg>
+                </button>
+
+                <button class="pdf-ctrl-btn pdf-ctrl-btn--zoom" (click)="resetZoom()" title="Restablecer zoom" type="button">
+                  {{ pdfZoom() * 100 | number:'1.0-0' }}%
+                </button>
+
+                <button class="pdf-ctrl-btn" (click)="zoomIn()" [disabled]="pdfZoom() >= 3" title="Acercar" type="button">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/>
+                  </svg>
+                </button>
+
+                <button class="pdf-ctrl-btn" (click)="toggleFitMode()" [title]="pdfFitMode() === 'page-width' ? 'Ajustar a página' : 'Ajustar al ancho'" type="button">
+                  @if (pdfFitMode() === 'page-width') {
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M3 7V5a2 2 0 012-2h2M17 3h2a2 2 0 012 2v2M21 17v2a2 2 0 01-2 2h-2M7 21H5a2 2 0 01-2-2v-2"/>
+                    </svg>
+                  } @else {
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>
+                    </svg>
+                  }
+                </button>
+
+                <span class="pdf-divider"></span>
+
+                <button class="pdf-ctrl-btn" (click)="printPdf('payment')" title="Imprimir" type="button">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 6 2 18 2 18 9"/>
+                    <path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/>
+                    <rect x="6" y="14" width="12" height="8"/>
+                  </svg>
+                </button>
+              </div>
+
+              <button class="btn-download" (click)="downloadPaymentPdf()" type="button">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
                   <polyline points="7 10 12 15 17 10"/>
                   <line x1="12" y1="15" x2="12" y2="3"/>
                 </svg>
-                Generar Reporte
-              }
-            </button>
-          </div>
-        </div>
-      }
+                <span>Descargar</span>
+              </button>
+            </div>
 
-      @if (currentView() === 'portfolio') {
-        <div class="generate-view">
-          @if (actionSuccess()) {
-            <div class="alert alert--success">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                <polyline points="22 4 12 14.01 9 11.01"/>
-              </svg>
-              <span>{{ actionSuccess() }}</span>
+            <div class="pdf-viewer-wrapper">
+              <pdf-viewer
+                #paymentPdfViewer
+                [src]="paymentPdfUrl()!"
+                [render-text]="true"
+                [original-size]="false"
+                [show-all]="showAllPages()"
+                [page]="effectivePdfPage()"
+                [zoom]="pdfZoom()"
+                [zoom-scale]="pdfFitMode()"
+                (after-load-complete)="onPdfLoaded($event)"
+                style="display: block; width: 100%; height: 100%;"
+              ></pdf-viewer>
             </div>
           }
 
-          <div class="generate-card">
-            <div class="generate-card__icon generate-card__icon--orange">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          </div>
+
+        </div>
+      }
+      @if (currentView() === 'portfolio') {
+  <div class="report-view">
+
+    <div class="report-view__header">
+      <div class="report-view__heading">
+        <h2 class="report-view__title">Edad de Cartera</h2>
+        <p class="report-view__sub">
+          Genera el reporte de antigüedad de saldos en formato PDF (rango máx. 31 días).
+        </p>
+      </div>
+
+      <div class="table-controls">
+        <div class="date-picker-group">
+          <div class="date-field">
+            <label for="portfolioStartDate">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                <line x1="16" y1="2" x2="16" y2="6"/>
+                <line x1="8" y1="2" x2="8" y2="6"/>
+                <line x1="3" y1="10" x2="21" y2="10"/>
+              </svg>
+              Desde
+            </label>
+            <input
+              type="date"
+              id="portfolioStartDate"
+              [value]="portfolioStartDate()"
+              (change)="updatePortfolioStartDate($event)"
+              [max]="todayDate()"
+              class="lp-field__input"
+            >
+          </div>
+
+          <div class="date-field">
+            <label for="portfolioEndDate">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                <line x1="16" y1="2" x2="16" y2="6"/>
+                <line x1="8" y1="2" x2="8" y2="6"/>
+                <line x1="3" y1="10" x2="21" y2="10"/>
+              </svg>
+              Hasta
+            </label>
+            <input
+              type="date"
+              id="portfolioEndDate"
+              [value]="portfolioEndDate()"
+              (change)="updatePortfolioEndDate($event)"
+              [min]="portfolioStartDate()"
+              [max]="maxPortfolioEndDate()"
+              class="lp-field__input"
+            >
+          </div>
+        </div>
+
+        <div class="table-actions">
+          <button class="btn-clear" (click)="clearPortfolio()" [disabled]="isGeneratingPortfolio()" type="button">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="3 6 5 6 21 6"></polyline>
+              <path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"></path>
+              <line x1="10" y1="11" x2="10" y2="17"></line>
+              <line x1="14" y1="11" x2="14" y2="17"></line>
+            </svg>
+            <span>Limpiar</span>
+          </button>
+
+          <button class="btn-refresh btn-refresh--orange" (click)="generatePortfolioReport()" [disabled]="isGeneratingPortfolio() || !!portfolioDateError()" type="button">
+            @if (isGeneratingPortfolio()) {
+              <span class="spinner spinner--small"></span>
+              <span>Generando...</span>
+            } @else {
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="12" y1="1" x2="12" y2="23"/>
                 <path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>
               </svg>
-            </div>
+              <span>Generar PDF</span>
+            }
+          </button>
+        </div>
+      </div>
 
-            <div class="generate-card__content">
-              <h3>Edad de Cartera</h3>
-              <p>Analiza el estado de tus cuentas por cobrar segmentado por antigüedad y vencimientos.</p>
-            </div>
-
-            <button class="btn-generate btn-generate--orange" (click)="generatePortfolioReport()" [disabled]="isGeneratingPortfolio()">
-              @if (isGeneratingPortfolio()) {
-                <div class="spinner spinner--small"></div>
-                Procesando...
-              } @else {
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                  <polyline points="7 10 12 15 17 10"/>
-                  <line x1="12" y1="15" x2="12" y2="3"/>
-                </svg>
-                Generar Reporte
-              }
-            </button>
-          </div>
+      @if (portfolioDateError()) {
+        <div class="date-error" role="alert">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          {{ portfolioDateError() }}
         </div>
       }
+
+      @if (actionSuccess() && currentView() === 'portfolio') {
+        <div class="alert alert--success">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+            <polyline points="22 4 12 14.01 9 11.01"/>
+          </svg>
+          <span>{{ actionSuccess() }}</span>
+        </div>
+      }
+    </div>
+
+    <div class="pdf-area">
+
+      @if (isGeneratingPortfolio()) {
+        <div class="pdf-loading">
+          <div class="pdf-loading__spinner pdf-loading__spinner--orange"></div>
+          <h3>Generando análisis</h3>
+          <p>Estamos preparando tu PDF, esto puede tardar unos segundos...</p>
+        </div>
+      } @else if (portfolioError()) {
+        <div class="pdf-empty pdf-empty--error">
+          <div class="pdf-empty__icon">⚠️</div>
+          <h3>No se pudo generar el reporte</h3>
+          <p>{{ portfolioError() }}</p>
+        </div>
+      } @else if (!hasPortfolioSearched()) {
+        <div class="pdf-empty">
+          <div class="pdf-empty__icon">📊</div>
+          <h3>Listo para generar</h3>
+          <p>Selecciona el rango de fechas y presiona <strong>Generar PDF</strong> para crear tu análisis de cartera.</p>
+        </div>
+      } @else if (portfolioPdfUrl()) {
+        <div class="pdf-toolbar">
+          <div class="pdf-toolbar__info">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+            </svg>
+            <span class="pdf-toolbar__name">{{ portfolioFileName() }}</span>
+          </div>
+
+          <div class="pdf-controls">
+            <button class="pdf-ctrl-btn" (click)="prevPage()" [disabled]="pdfCurrentPage() <= 1" title="Página anterior" type="button">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 18 9 12 15 6"/>
+              </svg>
+            </button>
+
+            <div class="pdf-page-input">
+              <input type="number" min="1" [max]="pdfTotalPages()" [value]="pdfCurrentPage()" (change)="goToPage($event)" />
+              <span>/ {{ pdfTotalPages() }}</span>
+            </div>
+
+            <button class="pdf-ctrl-btn" (click)="nextPage()" [disabled]="pdfCurrentPage() >= pdfTotalPages()" title="Página siguiente" type="button">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"/>
+              </svg>
+            </button>
+
+            <span class="pdf-divider"></span>
+
+            <button class="pdf-ctrl-btn" (click)="zoomOut()" [disabled]="pdfZoom() <= 0.5" title="Alejar" type="button">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/>
+              </svg>
+            </button>
+
+            <button class="pdf-ctrl-btn pdf-ctrl-btn--zoom" (click)="resetZoom()" title="Restablecer zoom" type="button">
+              {{ pdfZoom() * 100 | number:'1.0-0' }}%
+            </button>
+
+            <button class="pdf-ctrl-btn" (click)="zoomIn()" [disabled]="pdfZoom() >= 3" title="Acercar" type="button">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/>
+              </svg>
+            </button>
+
+            <button class="pdf-ctrl-btn" (click)="toggleFitMode()" [title]="pdfFitMode() === 'page-width' ? 'Ajustar a página' : 'Ajustar al ancho'" type="button">
+              @if (pdfFitMode() === 'page-width') {
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 7V5a2 2 0 012-2h2M17 3h2a2 2 0 012 2v2M21 17v2a2 2 0 01-2 2h-2M7 21H5a2 2 0 01-2-2v-2"/>
+                </svg>
+              } @else {
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>
+                </svg>
+              }
+            </button>
+
+            <span class="pdf-divider"></span>
+
+            <button class="pdf-ctrl-btn" (click)="printPdf('portfolio')" title="Imprimir" type="button">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 6 2 18 2 18 9"/>
+                <path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/>
+                <rect x="6" y="14" width="12" height="8"/>
+              </svg>
+            </button>
+          </div>
+
+          <button class="btn-download btn-download--orange" (click)="downloadPortfolioPdf()" type="button">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            <span>Descargar</span>
+          </button>
+        </div>
+
+        <div class="pdf-viewer-wrapper">
+          <pdf-viewer
+            #portfolioPdfViewer
+            [src]="portfolioPdfUrl()!"
+            [render-text]="true"
+            [original-size]="false"
+            [show-all]="showAllPages()"
+            [page]="effectivePdfPage()"
+            [zoom]="pdfZoom()"
+            [zoom-scale]="pdfFitMode()"
+            (after-load-complete)="onPdfLoaded($event)"
+            style="display: block; width: 100%; height: 100%;"
+          ></pdf-viewer>
+        </div>
+      }
+
+    </div>
+
+  </div>
+}
+
 
     </div>
   </main>
@@ -411,7 +810,7 @@
 
         <div class="help-section">
           <h4>Comprobantes de Pago</h4>
-          <p>Genera reportes sobre los desembolsos realizados y sus soportes bancarios.</p>
+          <p>Genera reportes en PDF sobre los desembolsos realizados y sus soportes bancarios.</p>
         </div>
 
         <div class="help-section">

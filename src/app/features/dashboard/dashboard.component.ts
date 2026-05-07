@@ -1,4 +1,3 @@
-import { HttpClient } from '@angular/common/http';
 import {
   Component,
   Inject,
@@ -7,21 +6,30 @@ import {
   ViewChild,
   ElementRef,
   OnInit,
+  OnDestroy,
   AfterViewInit,
   computed,
+  inject,
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { isPlatformBrowser, TitleCasePipe } from '@angular/common';
-import { environment } from '../../../environments/environment';
+import { isPlatformBrowser, TitleCasePipe, DecimalPipe } from '@angular/common';
+import { PdfViewerComponent, PdfViewerModule } from 'ng2-pdf-viewer';
+import {
+  OracleReportsService,
+  OraclePdfResponse,
+  OracleInvoicesResponse,
+} from './../../core/services/oracle-reports.service';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [TitleCasePipe],
+  imports: [TitleCasePipe, PdfViewerModule, DecimalPipe],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
-export class DashboardComponent implements OnInit, AfterViewInit {
+export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
+  private readonly oracle = inject(OracleReportsService);
+
   // ──────────────────────────────────────────────────────────
   // ESTADO DE LA VISTA
   // ──────────────────────────────────────────────────────────
@@ -31,26 +39,53 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   companySlug = signal<string>('');
 
   @ViewChild('brandNameRef') brandNameElement!: ElementRef<HTMLSpanElement>;
+  @ViewChild('paymentPdfViewer') paymentPdfViewer?: PdfViewerComponent;
+  @ViewChild('portfolioPdfViewer') portfolioPdfViewer?: PdfViewerComponent;
+  pdfZoom = signal<number>(1);
+  pdfCurrentPage = signal<number>(1);
+  pdfTotalPages = signal<number>(0);
+  pdfFitMode = signal<'page-width' | 'page-fit'>('page-width');
 
-  // Estados de loading
-  isGeneratingInvoices = signal(false);
+
+  // ──────────────────────────────────────────────────────────
+  // ESTADO: FACTURAS
+  // ──────────────────────────────────────────────────────────
   isLoadingInvoices = signal(false);
-  isGeneratingPayment = signal(false);
-  isGeneratingPortfolio = signal(false);
-
-  // Datos de facturas
   invoices = signal<Invoice[]>([]);
   startDate = signal<string>(this.getDefaultStartDate());
   endDate = signal<string>(this.getDefaultEndDate());
   dateError = signal<string | null>(null);
-
-  // Indica si ya se hizo al menos una consulta (para no mostrar "vacío" antes)
   hasSearched = signal(false);
+
+  // ──────────────────────────────────────────────────────────
+  // ESTADO: COMPROBANTES DE PAGO
+  // ──────────────────────────────────────────────────────────
+  isGeneratingPayment = signal(false);
+  paymentStartDate = signal<string>(this.getDefaultStartDate());
+  paymentEndDate = signal<string>(this.getDefaultEndDate());
+  paymentDateError = signal<string | null>(null);
+  paymentPdfUrl = signal<string | null>(null);
+  paymentFileName = signal<string>('');
+  paymentError = signal<string | null>(null);
+  hasPaymentSearched = signal(false);
+  private paymentBlob: Blob | null = null;
+
+  // ──────────────────────────────────────────────────────────
+  // ESTADO: EDAD DE CARTERA
+  // ──────────────────────────────────────────────────────────
+  isGeneratingPortfolio = signal(false);
+  portfolioStartDate = signal<string>(this.getDefaultStartDate());
+  portfolioEndDate = signal<string>(this.getDefaultEndDate());
+  portfolioDateError = signal<string | null>(null);
+  portfolioPdfUrl = signal<string | null>(null);
+  portfolioFileName = signal<string>('');
+  portfolioError = signal<string | null>(null);
+  hasPortfolioSearched = signal(false);
+  private portfolioBlob: Blob | null = null;
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private HttpClient: HttpClient,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
@@ -82,13 +117,18 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     }
   }
 
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
     if (isPlatformBrowser(this.platformId)) {
       this.animateTextLetterByLetter();
     }
   }
 
-  private animateTextLetterByLetter() {
+  ngOnDestroy(): void {
+    this.revokePaymentPdf();
+    this.revokePortfolioPdf();
+  }
+
+  private animateTextLetterByLetter(): void {
     if (!this.brandNameElement) return;
 
     const brandNameNative = this.brandNameElement.nativeElement;
@@ -108,33 +148,32 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   // ──────────────────────────────────────────────────────────
   // NAVEGACIÓN ENTRE VISTAS
   // ──────────────────────────────────────────────────────────
-  goHome() {
+  goHome(): void {
     this.currentView.set('home');
     this.clearActionSuccess();
   }
 
-  showInvoicesGenerator() {
+  showInvoicesGenerator(): void {
     this.currentView.set('invoices');
     this.clearActionSuccess();
-    // NO se consulta automáticamente; el usuario escoge fechas y da clic en "Consultar"
   }
 
-  showPaymentGenerator() {
+  showPaymentGenerator(): void {
     this.currentView.set('payment');
     this.clearActionSuccess();
   }
 
-  showPortfolioGenerator() {
+  showPortfolioGenerator(): void {
     this.currentView.set('portfolio');
     this.clearActionSuccess();
   }
 
-  toggleHelp() {
+  toggleHelp(): void {
     this.showHelp.update((val) => !val);
   }
 
   // ──────────────────────────────────────────────────────────
-  // FECHAS (DATEPICKER)
+  // FECHAS HELPERS (compartidos)
   // ──────────────────────────────────────────────────────────
   private getDefaultEndDate(): string {
     return new Date().toISOString().split('T')[0];
@@ -146,28 +185,47 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     return date.toISOString().split('T')[0];
   }
 
-  // Máximo 31 días desde la fecha inicial (incluyendo el día inicial)
-  // y nunca mayor a hoy.
-  maxEndDate = computed(() => {
-    const start = new Date(this.startDate());
+  todayDate = computed<string>(() => new Date().toISOString().split('T')[0]);
+
+  private calcMaxEndDate(startDateStr: string): string {
+    const start = new Date(startDateStr);
     if (isNaN(start.getTime())) return this.getDefaultEndDate();
 
-    start.setDate(start.getDate() + 30); // +30 = rango de 31 días contando el inicial
-
+    start.setDate(start.getDate() + 30);
     const today = new Date();
     if (start > today) return today.toISOString().split('T')[0];
 
     return start.toISOString().split('T')[0];
-  });
+  }
 
-  // Hoy (para el atributo [max] del input de fecha inicial)
-  todayDate = computed(() => new Date().toISOString().split('T')[0]);
+  private validateRange(startStr: string, endStr: string): string | null {
+    const start = new Date(startStr);
+    const end = new Date(endStr);
 
-  updateStartDate(event: Event) {
+    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+      return 'Selecciona fechas válidas.';
+    }
+    if (end < start) {
+      return 'La fecha inicial no puede ser mayor.';
+    }
+    const diffDays = Math.ceil(
+      (end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)
+    );
+    if (diffDays > 30) {
+      return 'El rango máximo permitido es de 31 días.';
+    }
+    return null;
+  }
+
+  // ──────────────────────────────────────────────────────────
+  // FECHAS: FACTURAS
+  // ──────────────────────────────────────────────────────────
+  maxEndDate = computed<string>(() => this.calcMaxEndDate(this.startDate()));
+
+  updateStartDate(event: Event): void {
     const input = event.target as HTMLInputElement;
     this.startDate.set(input.value);
 
-    // Si la fecha final queda fuera del nuevo rango, ajustarla
     const start = new Date(input.value);
     const end = new Date(this.endDate());
     if (!isNaN(start.getTime()) && !isNaN(end.getTime())) {
@@ -178,142 +236,480 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         this.endDate.set(this.maxEndDate());
       }
     }
-    this.validateDates();
+    this.dateError.set(this.validateRange(this.startDate(), this.endDate()));
   }
 
-  updateEndDate(event: Event) {
+  updateEndDate(event: Event): void {
     const input = event.target as HTMLInputElement;
     this.endDate.set(input.value);
-    this.validateDates();
+    this.dateError.set(this.validateRange(this.startDate(), this.endDate()));
   }
 
-  private validateDates() {
-    this.dateError.set(null);
-    const start = new Date(this.startDate());
-    const end = new Date(this.endDate());
+  // ──────────────────────────────────────────────────────────
+  // FECHAS: COMPROBANTES DE PAGO
+  // ──────────────────────────────────────────────────────────
+  maxPaymentEndDate = computed<string>(() =>
+    this.calcMaxEndDate(this.paymentStartDate())
+  );
 
-    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
-      this.dateError.set('Selecciona fechas válidas.');
-      return;
+  updatePaymentStartDate(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.paymentStartDate.set(input.value);
+
+    const start = new Date(input.value);
+    const end = new Date(this.paymentEndDate());
+    if (!isNaN(start.getTime()) && !isNaN(end.getTime())) {
+      const diffDays = Math.ceil(
+        (end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)
+      );
+      if (diffDays > 30 || end < start) {
+        this.paymentEndDate.set(this.maxPaymentEndDate());
+      }
     }
-
-    if (end < start) {
-      this.dateError.set('La fecha inicial no puede ser mayor.');
-      return;
-    }
-
-    const diffDays = Math.ceil(
-      (end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)
+    this.paymentDateError.set(
+      this.validateRange(this.paymentStartDate(), this.paymentEndDate())
     );
+  }
 
-    if (diffDays > 30) {
-      this.dateError.set('El rango máximo permitido es de 31 días.');
-    }
+  updatePaymentEndDate(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.paymentEndDate.set(input.value);
+    this.paymentDateError.set(
+      this.validateRange(this.paymentStartDate(), this.paymentEndDate())
+    );
   }
 
   // ──────────────────────────────────────────────────────────
-  // CONSULTA A ORACLE (FACTURAS)
+  // FECHAS: EDAD DE CARTERA
   // ──────────────────────────────────────────────────────────
-  loadOracleInvoices() {
-    this.validateDates();
-    if (this.dateError()) return;
+  maxPortfolioEndDate = computed<string>(() =>
+    this.calcMaxEndDate(this.portfolioStartDate())
+  );
+
+  updatePortfolioStartDate(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.portfolioStartDate.set(input.value);
+
+    const start = new Date(input.value);
+    const end = new Date(this.portfolioEndDate());
+    if (!isNaN(start.getTime()) && !isNaN(end.getTime())) {
+      const diffDays = Math.ceil(
+        (end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)
+      );
+      if (diffDays > 30 || end < start) {
+        this.portfolioEndDate.set(this.maxPortfolioEndDate());
+      }
+    }
+    this.portfolioDateError.set(
+      this.validateRange(this.portfolioStartDate(), this.portfolioEndDate())
+    );
+  }
+
+  updatePortfolioEndDate(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.portfolioEndDate.set(input.value);
+    this.portfolioDateError.set(
+      this.validateRange(this.portfolioStartDate(), this.portfolioEndDate())
+    );
+  }
+
+  // ──────────────────────────────────────────────────────────
+  // FACTURAS: CONSULTA
+  // ──────────────────────────────────────────────────────────
+  loadOracleInvoices(): void {
+    const err = this.validateRange(this.startDate(), this.endDate());
+    this.dateError.set(err);
+    if (err) return;
 
     this.isLoadingInvoices.set(true);
     this.invoices.set([]);
     this.hasSearched.set(true);
 
-    const payload = {
-      app: 'PORTAL-PROVEEDORES',
-      request: 'getInvoiceSupplier',
-      slug: this.companySlug(),
-      startDate: this.startDate(),
-      endDate: this.endDate(),
-      limit: 25,
-      offset: 0,
-    };
+    this.oracle
+      .getInvoices(this.companySlug(), this.startDate(), this.endDate())
+      .subscribe({
+        next: (response: OracleInvoicesResponse | string) => {
+          // Por si n8n manda el JSON como string en vez de objeto
+          const data: OracleInvoicesResponse =
+            typeof response === 'string'
+              ? (JSON.parse(response) as OracleInvoicesResponse)
+              : response;
 
-    console.log('[Oracle] 📤 Payload:', payload);
+          const items = data?.results?.items ?? [];
 
-    this.HttpClient.post(environment.api.oracleUrl, payload).subscribe({
-      next: (response: any) => {
-        // Soporte por si n8n manda el JSON como string
-        let data = response;
-        if (typeof data === 'string') {
-          try {
-            data = JSON.parse(data);
-          } catch {
-            data = {};
+          const facturasMapeadas: Invoice[] = items.map(
+            (item, idx) => ({
+              id: item.InvoiceNumber ?? `item-${idx}`,
+              number: item.InvoiceNumber ?? '',
+              date: this.formatDate(item.CreationDate),
+              currency: item.PaymentCurrency ?? '',
+              amount: Number(item.InvoiceAmount) || 0,
+              status:
+                item.PaidStatus === 'Paid'
+                  ? ('approved' as const)
+                  : ('pending' as const),
+              accountingStatus: item.AccountingStatus ?? '',
+            })
+          );
+
+          this.invoices.set(facturasMapeadas);
+          this.isLoadingInvoices.set(false);
+        },
+        error: (err: unknown) => {
+          console.error('[Oracle Invoices] Error:', err);
+          this.invoices.set([]);
+          this.isLoadingInvoices.set(false);
+          this.dateError.set(
+            'No se pudieron cargar las facturas. Intenta de nuevo.'
+          );
+        },
+      });
+  }
+
+  clearInvoices(): void {
+    this.invoices.set([]);
+    this.hasSearched.set(false);
+    this.dateError.set(null);
+    this.startDate.set(this.getDefaultStartDate());
+    this.endDate.set(this.getDefaultEndDate());
+  }
+
+  // ──────────────────────────────────────────────────────────
+  // COMPROBANTES DE PAGO: CONSULTA + PDF
+  // ──────────────────────────────────────────────────────────
+  generatePaymentReport(): void {
+    const err = this.validateRange(
+      this.paymentStartDate(),
+      this.paymentEndDate()
+    );
+    this.paymentDateError.set(err);
+    if (err) return;
+
+    this.revokePaymentPdf();
+    this.resetPdfViewer();
+    this.isGeneratingPayment.set(true);
+    this.paymentError.set(null);
+    this.hasPaymentSearched.set(true);
+    this.clearActionSuccess();
+
+    this.oracle
+      .getPaymentsPdf(
+        this.companySlug(),
+        this.paymentStartDate(),
+        this.paymentEndDate()
+      )
+      .subscribe({
+        next: (response: OraclePdfResponse | string) => {
+          const data: OraclePdfResponse =
+            typeof response === 'string'
+              ? (JSON.parse(response) as OraclePdfResponse)
+              : response;
+
+          if (data.result !== 'OK' || !data.file?.data) {
+            this.paymentError.set(
+              'No se encontraron comprobantes de pago en el rango seleccionado.'
+            );
+            this.isGeneratingPayment.set(false);
+            return;
           }
+
+          try {
+            const blob = this.base64ToBlob(
+              data.file.data,
+              data.file.mimeType || 'application/pdf'
+            );
+            this.paymentBlob = blob;
+            this.paymentPdfUrl.set(URL.createObjectURL(blob));
+            this.paymentFileName.set(
+              data.file.fileName || this.defaultPdfName('comprobante-pagos')
+            );
+            this.showSuccess('✨ Comprobante generado exitosamente');
+          } catch (e) {
+            console.error('[Payment PDF] Error decodificando base64:', e);
+            this.paymentError.set('No se pudo procesar el PDF recibido.');
+          }
+
+          this.isGeneratingPayment.set(false);
+        },
+        error: (err: unknown) => {
+          console.error('[Payment PDF] Error:', err);
+          this.paymentError.set(
+            'No se pudo generar el comprobante. Intenta de nuevo.'
+          );
+          this.isGeneratingPayment.set(false);
+        },
+      });
+  }
+
+  downloadPaymentPdf(): void {
+    if (!this.paymentBlob || !this.paymentFileName()) return;
+    this.triggerDownload(this.paymentBlob, this.paymentFileName());
+  }
+
+  clearPayment(): void {
+    this.revokePaymentPdf();
+    this.resetPdfViewer();
+    this.paymentError.set(null);
+    this.hasPaymentSearched.set(false);
+    this.paymentDateError.set(null);
+    this.paymentStartDate.set(this.getDefaultStartDate());
+    this.paymentEndDate.set(this.getDefaultEndDate());
+    this.clearActionSuccess();
+  }
+
+  private revokePaymentPdf(): void {
+    const url = this.paymentPdfUrl();
+    if (url) URL.revokeObjectURL(url);
+    this.paymentPdfUrl.set(null);
+    this.paymentFileName.set('');
+    this.paymentBlob = null;
+  }
+
+  // ──────────────────────────────────────────────────────────
+// EDAD DE CARTERA: CONSULTA + PDF
+// ──────────────────────────────────────────────────────────
+generatePortfolioReport(): void {
+  const err = this.validateRange(
+    this.portfolioStartDate(),
+    this.portfolioEndDate()
+  );
+  this.portfolioDateError.set(err);
+  if (err) return;
+
+  this.revokePortfolioPdf();
+  this.resetPdfViewer();
+  this.isGeneratingPortfolio.set(true);
+  this.portfolioError.set(null);
+  this.hasPortfolioSearched.set(true);
+  this.clearActionSuccess();
+
+  this.oracle
+    .getPortfolioPdf(
+      this.companySlug(),
+      this.portfolioStartDate(),
+      this.portfolioEndDate()
+    )
+    .subscribe({
+      next: (response: OraclePdfResponse | string) => {
+        const data: OraclePdfResponse =
+          typeof response === 'string'
+            ? (JSON.parse(response) as OraclePdfResponse)
+            : response;
+
+        if (data.result !== 'OK' || !data.file?.data) {
+          this.portfolioError.set(
+            'No se encontró información de cartera en el rango seleccionado.'
+          );
+          this.isGeneratingPortfolio.set(false);
+          return;
         }
 
-        const items = data?.results?.items ?? [];
-        console.log('[Oracle] 📦 Items:', items.length);
+        try {
+          const blob = this.base64ToBlob(
+            data.file.data,
+            data.file.mimeType || 'application/pdf'
+          );
+          this.portfolioBlob = blob;
+          this.portfolioPdfUrl.set(URL.createObjectURL(blob));
+          this.portfolioFileName.set(
+            data.file.fileName || this.defaultPdfName('edad-cartera')
+          );
+          this.showSuccess('✨ Análisis de cartera generado exitosamente');
+        } catch (e) {
+          console.error('[Portfolio PDF] Error decodificando base64:', e);
+          this.portfolioError.set('No se pudo procesar el PDF recibido.');
+        }
 
-        const facturasMapeadas: Invoice[] = items.map(
-          (item: any, idx: number) => ({
-            id: item.InvoiceNumber ?? `item-${idx}`,
-            number: item.InvoiceNumber ?? '',
-            date: this.formatDate(item.CreationDate),
-            currency: item.PaymentCurrency ?? '',
-            amount: Number(item.InvoiceAmount) || 0,
-            status:
-              item.PaidStatus === 'Paid'
-                ? ('approved' as const)
-                : ('pending' as const),
-            accountingStatus: item.AccountingStatus ?? '',
-          })
+        this.isGeneratingPortfolio.set(false);
+      },
+      error: (err: unknown) => {
+        console.error('[Portfolio PDF] Error:', err);
+        this.portfolioError.set(
+          'No se pudo generar el análisis de cartera. Intenta de nuevo.'
         );
+        this.isGeneratingPortfolio.set(false);
+      },
+    });
+}
 
-        this.invoices.set(facturasMapeadas);
-        this.isLoadingInvoices.set(false);
-      },
-      error: (err) => {
-        console.error('[Oracle] ❌ Error:', err);
-        this.invoices.set([]);
-        this.isLoadingInvoices.set(false);
-        this.dateError.set(
-          'No se pudo cargar las facturas. Intenta de nuevo.'
-        );
-      },
+  downloadPortfolioPdf(): void {
+    if (!this.portfolioBlob || !this.portfolioFileName()) return;
+    this.triggerDownload(this.portfolioBlob, this.portfolioFileName());
+  }
+
+clearPortfolio(): void {
+  this.revokePortfolioPdf();
+  this.resetPdfViewer();
+  this.portfolioError.set(null);
+  this.hasPortfolioSearched.set(false);
+  this.portfolioDateError.set(null);
+  this.portfolioStartDate.set(this.getDefaultStartDate());
+  this.portfolioEndDate.set(this.getDefaultEndDate());
+  this.clearActionSuccess();
+}
+
+  private revokePortfolioPdf(): void {
+    const url = this.portfolioPdfUrl();
+    if (url) URL.revokeObjectURL(url);
+    this.portfolioPdfUrl.set(null);
+    this.portfolioFileName.set('');
+    this.portfolioBlob = null;
+  }
+
+  // ──────────────────────────────────────────────────────────
+  // PDF HELPERS
+  // ──────────────────────────────────────────────────────────
+  private base64ToBlob(base64: string, mimeType: string): Blob {
+    const cleanBase64 = base64.includes(',') ? base64.split(',')[1] : base64;
+    const byteChars = atob(cleanBase64);
+    const byteNumbers = new Array(byteChars.length);
+    for (let i = 0; i < byteChars.length; i++) {
+      byteNumbers[i] = byteChars.charCodeAt(i);
+    }
+    const byteArray = new Uint8Array(byteNumbers);
+    return new Blob([byteArray], { type: mimeType });
+  }
+
+  private triggerDownload(blob: Blob, fileName: string): void {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  private defaultPdfName(prefix: string): string {
+    const today = new Date().toISOString().split('T')[0];
+    return `${prefix}-${today}.pdf`;
+  }
+
+  // ──────────────────────────────────────────────────────────
+  // CONTROLES DEL VISOR PDF (compartidos entre payment y portfolio)
+  // ──────────────────────────────────────────────────────────
+  private static readonly PDF_ZOOM_MIN = 0.5;
+  private static readonly PDF_ZOOM_MAX = 3;
+  private static readonly PDF_ZOOM_STEP = 0.25;
+
+  /** Página efectiva enviada a <pdf-viewer>. En modo 'page-width' siempre 1
+   *  (mostramos todas con scroll); en 'page-fit' la página actual. */
+  effectivePdfPage = computed<number>(() =>
+    this.pdfFitMode() === 'page-width' ? 1 : this.pdfCurrentPage()
+  );
+
+  showAllPages = computed<boolean>(() => this.pdfFitMode() === 'page-width');
+
+  /** Callback de ng2-pdf-viewer cuando termina de cargar el documento.
+   *  pdf-lib expone `numPages` directamente; tipamos con `unknown` para soportar
+   *  futuras versiones. */
+  onPdfLoaded(pdf: unknown): void {
+    const numPages = (pdf as { numPages?: number })?.numPages ?? 0;
+    this.pdfTotalPages.set(numPages);
+    this.pdfCurrentPage.set(1);
+  }
+
+  zoomIn(): void {
+    const next = Math.min(
+      this.pdfZoom() + DashboardComponent.PDF_ZOOM_STEP,
+      DashboardComponent.PDF_ZOOM_MAX
+    );
+    this.pdfZoom.set(this.roundZoom(next));
+  }
+
+  zoomOut(): void {
+    const next = Math.max(
+      this.pdfZoom() - DashboardComponent.PDF_ZOOM_STEP,
+      DashboardComponent.PDF_ZOOM_MIN
+    );
+    this.pdfZoom.set(this.roundZoom(next));
+  }
+
+  resetZoom(): void {
+    this.pdfZoom.set(1);
+    this.pdfFitMode.set('page-width');
+  }
+
+  toggleFitMode(): void {
+    this.pdfFitMode.update((m) => (m === 'page-width' ? 'page-fit' : 'page-width'));
+  }
+
+  prevPage(): void {
+    if (this.pdfCurrentPage() > 1) {
+      this.pdfCurrentPage.update((p) => p - 1);
+    }
+  }
+
+  nextPage(): void {
+    if (this.pdfCurrentPage() < this.pdfTotalPages()) {
+      this.pdfCurrentPage.update((p) => p + 1);
+    }
+  }
+
+  goToPage(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const value = parseInt(input.value, 10);
+    const total = this.pdfTotalPages();
+    if (!Number.isNaN(value) && value >= 1 && value <= total) {
+      this.pdfCurrentPage.set(value);
+    } else {
+      input.value = String(this.pdfCurrentPage());
+    }
+  }
+
+  /** Abre el PDF en una pestaña nueva y dispara la impresión nativa del navegador. */
+  printPdf(viewer: 'payment' | 'portfolio'): void {
+    const blob = viewer === 'payment' ? this.paymentBlob : this.portfolioBlob;
+    if (!blob) return;
+
+    const url = URL.createObjectURL(blob);
+    const win = window.open(url, '_blank');
+
+    if (!win) {
+      // bloqueado por popup blocker → caemos a descargar
+      console.warn('[printPdf] Popup bloqueado, descargando como fallback.');
+      const a = document.createElement('a');
+      a.href = url;
+      a.download =
+        viewer === 'payment' ? this.paymentFileName() : this.portfolioFileName();
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 5_000);
+      return;
+    }
+
+    win.addEventListener('load', () => {
+      try {
+        win.focus();
+        win.print();
+      } catch (e) {
+        console.error('[printPdf] No se pudo invocar print():', e);
+      }
+      setTimeout(() => URL.revokeObjectURL(url), 60_000);
     });
   }
 
+  /** Restablece zoom/página/modo. Se invoca al generar un nuevo PDF
+   *  y al limpiar las vistas de payment/portfolio. */
+  private resetPdfViewer(): void {
+    this.pdfZoom.set(1);
+    this.pdfCurrentPage.set(1);
+    this.pdfTotalPages.set(0);
+    this.pdfFitMode.set('page-width');
+  }
+
+  private roundZoom(value: number): number {
+    return Math.round(value * 100) / 100;
+  }
   // ──────────────────────────────────────────────────────────
-  // BOTONES "GENERAR REPORTE" (mocks por ahora)
+  // ALERTAS
   // ──────────────────────────────────────────────────────────
-  generateInvoicesReport() {
-    this.isGeneratingInvoices.set(true);
-    this.clearActionSuccess();
-    setTimeout(() => {
-      this.isGeneratingInvoices.set(false);
-      this.showSuccess('✨ Reporte de facturas generado exitosamente');
-    }, 2000);
-  }
-
-  generatePaymentReport() {
-    this.isGeneratingPayment.set(true);
-    this.clearActionSuccess();
-    setTimeout(() => {
-      this.isGeneratingPayment.set(false);
-      this.showSuccess('✨ Reporte de pagos generado exitosamente');
-    }, 2000);
-  }
-
-  generatePortfolioReport() {
-    this.isGeneratingPortfolio.set(true);
-    this.clearActionSuccess();
-    setTimeout(() => {
-      this.isGeneratingPortfolio.set(false);
-      this.showSuccess('✨ Análisis de cartera generado exitosamente');
-    }, 2000);
-  }
-
-  private showSuccess(message: string) {
+  private showSuccess(message: string): void {
     this.actionSuccess.set(message);
     setTimeout(() => this.clearActionSuccess(), 5000);
   }
 
-  private clearActionSuccess() {
+  private clearActionSuccess(): void {
     this.actionSuccess.set(null);
   }
 
