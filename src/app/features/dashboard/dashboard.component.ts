@@ -70,6 +70,15 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   hasPaymentSearched = signal(false);
   private paymentBlob: Blob | null = null;
 
+  private formatToMMDDYYYY(dateStr: string): string {
+    if (!dateStr) return '';
+    // El input type="date" SIEMPRE entrega 'YYYY-MM-DD'
+    const parts = dateStr.split('-');
+    if (parts.length !== 3) return dateStr;
+    const [year, month, day] = parts;
+    return `${month}-${day}-${year}`;
+  }
+
   // ──────────────────────────────────────────────────────────
   // ESTADO: EDAD DE CARTERA
   // ──────────────────────────────────────────────────────────
@@ -245,9 +254,6 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     this.dateError.set(this.validateRange(this.startDate(), this.endDate()));
   }
 
-  // ──────────────────────────────────────────────────────────
-  // FECHAS: COMPROBANTES DE PAGO
-  // ──────────────────────────────────────────────────────────
   maxPaymentEndDate = computed<string>(() =>
     this.calcMaxEndDate(this.paymentStartDate())
   );
@@ -377,33 +383,37 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   // ──────────────────────────────────────────────────────────
   // COMPROBANTES DE PAGO: CONSULTA + PDF
   // ──────────────────────────────────────────────────────────
-  generatePaymentReport(): void {
-    const err = this.validateRange(
-      this.paymentStartDate(),
-      this.paymentEndDate()
-    );
+// ──────────────────────────────────────────────────────────
+  // COMPROBANTES DE PAGO: CONSULTA + PDF
+  // ──────────────────────────────────────────────────────────
+  generatePaymentReport() {
+    const err = this.validateRange(this.paymentStartDate(), this.paymentEndDate());
     this.paymentDateError.set(err);
     if (err) return;
 
     this.revokePaymentPdf();
-    this.resetPdfViewer();
     this.isGeneratingPayment.set(true);
     this.paymentError.set(null);
     this.hasPaymentSearched.set(true);
     this.clearActionSuccess();
 
+    // 🚀 MAGIA AQUÍ: Convertimos las fechas justo antes de enviarlas
+    const formattedStart = this.formatToMMDDYYYY(this.paymentStartDate());
+    const formattedEnd   = this.formatToMMDDYYYY(this.paymentEndDate());
+
+    // Le pasamos las fechas ya formateadas al servicio
     this.oracle
       .getPaymentsPdf(
         this.companySlug(),
-        this.paymentStartDate(),
-        this.paymentEndDate()
+        formattedStart,
+        formattedEnd
       )
-      .subscribe({
-        next: (response: OraclePdfResponse | string) => {
-          const data: OraclePdfResponse =
-            typeof response === 'string'
-              ? (JSON.parse(response) as OraclePdfResponse)
-              : response;
+     .subscribe({
+      next: (response: any) => {
+        const data: OraclePdfResponse =
+        typeof response === 'string'
+          ? (JSON.parse(response) as OraclePdfResponse)
+          : (response as OraclePdfResponse);
 
           if (data.result !== 'OK' || !data.file?.data) {
             this.paymentError.set(
@@ -424,14 +434,14 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
               data.file.fileName || this.defaultPdfName('comprobante-pagos')
             );
             this.showSuccess('✨ Comprobante generado exitosamente');
-          } catch (e) {
+          } catch (e: any) {
             console.error('[Payment PDF] Error decodificando base64:', e);
             this.paymentError.set('No se pudo procesar el PDF recibido.');
           }
 
           this.isGeneratingPayment.set(false);
         },
-        error: (err: unknown) => {
+        error: (err: any) => {
           console.error('[Payment PDF] Error:', err);
           this.paymentError.set(
             'No se pudo generar el comprobante. Intenta de nuevo.'
@@ -542,9 +552,9 @@ clearPortfolio(): void {
   this.resetPdfViewer();
   this.portfolioError.set(null);
   this.hasPortfolioSearched.set(false);
-  this.portfolioDateError.set(null);
-  this.portfolioStartDate.set(this.getDefaultStartDate());
-  this.portfolioEndDate.set(this.getDefaultEndDate());
+  // this.portfolioDateError.set(null);
+  // this.portfolioStartDate.set(this.getDefaultStartDate());
+  // this.portfolioEndDate.set(this.getDefaultEndDate());
   this.clearActionSuccess();
 }
 

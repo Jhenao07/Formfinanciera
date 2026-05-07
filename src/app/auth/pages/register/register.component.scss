@@ -202,7 +202,17 @@
   font-weight: 500;
   margin-top: 24px;
 }
-
+.lp-brand__icon{
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, .2);
+    background: linear-gradient(135deg, #ffffff38, #ffffff0d);
+    display: flex;
+    color: #ff6647;
+    align-items: center;
+    justify-content: center;
+}
 /* ════════════ LADO DERECHO (FORMULARIO SAAS) ════════════ */
 .lp-right {
   display: flex;

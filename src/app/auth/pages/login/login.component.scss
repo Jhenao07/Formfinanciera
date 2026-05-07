@@ -1,12 +1,8 @@
-/* ============================================================
-   AUTH MODULE — ENTERPRISE SAAS EDITION (Bug Fix: No Overlap)
-   ============================================================ */
+
 :root, :host {
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
 
   --color-brand: #2563eb;
-  --color-brand-hover: #1d4ed8;
-  --color-brand-accent: #ea580c;
 
   --color-bg-dark: #020617;
   --color-bg-light: #ffffff;
@@ -14,7 +10,7 @@
   --text-primary: #0f172a;
   --text-secondary: #475569;
   --text-tertiary: #94a3b8;
-
+  --brand: #ff6647;
   --border-light: #e2e8f0;
 
   --error-color: #ef4444;
@@ -86,11 +82,11 @@
   }
 }
 
-/* BLOQUE 1: Top (Logo y Textos) */
+
 .lp-left__top {
   position: relative;
   z-index: 2;
-  flex: 0 0 auto; /* Toma solo su espacio natural */
+  flex: 0 0 auto;
 }
 
 .lp-brand {
@@ -117,7 +113,17 @@
     margin-top: 4px;
   }
 }
-
+.lp-brand__icon{
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, .2);
+    background: linear-gradient(135deg, #ffffff38, #ffffff0d);
+    display: flex;
+    color: #ff6647;
+    align-items: center;
+    justify-content: center;
+}
 .lp-hero {
   margin-top: 48px;
 

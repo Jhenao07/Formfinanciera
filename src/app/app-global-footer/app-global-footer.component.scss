@@ -1,0 +1,109 @@
+/* ============================================================
+   GLOBAL FOOTER — FULL BLEED (Ancho 100% Forzado)
+   ============================================================ */
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.login-footer {
+  /* 🚀 TRUCO FULL-BLEED: 
+     Fuerza al footer a medir exactamente el 100% del ancho del monitor, 
+     sin importar si el contenedor padre tiene paddings o max-widths. */
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  
+  overflow: hidden; /* Evita que aparezca un scroll horizontal */
+  padding: 32px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: monospace; /* Mantiene la estética tech/ASCII */
+  font-size: 14px;
+  color: #64748b;
+  user-select: none;
+  background-color: transparent;
+}
+
+/* Oculta el texto para lectores de pantalla pero lo mantiene accesible */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+.line {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  white-space: nowrap;
+}
+
+/* ── EL FONDO DE PUNTOS (Se estira en todo el ancho) ── */
+.stitch-bg {
+  position: absolute;
+  left: 0;
+  right: 0;
+  width: 100%;
+  color: rgba(148, 163, 184, 0.25); /* Color gris sutil */
+  white-space: nowrap;
+  overflow: hidden;
+  z-index: 1;
+  pointer-events: none;
+  
+  /* 🚀 Esto obliga a los caracteres a separarse y distribuirse de extremo a extremo */
+  text-align: justify;
+  text-align-last: justify;
+  letter-spacing: 2px; 
+}
+
+/* ── EL TEXTO CENTRAL (Recorta el fondo) ── */
+.stitch-fg {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  
+  /* ⚠️ IMPORTANTE: Este background debe ser IGUAL al color de fondo de tu app 
+     (Si tu dashboard es gris claro usa #f8fafc, si es blanco usa #ffffff) */
+  background-color: #f8fafc; 
+  
+  padding: 0 24px;
+  font-weight: 600;
+  color: #475569;
+  border-radius: 999px; /* Suaviza el corte contra el fondo de puntos */
+}
+
+/* ── ANIMACIÓN DEL CORAZÓN ── */
+.heart-char {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  
+  svg {
+    width: 20px;
+    height: 20px;
+    animation: heartbeat 1.5s ease-in-out infinite;
+    filter: drop-shadow(0 2px 4px rgba(255, 107, 74, 0.3)); /* Resplandor sutil */
+  }
+}
+
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  15%      { transform: scale(1.15); }
+  30%      { transform: scale(1); }
+  45%      { transform: scale(1.15); }
+}

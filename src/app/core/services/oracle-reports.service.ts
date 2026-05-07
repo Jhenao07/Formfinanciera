@@ -53,7 +53,8 @@ export class OracleReportsService {
   getPaymentsPdf(
     slug: string,
     startDate: string,
-    endDate: string
+    endDate: string,
+
   ): Observable<OraclePdfResponse> {
     return this.http.post<OraclePdfResponse>(this.url, {
       app: 'PORTAL-PROVEEDORES',
@@ -61,6 +62,7 @@ export class OracleReportsService {
       slug,
       startDate,
       endDate,
+
     });
   }
 
