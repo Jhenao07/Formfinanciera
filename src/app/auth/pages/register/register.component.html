@@ -141,64 +141,80 @@
 
       <form [formGroup]="form" (ngSubmit)="onSubmit()" class="lp-form stagger-3" [attr.aria-busy]="isLoading() ? 'true' : null">
 
-        <div class="lp-field">
-          <label class="lp-field__label" for="reg-slug">Workspace de la Empresa (Slug)</label>
-          <div class="lp-field__input-group" [class.has-error]="isInvalid('slug')">
-            <svg class="lp-field__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
-            </svg>
-            <input id="reg-slug" type="text" formControlName="slug" class="lp-field__control" placeholder="Ej: nuvant" (input)="onInput()" />
-          </div>
-        </div>
+  <div class="lp-field">
+    <label class="lp-field__label" for="reg-slug">Workspace de la Empresa (Slug)</label>
+    <div class="lp-field__input-group" [class.has-error]="isInvalid('slug')">
+      <svg class="lp-field__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+      </svg>
+      <input id="reg-slug" type="text" formControlName="slug" class="lp-field__control" placeholder="Ej: nuvant" (input)="onInput()" />
+    </div>
+  </div>
 
-        <div class="lp-field">
-          <label class="lp-field__label" for="reg-id">NIT o Documento</label>
-          <div class="lp-field__input-group" [class.has-error]="isInvalid('supplierId')">
-            <svg class="lp-field__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
-            </svg>
-            <input id="reg-id" type="text" formControlName="supplierId" class="lp-field__control lp-field__control--with-btn" placeholder="Ej: 8903026090" (input)="onInput()" />
+  <div class="lp-field">
+    <label class="lp-field__label" for="reg-id">NIT o Documento</label>
+    <div class="lp-field__input-group" [class.has-error]="isInvalid('supplierId')">
+      <svg class="lp-field__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+        <line x1="16" y1="2" x2="16" y2="6"/>
+        <line x1="8" y1="2" x2="8" y2="6"/>
+        <line x1="3" y1="10" x2="21" y2="10"/>
+      </svg>
+      <input id="reg-id" type="text" formControlName="supplierId" class="lp-field__control lp-field__control--with-btn" placeholder="Ej: 8903026090" (input)="onInput()" />
 
-            <button type="button" class="lp-field__btn" (click)="validateId()" [disabled]="isLoading()">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="20 6 9 17 4 12"></polyline>
-              </svg>
-              <span>Validar</span>
-            </button>
-          </div>
-        </div>
+      <button type="button" class="lp-field__btn" (click)="validateId()" [disabled]="isLoading()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+        <span>Validar</span>
+      </button>
+    </div>
+  </div>
 
-        <div class="lp-field">
-          <label class="lp-field__label" for="reg-name">Razón Social o Nombre</label>
-          <div class="lp-field__input-group" [class.has-error]="isInvalid('supplierName')">
-            <svg class="lp-field__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
-            </svg>
-            <input id="reg-name" type="text" formControlName="supplierName" class="lp-field__control" placeholder="Ej: Empresa S.A.S." (input)="onInput()" />
-          </div>
-        </div>
+  @if (form.value.supplierName) {
+    <div class="lp-field">
+      <label class="lp-field__label" for="reg-supplier-name">Empresa</label>
+      <div class="lp-field__input-group">
+        <svg class="lp-field__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 21h18M5 21V7l7-4 7 4v14M9 9h.01M9 13h.01M9 17h.01M15 9h.01M15 13h.01M15 17h.01"/>
+        </svg>
+        <input id="reg-supplier-name" type="text" formControlName="supplierName" class="lp-field__control" readonly />
+      </div>
+    </div>
+  }
 
-        <div class="lp-field">
-          <label class="lp-field__label" for="reg-email">Correo electrónico</label>
-          <div class="lp-field__input-group" [class.has-error]="isInvalid('supplierEmail')">
-            <svg class="lp-field__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
-            </svg>
-            <input id="reg-email" type="email" formControlName="supplierEmail" class="lp-field__control" placeholder="ejemplo@empresa.com" (input)="onInput()" />
-          </div>
-        </div>
+  <div class="lp-field">
+    <label class="lp-field__label" for="reg-email">Correo de contacto</label>
+    <div class="lp-field__input-group" [class.has-error]="isInvalid('supplierEmail')">
+      <svg class="lp-field__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+        <polyline points="22,6 12,13 2,6"/>
+      </svg>
 
-        <button type="submit" class="lp-btn lp-btn--primary" [disabled]="isLoading() || form.invalid">
-          @if (isLoading()) {
-            <span class="lp-spinner"></span> Registrando...
-          } @else {
-            Crear mi cuenta
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M5 12h14M12 5l7 7-7 7"/>
-            </svg>
+      @if (supplierContacts().length > 0) {
+        <select id="reg-email" formControlName="supplierEmail" class="lp-field__control">
+          @for (email of supplierContacts(); track email) {
+            <option [value]="email">{{ email }}</option>
           }
-        </button>
-      </form>
+        </select>
+      } @else {
+        <input id="reg-email" type="email" formControlName="supplierEmail" class="lp-field__control" placeholder="Valida el NIT para ver correos" readonly />
+      }
+    </div>
+  </div>
+
+  <button type="submit" class="lp-btn lp-btn--primary" [disabled]="isLoading() || form.invalid">
+    @if (isLoading()) {
+      <span class="lp-spinner"></span> Registrando...
+    } @else {
+      Crear mi cuenta
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 12h14M12 5l7 7-7 7"/>
+      </svg>
+    }
+  </button>
+</form>
 
       <div class="lp-divider stagger-4">
         <span>¿Ya estás registrado?</span>

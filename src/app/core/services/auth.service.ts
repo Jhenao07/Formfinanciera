@@ -27,7 +27,7 @@ export class AuthService {
     this._isLoading.set(true);
     this._error.set(null);
 
-    const webhookUrl = 'https://n8n-prd-hooks.ops-nvt.com/webhook/6cab4783-0b86-434f-94ef-702a30e4369a';
+    const webhookUrl = 'd1xzjpbpskrznq.cloudfront.net/webhook/6cab4783-0b86-434f-94ef-702a30e4369a';
 
     // observe: 'response' nos permite leer el status HTTP (200) de n8n
     return this.http.post(webhookUrl, data, { observe: 'response' }).pipe(
@@ -36,29 +36,20 @@ export class AuthService {
   }
 
   // ── Validación de ID ───────────────────────────────────
- validateId(slug: string, supplierId: string): Observable<unknown> {
-  this._isLoading.set(true);
-  this._error.set(null);
+ validateId(slug: string, supplierId: string): Observable<any> {
+    this._isLoading.set(true);
+    this._error.set(null);
 
-  const timestamp = Date.now().toString();
+    const body = { slug, supplierId };
 
-  console.log('[validateId] Enviando:', { slug, supplierId, url: environment.api.validateId });
-
-  return this.http
-    .get(environment.api.validateId, {
-      params: { slug, supplierId, _t: timestamp },
-      headers: {
-        'Cache-Control': 'no-cache, no-store, must-revalidate',
-        'Pragma': 'no-cache',
-        'Expires': '0'
-      },
-      observe: 'response'
-    })
-    .pipe(
-      tap(res => console.log('[validateId] Respuesta:', res)),
-      finalize(() => this._isLoading.set(false))
-    );
-}
+    return this.http
+      .post(environment.api.validateId, body, {
+        observe: 'response'
+      })
+      .pipe(
+        finalize(() => this._isLoading.set(false))
+      );
+  }
 
   // ── OTP ──────────────────────────────────────────────────
   sendOtp(supplierEmail: string, slug: string, supplierId: string, app: string): Observable<unknown> {

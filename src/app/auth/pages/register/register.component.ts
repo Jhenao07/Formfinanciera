@@ -19,6 +19,7 @@ export class RegisterComponent implements OnInit, AfterViewInit {
   private readonly router     = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
 
+  readonly supplierContacts = signal<string[]>([]);
   readonly isLoading = this.auth.isLoading;
   readonly authError = this.auth.error;
 
@@ -31,12 +32,15 @@ export class RegisterComponent implements OnInit, AfterViewInit {
     this.auth.clearError();
     // Validamos los 4 campos requeridos por el webhook de n8n
     this.form = this.fb.group({
-      supplierName:  ['', [Validators.required, Validators.minLength(3)]],
+      supplierName: [{ value: '', disabled: false }],
       supplierId:    ['', [Validators.required]],
       supplierEmail: ['', [Validators.required, Validators.email]],
       slug:          ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9-]+$/)]], // Solo letras, números y guiones
+      supplierContacts: signal<string[]>([])
+
     });
   }
+
 
   ngAfterViewInit(): void {
     if (isPlatformBrowser(this.platformId)) {
@@ -73,81 +77,71 @@ export class RegisterComponent implements OnInit, AfterViewInit {
     this.auth.clearError();
   }
 
-  validateId(): void {
-    const slug = (this.form.value.slug as string)?.trim().toLowerCase();
-    const supplierId = (this.form.value.supplierId as string)?.trim();
+validateId(): void {
+  const slug = (this.form.value.slug as string)?.trim().toLowerCase();
+  const supplierId = (this.form.value.supplierId as string)?.trim();
 
-    if (!slug || !supplierId) {
-      Swal.fire({
-        icon: 'warning',
-        title: 'Faltan datos',
-        text: 'Por favor llena el Workspace (Slug) y el NIT antes de validar.',
-        customClass: { popup: 'swal-modern' },
-        confirmButtonText: 'Entendido'
-      });
-      return;
-    }
+  if (!slug || !supplierId) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Faltan datos',
+      text: 'Por favor llena el Workspace y el NIT antes de validar.',
+      customClass: { popup: 'swal-modern' }
+    });
+    return;
+  }
 
-    this.auth.validateId(slug, supplierId)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (response: any) => {
-          const data = response.body;
+  // Reset previo
+  this.supplierContacts.set([]);
+  this.form.patchValue({ supplierName: '', supplierEmail: '' });
 
-          if (data && data.supplierName) {
-            this.form.patchValue({
-              supplierName: data.supplierName
-            });
-            this.auth.clearError();
+  this.auth.validateId(slug, supplierId)
+    .pipe(takeUntilDestroyed(this.destroyRef))
+    .subscribe({
+      next: (response: any) => {
+        const data = response.body;
 
-            if (data.exists === true) {
-              Swal.fire({
-                icon: 'info',
-                title: 'Empresa ya registrada',
-                text: `La empresa ${data.supplierName} ya tiene una cuenta activa. Por favor, inicia sesión.`,
-                customClass: { popup: 'swal-modern' },
-                confirmButtonText: 'Ir al Login',
-                showCancelButton: true,
-                cancelButtonText: 'Cerrar'
-              }).then((result) => {
-                if (result.isConfirmed) {
-                  this.router.navigate(['/auth/login']);
-                }
-              });
-            } else {
-              Swal.fire({
-                icon: 'success',
-                title: '¡Empresa encontrada!',
-                text: `Se ha completado la razón social automáticamente.`,
-                customClass: { popup: 'swal-modern' },
-                timer: 2500,
-                showConfirmButton: false
-              });
-            }
+        if (data?.exists && data.supplierName) {
+          const contacts: string[] = data.contacts || [];
 
-          } else {
-            Swal.fire({
-              icon: 'error',
-              title: 'Datos incompletos',
-              text: 'El NIT fue consultado, pero no se encontró un nombre asociado.',
-              customClass: { popup: 'swal-modern' },
-              confirmButtonText: 'Revisar'
-            });
-          }
-        },
-        error: (err) => {
-          console.error('Error validating ID:', err);
+          this.supplierContacts.set(contacts);
+
+          this.form.patchValue({
+            supplierName: data.supplierName,
+            supplierEmail: contacts[0] ?? ''
+          });
+
+          Swal.fire({
+            icon: 'success',
+            title: '¡Empresa encontrada!',
+            text: contacts.length > 0
+              ? 'Selecciona tu correo de contacto en la lista desplegable.'
+              : 'Se ha completado el nombre de la empresa.',
+            timer: 3000,
+            showConfirmButton: false,
+            customClass: { popup: 'swal-modern' }
+          });
+        } else {
           Swal.fire({
             icon: 'error',
             title: 'NIT no encontrado',
-            text: 'El NIT no está registrado o el Workspace es incorrecto. Verifica los datos.',
-            customClass: { popup: 'swal-modern' },
-            confirmButtonText: 'Intentar de nuevo'
+            text: 'Verifica los datos e intenta de nuevo.',
+            customClass: { popup: 'swal-modern' }
           });
         }
-      });
-  }
-
+      },
+      error: () => {
+        this.supplierContacts.set([]);
+        this.form.patchValue({ supplierName: '', supplierEmail: '' });
+        Swal.fire({
+          icon: 'error',
+          title: 'NIT no encontrado',
+          text: 'Verifica los datos e intenta de nuevo.',
+          customClass: { popup: 'swal-modern' }
+        });
+      }
+    });
+}
   onSubmit(): void {
     this.form.markAllAsTouched();
     if (this.form.invalid) return;
